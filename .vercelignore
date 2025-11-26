@@ -19,8 +19,17 @@ coverage.xml
 .pytest_cache
 .history
 .DS_Store
-eski yedekler/
-*_yedek*
+*.bak
+test_*
+tamir_*
 duzelt_*
 * kopyası*
-*.bak
+static/videos/
+static/audio/
+static/large-images/
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.mp3
+*.wav
