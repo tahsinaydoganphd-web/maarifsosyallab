@@ -8,15 +8,23 @@ import uuid
 print(f"🔍 Python çalışma dizini: {os.getcwd()}")
 print(f"🔍 podcast_creator.py'nin yeri: {os.path.abspath(__file__)}")
 
-# Çalışma dizinini kullan (sosyallab.py'nin olduğu yer)
-BASE_DIR = os.getcwd()
-PIPER_PATH = os.path.join(BASE_DIR, "piper", "piper.exe")
-MODEL_PATH = os.path.join(BASE_DIR, "models", "tr_TR-fahrettin-medium.onnx")
-CONFIG_PATH = os.path.join(BASE_DIR, "models", "tr_TR-fahrettin-medium.onnx.json")
+# LOCAL (Windows/macOS) ve RENDER (Linux) ortamlarını otomatik ayır
+if os.name == "nt":   # Windows (local)
+    BASE_DIR = os.getcwd()
+    PIPER_PATH = os.path.join(BASE_DIR, "piper", "piper.exe")
+    MODEL_PATH = os.path.join(BASE_DIR, "models", "tr_TR-fahrettin-medium.onnx")
+    CONFIG_PATH = os.path.join(BASE_DIR, "models", "tr_TR-fahrettin-medium.onnx.json")
+else:                 # Linux (Render)
+    BASE_DIR = "/app"
+    PIPER_PATH = "/app/piper/piper"   # Linux binary
+    MODEL_PATH = "/app/models/tr_TR-fahrettin-medium.onnx"
+    CONFIG_PATH = "/app/models/tr_TR-fahrettin-medium.onnx.json"
 
 print(f"✅ BASE_DIR: {BASE_DIR}")
 print(f"✅ PIPER_PATH: {PIPER_PATH}")
-print(f"✅ Dosya var mı? {os.path.exists(PIPER_PATH)}")
+print(f"🔍 Piper var mı? {os.path.exists(PIPER_PATH)}")
+print(f"🔍 Model var mı? {os.path.exists(MODEL_PATH)}")
+
 
 # --- FONKSİYONLAR ---
 
