@@ -1,5 +1,5 @@
-__pycache__/
-*.pyc
 venv/
-.env
+__pycache__/
+*.db
+node_modules/
 .DS_Store
