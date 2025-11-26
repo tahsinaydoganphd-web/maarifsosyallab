@@ -1,27 +1,32 @@
-# Python + full libs (moviepy + scipy + piper için stabil)
+# Python + full libs
 FROM python:3.10-bullseye
 
-# ffmpeg kurulumu
+# ffmpeg yükle
 RUN apt-get update && \
-    apt-get install -y ffmpeg && \
+    apt-get install -y ffmpeg curl && \
     apt-get clean
 
-# Çalışma dizini
+# Çalışma klasörü
 WORKDIR /app
 
 # Python paketleri
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Proje dosyaları
+# Proje dosyalarını kopyala
 COPY . /app/
 
-# Piper Linux binary çalıştırılabilir olsun
-RUN chmod +x /app/piper/piper
+# Piper klasörünü oluştur
+RUN mkdir -p /app/piper
+
+# Linux için Piper binary indir (resmi release)
+RUN curl -L -o /app/piper/piper \
+    https://github.com/rhasspy/piper/releases/latest/download/piper_linux_x86_64 && \
+    chmod +x /app/piper/piper
 
 # Render port
 ENV PORT=10000
 EXPOSE 10000
 
-# Production server (Flask değil, gunicorn)
+# Gunicorn ile production başlat
 CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
