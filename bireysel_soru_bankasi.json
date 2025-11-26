@@ -1,402 +1,802 @@
 [
     {
         "zorluk": "kolay",
-        "metin": "Hayatım boyunca farklı gruplar içinde yer alıyorum ve her grupta farklı bir rolüm oluyor. Okulda bir öğrenciyim ve en önemli görevim derslerimi dinleyip ödevlerimi zamanında yapmaktır. Ailemde ise bir evladım; bu rolde odamı toplamak ve anneme yardım etmek gibi sorumluluklarım var. Mahalle futbol takımında ise bir oyuncuyum ve antrenmanlara katılarak takım başarısı için çabalamam gerekiyor. Her bir rolümün bana yüklediği görevleri yerine getirdiğimde hem kendimi daha iyi hissediyorum hem de içinde bulunduğum grubun düzenine katkı sağlamış oluyorum. Bu roller arasındaki dengeyi kurmak çok önemli.",
-        "beceri_adi": "Rol Farkındalığı",
+        "metin": "Ayşe, hem okulda öğrenci hem de evde bir abladır. Okulda öğrenci olarak derslerini dinlemek ve ödevlerini yapmak gibi görevleri vardır. Evde ise küçük kardeşine örnek olmak ve odasını toplu tutmak gibi rolleri üstlenir. Bu farklı gruplar içindeki rolleri ona farklı sorumluluklar yükler. Ayşe, her iki rolde de görevlerini yerine getirmeye çalışır çünkü sorumluluk sahibi bir birey olmanın ne kadar önemli olduğunu bilir. Bu durum, onun hem okul arkadaşlarıyla hem de ailesiyle olan ilişkilerini olumlu yönde etkiler. Herkesin dahil olduğu gruplarda belli rolleri vardır.",
+        "beceri_adi": "Rollerini Fark Etme",
         "deger_adi": "Sorumluluk",
-        "beceri_cumlesi": "Hayatım boyunca farklı gruplar içinde yer alıyorum ve her grupta farklı bir rolüm oluyor.",
-        "deger_cumlesi": "Ailemde ise bir evladım; bu rolde odamı toplamak ve anneme yardım etmek gibi sorumluluklarım var."
+        "beceri_cumlesi": "Bu farklı gruplar içindeki rolleri ona farklı sorumluluklar yükler.",
+        "deger_cumlesi": "Ayşe, her iki rolde de görevlerini yerine getirmeye çalışır çünkü sorumluluk sahibi bir birey olmanın ne kadar önemli olduğunu bilir."
     },
     {
         "zorluk": "kolay",
-        "metin": "Okulumuzda, mahallemizdeki hayvan barınağı için bir yardım kampanyası düzenlendi. Öğretmenimiz bu kampanyanın amacını ve önemini anlattı. Ben de bu kampanyaya katılarak üzerime düşeni yapmak istedim. Ailemle konuşarak evimizdeki eski battaniyeleri ve biraz da mama alarak okula getirdim. Diğer arkadaşlarım da benzer yardımlarda bulundu. Toplanan malzemeleri ayırmak ve paketlemek için gönüllü oldum. Bu tür toplumsal faaliyetlere katkı sağlamak, hem yardıma ihtiyacı olanlara destek olmamızı sağlar hem de bizleri daha duyarlı bireyler yapar. Unutmamalıyız ki, küçük bir destek bile büyük bir fark yaratabilir.",
-        "beceri_adi": "Katılım Gösterme",
-        "deger_adi": "Yardımlaşma",
-        "beceri_cumlesi": "Toplanan malzemeleri ayırmak ve paketlemek için gönüllü oldum.",
-        "deger_cumlesi": "Bu tür toplumsal faaliyetlere katkı sağlamak, hem yardıma ihtiyacı olanlara destek olmamızı sağlar hem de bizleri daha duyarlı bireyler yapar."
+        "metin": "Ömer, ailesiyle birlikte haritadan Türkiye'nin komşularını inceliyordu. Babası, doğuda İran ve Nahçıvan, güneydoğuda Irak ve Suriye, güneyde Akdeniz, batıda ise Yunanistan ve Bulgaristan'ın yer aldığını gösterdi. Gürcistan ve Ermenistan'ın da kuzeydoğudaki komşularımız olduğunu belirtti. Ömer, bu ülkelerle sadece sınır komşusu olmadığımızı, aynı zamanda tarihi ve kültürel bağlarımız olduğunu öğrendi. Babası, iyi komşuluk ilişkilerinin ülkeler arasındaki ticareti ve barışı güçlendirdiğini anlattı. Komşularımızı tanımak, dünya üzerindeki yerimizi ve ilişkilerimizi anlamak için ilk adımdır. Bu bilgi, dünyaya bakış açımızı genişletir.",
+        "beceri_adi": "Konum Belirleme",
+        "deger_adi": "Komşuluk",
+        "beceri_cumlesi": "Babası, doğuda İran ve Nahçıvan, güneydoğuda Irak ve Suriye, güneyde Akdeniz, batıda ise Yunanistan ve Bulgaristan'ın yer aldığını gösterdi.",
+        "deger_cumlesi": "Babası, iyi komşuluk ilişkilerinin ülkeler arasındaki ticareti ve barışı güçlendirdiğini anlattı."
     },
     {
         "zorluk": "kolay",
-        "metin": "Uzun zamandır hayalini kurduğum bisikleti almak için para biriktirmeye karar verdim. Babam, bu konuda bana yardımcı olmak için haftalık harçlığımı biraz artırdı ama bir şartı vardı: Kendi bütçemi kendim planlayacaktım. Öncelikle bir defter alıp gelirimi ve giderlerimi yazmaya başladım. İsteklerim ve ihtiyaçlarım arasındaki farkı öğrendim. Kantinden her gün bir şeyler almak yerine, bazı günler evden getirdiklerimle idare ettim. Bu sayede paramın önemli bir kısmını biriktirmeyi başardım. Harcamalarımı kontrol altına alarak hedefime ulaşmanın ne kadar kolay olduğunu gördüm. Bu süreç bana tutumlu olmanın önemini öğretti.",
-        "beceri_adi": "Planlama",
-        "deger_adi": "Tutumlu Olma",
-        "beceri_cumlesi": "Öncelikle bir defter alıp gelirimi ve giderlerimi yazmaya başladım.",
-        "deger_cumlesi": "Bu süreç bana tutumlu olmanın önemini öğretti."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Sınıfımıza bu yıl farklı bir şehirden yeni bir arkadaşımız katıldı. Başta hepimiz biraz çekingendik çünkü onun konuşma tarzı ve bazı alışkanlıkları bizden farklıydı. Bir gün öğretmenimiz, hepimizden kendi yöremize ait bir kültürel özelliği tanıtmamızı istedi. Yeni arkadaşımız, kendi yöresine ait bir yemeğin tarifini ve kutladıkları özel bir bayramı anlattı. Anlattıkları o kadar ilginçti ki, hepimiz merakla dinledik. O günden sonra onun farklılıklarının aslında bir zenginlik olduğunu anladık. Farklı kültürlere saygı duymak, arkadaşlıklarımızı güçlendirir ve birlikte barış içinde yaşamamızı sağlar.",
-        "beceri_adi": "Yorumlama",
-        "deger_adi": "Hoşgörü",
-        "beceri_cumlesi": "O günden sonra onun farklılıklarının aslında bir zenginlik olduğunu anladık.",
-        "deger_cumlesi": "Farklı kültürlere saygı duymak, arkadaşlıklarımızı güçlendirir ve birlikte barış içinde yaşamamızı sağlar."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Yaşadığım ilçenin kenarında eskiden yemyeşil bir orman ve içinden geçen temiz bir dere vardı. Ancak birkaç yıl önce buraya büyük bir fabrika kuruldu. Fabrikanın kurulmasıyla ilçemize yeni iş imkânları geldi ama çevremizde de olumsuz değişimler başladı. Fabrika atıkları nedeniyle deredeki balıklar azaldı ve suyun rengi değişti. İnşaat sırasında ormandaki birçok ağaç kesildi. Bu durum, bölgedeki hayvanların yaşam alanlarını da daralttı. Beşerî bir unsur olan fabrikanın, doğal çevremiz üzerinde ciddi sonuçları oldu. Bu olay, ekonomik gelişme sağlarken doğayı korumanın ne kadar önemli olduğunu bana gösterdi.",
-        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
-        "deger_adi": "Çevreye Duyarlılık",
-        "beceri_cumlesi": "Fabrika atıkları nedeniyle deredeki balıklar azaldı ve suyun rengi değişti.",
-        "deger_cumlesi": "Bu olay, ekonomik gelişme sağlarken doğayı korumanın ne kadar önemli olduğunu bana gösterdi."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Tarih dersinde Anadolu ve Mezopotamya medeniyetlerini işledik. İki bölge de insanlık tarihine çok önemli katkılar yapmış. Örneğin, Mezopotamya'da Sümerler yazıyı icat ederek bilginin kalıcı olmasını sağlamışlar. Bu, tarihin başlangıcı olarak kabul edilir. Anadolu'da ise Hititler, ilk yazılı antlaşma olan Kadeş Antlaşması'nı imzalayarak diplomasiye öncülük etmişlerdir. Her iki uygarlığın da tarım ve ticaret gibi alanlarda benzer gelişmeler gösterdiğini gördük. Bu zenginlikleri öğrenmek, geçmişimizi daha iyi anlamamızı ve bu ortak mirasa sahip çıkma sorumluluğumuzu artırıyor. Bu eserler, tüm insanlığın ortak hazinesidir.",
-        "beceri_adi": "Karşılaştırma",
-        "deger_adi": "Mirasa Sahip Çıkma",
-        "beceri_cumlesi": "Her iki uygarlığın da tarım ve ticaret gibi alanlarda benzer gelişmeler gösterdiğini gördük.",
-        "deger_cumlesi": "Bu zenginlikleri öğrenmek, geçmişimizi daha iyi anlamamızı ve bu ortak mirasa sahip çıkma sorumluluğumuzu artırıyor."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Teknolojinin, özellikle de akıllı telefonların hayatımıza girmesiyle sosyal yaşamımızda büyük değişiklikler oldu. Artık dünyanın öbür ucundaki bir akrabamızla anında görüntülü konuşabiliyor, merak ettiğimiz bir bilgiye saniyeler içinde ulaşabiliyoruz. Bunlar teknolojinin olumlu yönleri. Ancak madalyonun bir de diğer yüzü var. Bazen aynı odada oturan insanlar bile birbiriyle konuşmak yerine telefon ekranlarına bakıyor. Bu durum, yüz yüze iletişimi zayıflatıyor ve sosyal bağları koparabiliyor. Bu nedenle, teknolojiyi hayatımızı kolaylaştıran bir araç olarak görürken, onun esiri olmamaya dikkat etmeliyiz. Önemli olan bilinçli bir kullanıcı olmaktır.",
-        "beceri_adi": "Tartışma",
-        "deger_adi": "Bilinçli Olma",
-        "beceri_cumlesi": "Bu durum, yüz yüze iletişimi zayıflatıyor ve sosyal bağları koparabiliyor.",
-        "deger_cumlesi": "Önemli olan bilinçli bir kullanıcı olmaktır."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Demokrasi, halkın egemenliğine dayanan bir yönetim anlayışıdır. Bu anlayışta, yöneticileri halk seçer ve kararlar çoğunluğun iradesiyle alınır. Cumhuriyet ise bu yönetim anlayışının en iyi uygulandığı devlet şeklidir. Yani cumhuriyet, demokrasinin somut bir çerçeveye oturtulmuş halidir. Atatürk'ün dediği gibi \"Egemenlik kayıtsız şartsız milletindir\" sözü, bu iki kavram arasındaki temel bağı özetler. Cumhuriyet rejimi sayesinde halk, seçme ve seçilme hakkını kullanarak kendi kendini yönetme gücünü elinde tutar. Dolayısıyla, demokrasi bir ilke ise, cumhuriyet bu ilkenin hayata geçirildiği en sağlam yapıdır. Bu iki kavram birbirinden ayrı düşünülemez.",
-        "beceri_adi": "İlişkilendirme",
-        "deger_adi": "Egemenlik",
-        "beceri_cumlesi": "Dolayısıyla, demokrasi bir ilke ise, cumhuriyet bu ilkenin hayata geçirildiği en sağlam yapıdır.",
-        "deger_cumlesi": "Atatürk'ün dediği gibi \"Egemenlik kayıtsız şartsız milletindir\" sözü, bu iki kavram arasındaki temel bağı özetler."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Mahallemizdeki parkın salıncakları uzun zamandır kırıktı ve bu durum oyun oynamamızı engelliyordu. Annem ve birkaç komşumuz, bu sorunun çözümü için bir araya geldiler. Önce durumu anlatan bir dilekçe yazdılar ve mahalle sakinlerinden imza topladılar. Ardından bu dilekçeyi belediyenin ilgili birimine teslim ettiler. Birkaç hafta sonra belediye ekipleri parka gelerek yeni salıncaklar kurdu. Bu olayı gözlemleyerek, sadece şikâyet etmek yerine haklarımızı bilerek ve kurallara uygun şekilde harekete geçerek sorunları çözebileceğimizi anladım. Etkin bir vatandaş olmak, yaşadığı toplumun sorunlarına karşı duyarlı olup çözüm için çaba göstermektir.",
-        "beceri_adi": "Çıkarımda Bulunma",
-        "deger_adi": "Katılımcılık",
-        "beceri_cumlesi": "Bu olayı gözlemleyerek, sadece şikâyet etmek yerine haklarımızı bilerek ve kurallara uygun şekilde harekete geçerek sorunları çözebileceğimizi anladım.",
-        "deger_cumlesi": "Etkin bir vatandaş olmak, yaşadığı toplumun sorunlarına karşı duyarlı olup çözüm için çaba göstermektir."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Sosyal Bilgiler dersinde yaşadığımız ilin deprem kuşağında olduğunu öğrendik. Bu durum beni biraz endişelendirdi. Öğretmenimiz, korkmak yerine bilinçlenmemiz gerektiğini söyledi ve bir proje ödevi verdi: \"Afet Farkındalık Etkinliği Düzenleme\". Proje kapsamında grup olarak önce AFAD'ın web sitesini inceledik. Deprem anında ve sonrasında yapılması gerekenleri öğrendik. Sonra da evimizdeki devrilebilecek eşyaları sabitlemenin ne kadar önemli olduğunu anlatan bir sunum hazırladık. Ailemle konuşarak evimizde bir acil durum çantası hazırladık. Bu proje, olası bir afetin etkilerini azaltmak için önceden hazırlıklı olmanın hayati önem taşıdığını bana öğretti.",
-        "beceri_adi": "Farkındalık Geliştirme",
-        "deger_adi": "Tedbirlilik",
-        "beceri_cumlesi": "Proje kapsamında grup olarak önce AFAD'ın web sitesini inceledik.",
-        "deger_cumlesi": "Bu proje, olası bir afetin etkilerini azaltmak için önceden hazırlıklı olmanın hayati önem taşıdığını bana öğretti."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Ayşe, okulun bilim kulübünde bir proje grubuna dahil oldu. Grupta her öğrencinin farklı bir rolü vardı ve bu rollerin uyumu çok önemliydi. Ayşe'nin görevi, proje için gerekli malzemeleri listelemek ve bunları öğretmene bildirmekti. Bu rolünü zamanında ve eksiksiz yerine getirmesi, projenin ilk adımının başarıyla tamamlanmasını sağladı. Eğer görevini aksatsaydı, tüm grup arkadaşlarının işi gecikecekti. Ayşe, sorumluluğunu bilerek hareket ettiğinde, hem kendi başarısına hem de grubun ortak hedefine ulaşmasına katkı sağladığını anladı. Bu deneyim, ona her roldeki sorumluluğun önemini öğretti.",
-        "beceri_adi": "Rol Farkındalığı",
-        "deger_adi": "Sorumluluk",
-        "beceri_cumlesi": "Grupta her öğrencinin farklı bir rolü vardı ve bu rollerin uyumu çok önemliydi.",
-        "deger_cumlesi": "Ayşe, sorumluluğunu bilerek hareket ettiğinde, hem kendi başarısına hem de grubun ortak hedefine ulaşmasına katkı sağladığını anladı."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Ali, uzun zamandır istediği bisikleti alabilmek için harçlıklarını biriktirmeye karar verdi. Babası ona, bütçe yapmanın önemini anlattı. Ali, bir deftere tüm gelirlerini yani harçlıklarını ve giderlerini yani kantin harcamalarını yazdı. İsteklerini ve ihtiyaçlarını ayırdı. İhtiyaçları için para ayırdıktan sonra, kalan parasını bisiklet için kumbarasına attı. Bu planlama sayesinde, gereksiz harcamalardan kaçındı ve hedefine daha hızlı yaklaştı. Tutumlu davranmanın, sadece para biriktirmek değil, aynı zamanda kaynakları akıllıca yönetmek olduğunu fark etti. Böylece hayallerine ulaşmanın planlı olmaktan geçtiğini öğrendi.",
+        "metin": "Elif, bayramda ailesinden aldığı harçlıklarla ne yapacağını düşünüyordu. Annesi ona bir bütçe planı yapmasını önerdi. Elif, ilk olarak çok istediği bisiklet için para biriktirmeye karar verdi. Bu onun en büyük isteğiydi. Kalan parasıyla da sinemaya gitmek ve arkadaşına doğum günü hediyesi almak gibi ihtiyaçlarını karşılayabileceğini gördü. Böylece hem hayalini gerçekleştirmek için bir adım atmış oldu hem de diğer harcamalarını kontrol altına aldı. Bütçe yapmak, paramızı akıllıca yönetmemizi sağlar ve isteklerimiz ile ihtiyaçlarımız arasında bir denge kurmamıza yardımcı olur. Bu planlama becerisi hayat boyu işimize yarar.",
         "beceri_adi": "Bütçe Planlama",
-        "deger_adi": "Tutumluluk",
-        "beceri_cumlesi": "Ali, bir deftere tüm gelirlerini yani harçlıklarını ve giderlerini yani kantin harcamalarını yazdı.",
-        "deger_cumlesi": "Tutumlu davranmanın, sadece para biriktirmek değil, aynı zamanda kaynakları akıllıca yönetmek olduğunu fark etti."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Zeynep, tabletiyle oyun oynamayı çok seviyordu ama bu durum derslerini olumsuz etkilemeye başlamıştı. Annesiyle konuşarak bir çözüm bulmaya karar verdiler. Artık Zeynep, ödevlerini bitirdikten sonra günde sadece bir saat tabletle oynayacaktı. Bu kurala uymak için kendine bir zaman çizelgesi hazırladı. Başlarda zorlansa da zamanla bu düzene alıştı. Bu sayede hem derslerinde daha başarılı oldu hem de oyun oynamaktan keyif almaya devam etti. Zeynep, teknolojiyi bilinçli kullanmanın ve kendi kendine sınırlar koymanın, yani öz denetimin ne kadar önemli olduğunu anladı.",
-        "beceri_adi": "Bilinçli Teknoloji Kullanımı",
-        "deger_adi": "Öz Denetim",
-        "beceri_cumlesi": "Zeynep, teknolojiyi bilinçli kullanmanın ve kendi kendine sınırlar koymanın, yani öz denetimin ne kadar önemli olduğunu anladı.",
-        "deger_cumlesi": "Bu kurala uymak için kendine bir zaman çizelgesi hazırladı."
+        "deger_adi": "Tasarruf",
+        "beceri_cumlesi": "Annesi ona bir bütçe planı yapmasını önerdi.",
+        "deger_cumlesi": "Elif, ilk olarak çok istediği bisiklet için para biriktirmeye karar verdi."
     },
     {
         "zorluk": "orta",
-        "metin": "Eskiden nehrin kenarında yemyeşil ağaçların olduğu bir köy vardı. İnsanlar bu nehrin suyunu tarlalarını sulamak için kullanır, balık tutarlardı. Ancak nehrin yakınına büyük bir fabrika kuruldu. Fabrikanın atıkları nehre karışınca suyun rengi değişti, balıklar ölmeye başladı. Bu durumun bir sonucu olarak, çiftçilerin ürünleri zarar gördü ve balıkçılıkla geçinen aileler zor durumda kaldı. Köylüler, çevreye verilen zararın hayatlarını nasıl doğrudan etkilediğini anladılar. Doğal çevredeki bu beşerî kaynaklı değişim, onlara çevreye karşı daha duyarlı olmaları gerektiğini acı bir şekilde öğretti.",
+        "metin": "Okulumuza başka bir ülkeden yeni bir öğrenci olan Kenji geldi. Başta farklı yemekleri, oyunları ve konuşma tarzı bize garip geldi. Ancak öğretmenimiz, her kültürün kendine özgü güzellikleri olduğunu ve bu farklılıkların bir zenginlik olduğunu anlattı. Kenji'nin bize kendi ülkesinin bayramlarını anlatması, bizim de ona kendi geleneklerimizi öğretmemizle aramızda güçlü bir dostluk başladı. Farklılıklara saygı duyduğumuzda, aslında ne kadar çok ortak noktamız olduğunu keşfettik. Birlikte uyum içinde yaşamak, birbirimizin kültürel özelliklerini anlamak ve onlara değer vermekle mümkündür. Bu sayede daha barışçıl bir toplum olabiliriz.",
+        "beceri_adi": "Farklılıkları Yorumlama",
+        "deger_adi": "Kültürel Saygı",
+        "beceri_cumlesi": "Ancak öğretmenimiz, her kültürün kendine özgü güzellikleri olduğunu ve bu farklılıkların bir zenginlik olduğunu anlattı.",
+        "deger_cumlesi": "Birlikte uyum içinde yaşamak, birbirimizin kültürel özelliklerini anlamak ve onlara değer vermekle mümkündür."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Can'ın yaşadığı kasaba, yemyeşil ormanları ve temiz deresiyle ünlüydü. Ancak son yıllarda dere kenarına kurulan fabrika ve artan nüfus nedeniyle çevrede değişimler başladı. Fabrika atıkları dereyi kirletiyor, yeni yapılan binalar için ise ormandaki ağaçlar kesiliyordu. Bu beşerî faktörler, kasabanın doğal güzelliğini tehdit ediyordu. Can ve arkadaşları, bu değişimin nedenlerini ve sonuçlarını bir proje ödevinde incelediler. Eğer önlem alınmazsa, hem doğanın zarar göreceğini hem de insanların sağlığının tehlikeye gireceğini fark ettiler. İnsanların doğa üzerindeki etkilerini anlamak, geleceği korumak için çok önemlidir.",
         "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
         "deger_adi": "Çevre Duyarlılığı",
-        "beceri_cumlesi": "Fabrikanın atıkları nehre karışınca suyun rengi değişti, balıklar ölmeye başladı.",
-        "deger_cumlesi": "Doğal çevredeki bu beşerî kaynaklı değişim, onlara çevreye karşı daha duyarlı olmaları gerektiğini acı bir şekilde öğretti."
+        "beceri_cumlesi": "Bu beşerî faktörler, kasabanın doğal güzelliğini tehdit ediyordu.",
+        "deger_cumlesi": "Eğer önlem alınmazsa, hem doğanın zarar göreceğini hem de insanların sağlığının tehlikeye gireceğini fark ettiler."
     },
     {
         "zorluk": "orta",
-        "metin": "Sınıfımız, yaşadığımız şehirdeki ortak miras ögelerini tanıtmak için bir proje hazırladı. Grubumuz, şehrin merkezindeki tarihi kaleyi ve yüzlerce yıllık ulu çınarı konu aldı. Araştırma yaparken kalenin farklı medeniyetler tarafından kullanıldığını, ulu çınarın ise nice önemli olaya tanıklık ettiğini öğrendik. Bu yapıların sadece taş ve ağaçtan ibaret olmadığını, geçmişten günümüze aktarılan birer kültürel hazine olduğunu anladık. Ortak mirasımıza sahip çıkmanın, onu korumanın ve gelecek nesillere aktarmanın bir vatandaşlık görevi olduğunu hissettik. Bu değerlere saygı duymak, şehrimize olan bağımızı daha da güçlendirdi.",
-        "beceri_adi": "Kültürel Mirası Tanımlama",
-        "deger_adi": "Kültürel Mirasa Saygı",
-        "beceri_cumlesi": "Grubumuz, şehrin merkezindeki tarihi kaleyi ve yüzlerce yıllık ulu çınarı konu aldı.",
-        "deger_cumlesi": "Bu değerlere saygı duymak, şehrimize olan bağımızı daha da güçlendirdi."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Mahallemizdeki çocuklar için güvenli bir oyun alanı yoktu. Ailelerimiz bir araya gelerek bu sorunu çözmek için harekete geçti. Öncelikle, bir dilekçe hazırlayıp mahalledeki herkesten imza topladılar. Daha sonra bu dilekçeyi belediyeye sundular. Belediyedeki yetkililer, talebimizi dikkate alarak mahallemize yeni bir park yapma sözü verdi. Bu olay, bana etkin bir vatandaş olmanın sadece oy kullanmak olmadığını gösterdi. Toplumun sorunlarına duyarlı olmak ve çözüm için yasal yollarla harekete geçmek, yaşadığımız yeri daha iyi bir hale getirmek için çok önemliydi. Toplumsal katılım sayesinde sesimizi duyurabilmiştik.",
-        "beceri_adi": "Etkin Vatandaşlık Davranışı",
-        "deger_adi": "Toplumsal Katılım",
-        "beceri_cumlesi": "Öncelikle, bir dilekçe hazırlayıp mahalledeki herkesten imza topladılar.",
-        "deger_cumlesi": "Toplumsal katılım sayesinde sesimizi duyurabilmiştik."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Okulumuzda “Kültürler Buluşuyor” adlı bir etkinlik düzenlendi. Her öğrenci, ailesinin geldiği yöreye ait yemekleri, kıyafetleri ve halk oyunlarını tanıttı. Karadenizli bir arkadaşımız mısır ekmeği getirirken, Doğulu bir arkadaşımız yöresel bir halk oyunu sergiledi. Başta bize farklı gelen bu tatlar ve müzikler, aslında ülkemizin ne kadar zengin bir kültüre sahip olduğunu gösterdi. Birbirimizin kültürel özelliklerini tanıdıkça, aramızdaki arkadaşlık bağları daha da güçlendi. Farklılıklara saygı duymanın ve hoşgörülü olmanın, bir arada mutlu yaşamanın en temel kuralı olduğunu bu etkinlik sayesinde daha iyi anladık.",
-        "beceri_adi": "Kültürel Farklılıkları Anlama",
-        "deger_adi": "Hoşgörü",
-        "beceri_cumlesi": "Her öğrenci, ailesinin geldiği yöreye ait yemekleri, kıyafetleri ve halk oyunlarını tanıttı.",
-        "deger_cumlesi": "Farklılıklara saygı duymanın ve hoşgörülü olmanın, bir arada mutlu yaşamanın en temel kuralı olduğunu bu etkinlik sayesinde daha iyi anladık."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Tarih, insanlığın ortak mirasını oluşturan medeniyetlerin katkılarıyla şekillenmiştir. Mezopotamya ve Anadolu medeniyetleri bu mirasa farklı yollarla büyük katkılar sunmuştur. Örneğin Mezopotamya'da yaşayan Sümerler çivi yazısını icat ederek bilginin kalıcı olmasını sağlamıştır. Anadolu'da kurulan Hititler ise tarihteki ilk yazılı antlaşma olan Kadeş Antlaşması'nı imzalayarak devletler arası ilişkilere yeni bir boyut getirmiştir. İki medeniyetin bu farklı katkılarını karşılaştırmak, insanlığın gelişimini daha iyi anlamamızı sağlar. Bu mirası öğrenmek ve korumak, köklerimizi anlamamızı sağlayan temel bir tarih bilinci oluşturur.",
-        "beceri_adi": "Medeniyetleri Karşılaştırma",
-        "deger_adi": "Tarih Bilinci",
-        "beceri_cumlesi": "İki medeniyetin bu farklı katkılarını karşılaştırmak, insanlığın gelişimini daha iyi anlamamızı sağlar.",
-        "deger_cumlesi": "Bu mirası öğrenmek ve korumak, köklerimizi anlamamızı sağlayan temel bir tarih bilinci oluşturur."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Demokrasi ve cumhuriyet, sıkça birlikte kullanılan ama aralarında önemli bir ilişki bulunan iki kavramdır. Cumhuriyet, devlet başkanının halk tarafından belirli bir süre için seçildiği bir yönetim biçimidir. Yani yönetimin babadan oğula geçmediği, halkın iradesine dayandığı bir sistemdir. Demokrasi ise halkın egemenliği ilkesidir; halkın yönetime katılması ve temel hak ve özgürlüklere sahip olmasıdır. Bu iki kavram arasındaki ilişki şudur: Cumhuriyet, demokrasinin en iyi uygulandığı yönetim şekillerinden biridir. Demokratik bir cumhuriyette, halk yöneticilerini özgürce seçer ve yönetime katılır. Demokrasiye olan inanç, cumhuriyetin yaşamasını sağlar.",
-        "beceri_adi": "Kavramsal İlişki Kurma",
-        "deger_adi": "Demokrasiye İnanç",
-        "beceri_cumlesi": "Bu iki kavram arasındaki ilişki şudur: Cumhuriyet, demokrasinin en iyi uygulandığı yönetim şekillerinden biridir.",
-        "deger_cumlesi": "Demokrasiye olan inanç, cumhuriyetin yaşamasını sağlar."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Ülkemiz deprem kuşağında yer aldığı için afetlere karşı her zaman hazırlıklı olmalıyız. Okulda yaptığımız deprem tatbikatı sonrası eve gidince ailemle bu konuyu konuştum. Öncelikle hepimizin kolayca ulaşabileceği bir yerde bir afet ve acil durum çantası hazırladık. İçine su, konserve yiyecekler, el feneri ve ilk yardım malzemeleri koyduk. Ayrıca odamdaki kitaplık gibi devrilebilecek eşyaları duvara sabitledik. Bu tür önlemleri almak, olası bir afetin zararlarını azaltmada hayati önem taşır. Sadece tehlike anında ne yapacağımızı bilmek yetmez, öncesinde tedbirli davranarak riskleri en aza indirmek bilinçli bir davranıştır.",
-        "beceri_adi": "Afet Riski Azaltma",
-        "deger_adi": "Tedbirlilik",
-        "beceri_cumlesi": "Ayrıca odamdaki kitaplık gibi devrilebilecek eşyaları duvara sabitledik.",
-        "deger_cumlesi": "Sadece tehlike anında ne yapacağımızı bilmek yetmez, öncesinde tedbirli davranarak riskleri en aza indirmek bilinçli bir davranıştır."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Ali, okul basketbol takımının bir oyuncusudur. Antrenörü ona şut atma görevini verdiğinde, bu rolünü en iyi şekilde yerine getirmek için her gün fazladan antrenman yapar. Evde ise bir abi olarak küçük kardeşine ödevlerinde yardım etme sorumluluğunu üstlenir. Sınıfta ise grup projelerinde sunum yapma rolünü severek alır ve arkadaşlarının yükünü hafifletir. Ali, dâhil olduğu her grupta farklı rolleri olabileceğini ve bu rollerin getirdiği sorumlulukları yerine getirmenin hem kendisini hem de grubunu başarılı kıldığını bilir. Bu yüzden her görevini ciddiyetle ve zamanında yapar.",
-        "beceri_adi": "Rolünü Bilme",
-        "deger_adi": "Sorumluluk",
-        "beceri_cumlesi": "Sınıfta ise grup projelerinde sunum yapma rolünü severek alır ve arkadaşlarının yükünü hafifletir.",
-        "deger_cumlesi": "Evde ise bir abi olarak küçük kardeşine ödevlerinde yardım etme sorumluluğunu üstlenir."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Elif, evdeki su faturasının yüksek geldiğini fark edince ailesiyle konuştu. Dişlerini fırçalarken suyu açık bırakmamaya ve gereksiz yanan ışıkları söndürmeye karar verdi. Bu davranışıyla sadece aile bütçesine katkı sağlamakla kalmadı, aynı zamanda su ve enerji gibi doğal kaynaklarımızı korumanın önemini de anladı. Kaynakları verimli kullanmanın hem doğa hem de insanlar için ne kadar değerli olduğunu gördü. Elif, bu küçük adımların bile büyük bir fark yaratabileceğini ve her bireyin bu konuda duyarlı olması gerektiğini düşünüyordu. Artık her damla suyun kıymetini daha iyi biliyordu.",
-        "beceri_adi": "Tasarruf Yapma",
-        "deger_adi": "Çevreye Duyarlılık",
-        "beceri_cumlesi": "Dişlerini fırçalarken suyu açık bırakmamaya ve gereksiz yanan ışıkları söndürmeye karar verdi.",
-        "deger_cumlesi": "Bu davranışıyla sadece aile bütçesine katkı sağlamakla kalmadı, aynı zamanda su ve enerji gibi doğal kaynaklarımızı korumanın önemini de anladı."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Emre, dedesinin eski fotoğraflarına bakarken mektup yazan, postaneye giden insanları gördü. Dedesi ona, eskiden haberleşmenin haftalar sürdüğünü anlattı. Bugün ise Emre, dünyanın diğer ucundaki kuzeniyle anında görüntülü konuşabiliyor, ödevleri için internetten saniyeler içinde bilgi bulabiliyordu. Teknolojinin, insanların iletişim kurma ve bilgiye ulaşma şeklini ne kadar değiştirdiğini fark etti. Bu gelişmelerin hayatı çok kolaylaştırdığını ancak aynı zamanda aile içindeki yüz yüze sohbetleri azalttığını da gözlemledi. Teknolojik gelişmelerin toplum hayatına hem olumlu hem de olumsuz etkileri olabileceğini anlamıştı.",
-        "beceri_adi": "Gözlem Yapma",
-        "deger_adi": "Farkındalık",
-        "beceri_cumlesi": "Bu gelişmelerin hayatı çok kolaylaştırdığını ancak aynı zamanda aile içindeki yüz yüze sohbetleri azalttığını da gözlemledi.",
-        "deger_cumlesi": "Teknolojinin, insanların iletişim kurma ve bilgiye ulaşma şeklini ne kadar değiştirdiğini fark etti."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Zeynep’in sınıfına başka bir ülkeden gelen yeni bir arkadaşı katıldı. Yeni arkadaşının bayramları, yemekleri ve kutlama şekilleri Zeynep’inkinden farklıydı. Başta bazı öğrenciler bu durumu garipsese de Zeynep, arkadaşının kültürünü merak etti ve ondan ülkesinin geleneklerini anlatmasını istedi. Farklı kültürel özelliklere saygı duymanın, arkadaşlıklarını daha da güçlendirdiğini fark etti. Birlikte yaşamanın temelinin, bu farklılıkları bir zenginlik olarak görmek ve birbirine karşı anlayışlı olmak olduğunu öğrendi. Sınıftaki herkes, bu sayede birbirlerinin kültürlerinden yeni ve güzel şeyler öğrenerek daha mutlu bir ortam oluşturdu.",
-        "beceri_adi": "Farklılıkları Anlama",
-        "deger_adi": "Hoşgörü",
-        "beceri_cumlesi": "Zeynep, arkadaşının kültürünü merak etti ve ondan ülkesinin geleneklerini anlatmasını istedi.",
-        "deger_cumlesi": "Farklı kültürel özelliklere saygı duymanın, arkadaşlıklarını daha da güçlendirdiğini fark etti."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Can’ın dedesi, yaşadıkları kasabanın eskiden yemyeşil ormanlarla kaplı ve derelerinin tertemiz olduğunu anlatırdı. Ancak son yıllarda yapılan yeni binalar ve fabrikalar yüzünden ormanlık alanlar azaldı, dereye ise atıklar karışmaya başladı. Can, bu değişimin nedeninin plansız yapılaşma ve çevreye duyarsızlık olduğunu anladı. Beşerî unsurlardaki bu artışın, doğal çevrede olumsuz sonuçlar doğurduğunu gözlemledi. Bu durumun hem hayvanların yaşam alanlarını yok ettiğini hem de insan sağlığını tehdit ettiğini fark etti. Çevresindeki bu değişimin neden ve sonuçlarını arkadaşlarına anlatarak bir farkındalık oluşturmaya karar verdi.",
-        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
-        "deger_adi": "Doğa Bilinci",
-        "beceri_cumlesi": "Can, bu değişimin nedeninin plansız yapılaşma ve çevreye duyarsızlık olduğunu anladı.",
-        "deger_cumlesi": "Bu durumun hem hayvanların yaşam alanlarını yok ettiğini hem de insan sağlığını tehdit ettiğini fark etti."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Sema’nın mahallesindeki parkın salıncakları kırılmış ve her yer çöplerle doluydu. Bazı komşular sadece şikâyet etmekle yetinirken, Sema ve arkadaşları bir şeyler yapmaya karar verdi. Önce bir dilekçe yazarak sorunu anlattılar ve mahalledeki herkesten imza topladılar. Topladıkları imzalarla birlikte belediyeye başvurdular. Etkin bir vatandaş olmanın, sadece kendi haklarını bilmek değil, aynı zamanda toplumun sorunlarına çözüm bulmak için harekete geçmek olduğunu anladılar. Bu girişimleri sayesinde belediye yetkilileri parka gelerek gerekli düzenlemeleri yaptı. Sema, toplumsal düzene katkı sağlamanın mutluluğunu yaşadı.",
-        "beceri_adi": "Sorun Çözme",
-        "deger_adi": "Katılımcılık",
-        "beceri_cumlesi": "Önce bir dilekçe yazarak sorunu anlattılar ve mahalledeki herkesten imza topladılar.",
-        "deger_cumlesi": "Etkin bir vatandaş olmanın, sadece kendi haklarını bilmek değil, aynı zamanda toplumun sorunlarına çözüm bulmak için harekete geçmek olduğunu anladılar."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Arkeoloji müzesini gezen Efe, Anadolu’daki ilk yerleşim yerlerinden biri olan Çatalhöyük maketinin önünde durdu. Evlerin birbirine bitişik yapıldığını ve girişlerin çatılardan olduğunu görünce çok şaşırdı. Rehber, o dönemde insanların tarım yaparak yaşadığını, bu düzenin ise onları tehlikelerden koruduğunu anlattı. Efe, sokakları olmayan bu şehirde komşuluk ilişkilerinin ne kadar güçlü olabileceğini hayal etti. O insanların sosyal hayatlarının, bugünkünden çok farklı ama bir o kadar da dayanışma içinde olduğunu düşündü. Bu ilk toplulukların yaşam tarzına yönelik yeni bir bakış açısı kazandı.",
+        "metin": "Anadolu, binlerce yıl önce birçok önemli yerleşime ev sahipliği yapmıştır. Örneğin, Çatalhöyük'te insanlar evlerine çatılardan giriyor ve evler birbirine bitişik olarak inşa ediliyordu. Bu durum, onların toplu halde yaşayarak dış tehlikelere karşı kendilerini koruduklarını gösterir. Tarım yaparak kendi yiyeceklerini üretiyor ve hayvanları evcilleştiriyorlardı. O dönemdeki insanların sosyal hayatı, günümüzden çok farklı olsa da temel olarak güvenlik, beslenme ve barınma gibi ihtiyaçlara dayanıyordu. Onların yaşam tarzlarını incelemek, insanlığın gelişim sürecini ve bugünkü toplum yapımızın temellerini anlamamızı sağlar. Bu tarihsel bakış açısı ufkumuzu genişletir.",
         "beceri_adi": "Bakış Açısı Geliştirme",
-        "deger_adi": "Kültürel Mirasa Sahip Çıkma",
-        "beceri_cumlesi": "O insanların sosyal hayatlarının, bugünkünden çok farklı ama bir o kadar da dayanışma içinde olduğunu düşündü.",
-        "deger_cumlesi": "Bu ilk toplulukların yaşam tarzına yönelik yeni bir bakış açısı kazandı."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Tarih dersinde öğretmen, Mezopotamya ve Anadolu medeniyetlerinin insanlığın ortak mirasına katkılarını sordu. Bir öğrenci, Mezopotamya’da yaşayan Sümerlerin yazıyı icat ederek iletişimi kökünden değiştirdiğini söyledi. Başka bir öğrenci ise Anadolu’da kurulan Hititlerin, tarihteki ilk yazılı antlaşma olan Kadeş Antlaşması’nı imzalayarak barış kavramına öncülük ettiğini belirtti. İki bölgedeki medeniyetlerin de insanlık tarihine çok değerli katkılar yaptığını, ancak bu katkıların farklı alanlarda yoğunlaştığını fark ettiler. Bu zengin geçmişi korumanın ve ondan ders çıkarmanın önemli olduğunu anladılar.",
-        "beceri_adi": "Karşılaştırma Yapma",
         "deger_adi": "Tarihe Saygı",
-        "beceri_cumlesi": "İki bölgedeki medeniyetlerin de insanlık tarihine çok değerli katkılar yaptığını, ancak bu katkıların farklı alanlarda yoğunlaştığını fark ettiler.",
-        "deger_cumlesi": "Bu zengin geçmişi korumanın ve ondan ders çıkarmanın önemli olduğunu anladılar."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Öğretmen, \"Çocuklar, Cumhuriyet ve demokrasi sık sık birlikte kullanılır, peki aralarındaki bağ nedir?\" diye sordu. Ahmet, “Cumhuriyet, devletin yönetim şeklidir; yani devleti yönetenlerin seçimle iş başına geldiği, gücünü halktan aldığı bir sistemdir” dedi. Ayşe ise ekledi: “Demokrasi ise bu sistemin ruhudur. Halkın, seçme ve seçilme hakkını kullanarak kendi kendini yönetmesidir. Yani cumhuriyet bir bina ise demokrasi o binanın içinde nasıl yaşayacağımızı belirleyen kurallardır.” Öğretmenleri, ikisinin de egemenliğin millete ait olması temeline dayandığını ve birbirini tamamladığını söyleyerek öğrencileri tebrik etti.",
-        "beceri_adi": "İlişki Kurma",
-        "deger_adi": "Ulusal Egemenlik",
-        "beceri_cumlesi": "Yani cumhuriyet bir bina ise demokrasi o binanın içinde nasıl yaşayacağımızı belirleyen kurallardır.",
-        "deger_cumlesi": "Öğretmenleri, ikisinin de egemenliğin millete ait olması temeline dayandığını ve birbirini tamamladığını söyleyerek öğrencileri tebrik etti."
-    },
-    {
-        "zorluk": "zor",
-        "metin": "Yaşadıkları ilin deprem kuşağında olduğunu öğrenen 5/A sınıfı öğrencileri, olası bir afetin etkilerini azaltmak için bir proje hazırladılar. Öğretmenlerinin rehberliğinde bir “Afet Farkındalık Etkinliği” planladılar. İlk olarak, her öğrencinin evinde bir afet çantası hazırlaması için kontrol listesi oluşturdular. Ardından, deprem anında yapılması gereken “Çök-Kapan-Tutun” hareketini anlatan afişler tasarladılar. Son olarak, tüm okula yönelik bir deprem tatbikatı düzenlediler. Bu etkinlik sayesinde, panik yapmak yerine bilinçli ve hazırlıklı olmanın hayat kurtarabileceğini anladılar ve bu farkındalığı aileleriyle de paylaştılar.",
-        "beceri_adi": "Planlama Yapma",
-        "deger_adi": "Önlem Alma",
-        "beceri_cumlesi": "Öğretmenlerinin rehberliğinde bir “Afet Farkındalık Etkinliği” planladılar.",
-        "deger_cumlesi": "Bu etkinlik sayesinde, panik yapmak yerine bilinçli ve hazırlıklı olmanın hayat kurtarabileceğini anladılar ve bu farkındalığı aileleriyle de paylaştılar."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Zeynep, okulun \"Yeşil Dünya\" kulübünün bir üyesidir. Bu kulüpte her öğrencinin farklı bir görevi var. Zeynep'in görevi, okul bahçesindeki bitkilerin sulanmasını organize etmektir. Bu onun en önemli rolüdür ve bu sorumluluğu sayesinde bitkiler sağlıklı büyür. Geçen hafta arkadaşı Ali'nin görevi olan tohum ekme işinde zorlandığını gördü. Hemen onun yanına giderek, \"İstersen sana yardım edebilirim, birlikte daha hızlı bitiririz,\" dedi. Ali bu teklifi sevinçle kabul etti. Birlikte çalışarak işlerini zamanında ve daha keyifli bir şekilde tamamladılar. Bu durum, grup içinde dayanışmanın ne kadar önemli olduğunu bir kez daha gösterdi.",
-        "beceri_adi": "Rolünü Bilme",
-        "deger_adi": "Yardımlaşma",
-        "beceri_cumlesi": "Zeynep'in görevi, okul bahçesindeki bitkilerin sulanmasını organize etmektir.",
-        "deger_cumlesi": "Hemen onun yanına giderek, \"İstersen sana yardım edebilirim, birlikte daha hızlı bitiririz,\" dedi."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Okulumuza Japonya'dan yeni bir öğrenci geldi, adı Yumi. Yumi, bizden farklı olarak insanlara selam verirken başını hafifçe öne eğiyor ve yemeklerini çubuklarla yiyordu. Bazı arkadaşlarımız başta bu durumu garipsedi. Ancak öğretmenimiz, her kültürün kendine özgü güzel alışkanlıkları olduğunu ve bu farklılıkların bir zenginlik olduğunu anlattı. Birbirimizin kültürel özelliklerine saygı göstermenin, barış içinde birlikte yaşamanın ilk adımı olduğunu söyledi. Zamanla Yumi'nin adetlerine alıştık ve hatta ondan birkaç Japonca kelime bile öğrendik. Artık hepimiz daha anlayışlı ve iyi arkadaşlarız.",
-        "beceri_adi": "Farklılıkları Tanıma",
-        "deger_adi": "Hoşgörü",
-        "beceri_cumlesi": "Yumi, bizden farklı olarak insanlara selam verirken başını hafifçe öne eğiyor ve yemeklerini çubuklarla yiyordu.",
-        "deger_cumlesi": "Birbirimizin kültürel özelliklerine saygı göstermenin, barış içinde birlikte yaşamanın ilk adımı olduğunu söyledi."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Mert, ailesinden her hafta belirli bir miktar harçlık alıyor. Bu harçlığıyla hem okul kantinindeki ihtiyaçlarını karşılıyor hem de çok istediği bisikleti almak için para biriktirmeye çalışıyor. Bu yüzden harcamalarını bir deftere not ediyor. İlk olarak zorunlu ihtiyaçlarını karşılıyor, kalan paranın bir kısmını ise kumbarasına atıyor. Mert, \"Eğer gereksiz şeylere para harcamazsam, hem ihtiyaçlarımı karşılarım hem de hayalime daha çabuk ulaşırım,\" diye düşünüyor. Bu planlı davranışı sayesinde gereksiz harcamalardan kaçınıyor ve hedefine adım adım yaklaşıyor. Ailesi de onun bu bilinçli tutumunu takdir ediyor.",
-        "beceri_adi": "Bütçe Planlama",
-        "deger_adi": "Tutumululuk",
-        "beceri_cumlesi": "Bu yüzden harcamalarını bir deftere not ediyor.",
-        "deger_cumlesi": "\"Eğer gereksiz şeylere para harcamazsam, hem ihtiyaçlarımı karşılarım hem de hayalime daha çabuk ulaşırım,\" diye düşünüyor."
+        "beceri_cumlesi": "Bu durum, onların toplu halde yaşayarak dış tehlikelere karşı kendilerini koruduklarını gösterir.",
+        "deger_cumlesi": "Onların yaşam tarzlarını incelemek, insanlığın gelişim sürecini ve bugünkü toplum yapımızın temellerini anlamamızı sağlar."
     },
     {
         "zorluk": "orta",
-        "metin": "Dedem, eskiden köyümüzün içinden geçen derenin suyunun ne kadar berrak olduğunu anlatır. Derenin kenarındaki ağaçların gölgesinde piknik yaparlarmış. Ancak son yıllarda derenin yakınına kurulan bir fabrika, atıklarını dereye bırakmaya başladı. Bu durum, derenin suyunun kirlenmesine ve renginin değişmesine neden oldu. Artık derede balıklar yaşamıyor ve etrafı kötü kokuyor. Dedem, \"Doğal çevremize sahip çıkmazsak, onun güzelliklerini ve bize sunduklarını kaybederiz,\" diyor. Bu değişim, insan faaliyetlerinin doğal çevre üzerindeki olumsuz etkilerini açıkça gösteriyor. Bu yüzden çevremizi korumak hepimizin görevidir.",
-        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
-        "deger_adi": "Çevreye Duyarlılık",
-        "beceri_cumlesi": "Bu durum, derenin suyunun kirlenmesine ve renginin değişmesine neden oldu.",
-        "deger_cumlesi": "Dedem, \"Doğal çevremize sahip çıkmazsak, onun güzelliklerini ve bize sunduklarını kaybederiz,\" diyor."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Elif'in mahallesindeki parkın salıncakları bir süredir kırıktı ve bu durum çocuklar için tehlike oluşturuyordu. Ailesiyle durumu konuştuğunda, babası ona etkin bir vatandaş olarak bu sorunu ilgili kurumlara bildirmenin önemli olduğunu anlattı. Elif, babasının yardımıyla belediyenin ilgili birimine bir dilekçe yazdı. Dilekçesinde parkın durumunu, tehlikelerini ve onarılması gerektiğini belirtti. Sadece şikayet etmek yerine çözüm için adım atmanın bir vatandaşlık görevi olduğunu düşünüyordu. Kısa bir süre sonra belediye ekipleri parka gelerek salıncakları onardı. Elif, bu sayede hem sorunların çözümüne katkı sağlamış hem de çevresine karşı sorumluluğunu yerine getirmiş oldu.",
-        "beceri_adi": "Sorun Çözme",
-        "deger_adi": "Vatandaşlık Sorumluluğu",
-        "beceri_cumlesi": "Elif, babasının yardımıyla belediyenin ilgili birimine bir dilekçe yazdı.",
-        "deger_cumlesi": "Sadece şikayet etmek yerine çözüm için adım atmanın bir vatandaşlık görevi olduğunu düşünüyordu."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Evimizde suyu, elektriği ve diğer kaynakları kullanırken dikkatli olmalıyız. Çünkü bu kaynaklar sınırsız değildir. Örneğin, dişlerimizi fırçalarken musluğu açık bırakmak, gereksiz yere litrelerce suyun boşa gitmesine neden olur. Bu durum hem aile bütçemize zarar verir hem de dünyadaki su kaynaklarının azalmasına yol açar. Kaynakları verimli kullanmak, sadece bugünü değil, gelecek nesilleri de düşünmektir. Bu, hem doğaya hem de diğer insanlara karşı en temel sorumluluklarımızdan biridir. Herkes bu konuda üzerine düşeni yaparsa, doğal dengeyi koruyabilir ve daha yaşanabilir bir dünya bırakabiliriz.",
-        "beceri_adi": "Etki Değerlendirme",
-        "deger_adi": "Sorumluluk",
-        "beceri_cumlesi": "Bu durum hem aile bütçemize zarar verir hem de dünyadaki su kaynaklarının azalmasına yol açar.",
-        "deger_cumlesi": "Bu, hem doğaya hem de diğer insanlara karşı en temel sorumluluklarımızdan biridir."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Arda, tabletinde oyun oynamayı ve video izlemeyi çok seviyor. Ancak bazen zamanın nasıl geçtiğini anlamıyor ve ödevlerini aksatıyordu. Annesi ona teknolojiyi bilinçli kullanmanın önemini anlattı. Birlikte bir plan yaptılar: Arda, ödevlerini bitirdikten sonra her gün sadece bir saat tablet kullanacaktı. Kendi kendine bu kurala uymak için söz verdi ve zamanlayıcı kurmaya başladı. Başta zorlansa da zamanla bu plana alıştı. Artık hem derslerinde daha başarılı hem de arkadaşlarıyla oynamak için daha fazla vakti var. Teknolojiyi kontrol altında tutabildiğinde, hayatının daha dengeli hale geldiğini fark etti.",
+        "metin": "Mert, yeni tabletini elinden düşürmüyordu. Sürekli oyun oynuyor, sosyal medyada vakit geçiriyor ve ders çalışması gereken zamanı bile tablette harcıyordu. Bir süre sonra gözlerinin ağrıdığını ve ders notlarının düştüğünü fark etti. Annesi, teknolojinin faydalı olduğunu ancak bilinçli kullanılmadığında zararlı olabileceğini söyledi. Teknolojik ürünleri bir amaç için, belirli bir süre kullanmanın önemini anlattı. Mert, artık tabletini sadece ödev araştırmaları ve belirli saatlerde oyun oynamak için kullanmaya karar verdi. Böylece hem teknolojiden faydalanıyor hem de diğer sorumluluklarını aksatmıyordu. Bilinçli kullanım, teknolojiyi bir araca dönüştürür.",
         "beceri_adi": "Bilinçli Kullanım",
         "deger_adi": "Öz Denetim",
-        "beceri_cumlesi": "Birlikte bir plan yaptılar: Arda, ödevlerini bitirdikten sonra her gün sadece bir saat tablet kullanacaktı.",
-        "deger_cumlesi": "Kendi kendine bu kurala uymak için söz verdi ve zamanlayıcı kurmaya başladı."
+        "beceri_cumlesi": "Annesi, teknolojinin faydalı olduğunu ancak bilinçli kullanılmadığında zararlı olabileceğini söyledi.",
+        "deger_cumlesi": "Mert, artık tabletini sadece ödev araştırmaları ve belirli saatlerde oyun oynamak için kullanmaya karar verdi."
     },
     {
         "zorluk": "zor",
-        "metin": "Tarih dersinde öğretmenimiz, insanlığın ortak mirasına katkı sağlayan büyük medeniyetleri anlattı. Mezopotamya'da Sümerlerin yazıyı icat etmesi, bilginin kaydedilip gelecek nesillere aktarılmasını sağladı. Anadolu'da ise Hititler, tarihin ilk yazılı antlaşması olan Kadeş Antlaşması'nı imzalayarak diplomasi ve devletler arası ilişkilerde önemli bir adım attılar. Her iki medeniyet de bulundukları coğrafyada tarım ve hukuk sistemleri geliştirmiş olsalar da, Sümerlerin yazıyı bulması evrensel bir devrimken, Hititlerin antlaşması daha çok siyasi bir yenilikti. Bu büyük uygarlıkların bıraktığı mirasın, günümüz dünyasını şekillendirdiğini bilmek ve bu mirasa sahip çıkmak çok önemlidir.",
-        "beceri_adi": "Karşılaştırma Yapma",
-        "deger_adi": "Tarihe Saygı",
-        "beceri_cumlesi": "Her iki medeniyet de bulundukları coğrafyada tarım ve hukuk sistemleri geliştirmiş olsalar da, Sümerlerin yazıyı bulması evrensel bir devrimken, Hititlerin antlaşması daha çok siyasi bir yenilikti.",
-        "deger_cumlesi": "Bu büyük uygarlıkların bıraktığı mirasın, günümüz dünyasını şekillendirdiğini bilmek ve bu mirasa sahip çıkmak çok önemlidir."
+        "metin": "Tarih dersinde öğretmen, Mezopotamya'da yaşayan Sümerlerin yazıyı, Anadolu'da yaşayan Lidyalıların ise parayı icat ettiğini anlattı. Sümerlerin yazısı sayesinde bilgiler kayıt altına alınırken, Lidyalıların parası ticareti kolaylaştırdı. Her iki buluş da kendi coğrafyasında büyük bir devrim yarattı ve insanlık tarihinin akışını değiştirdi. Bu medeniyetlerin ortak mirasa katkılarını karşılaştırdığımızda, birinin bilgi ve kültürün, diğerinin ise ekonomi ve ticaretin gelişimine temel oluşturduğunu görürüz. Biri olmadan diğerinin tam olarak gelişmesi zordur. Bu icatlar, birbirini tamamlayarak bugünkü modern dünyanın temellerini atmıştır. Bu yüzden tüm medeniyetlerin katkıları değerlidir.",
+        "beceri_adi": "Katkıları Karşılaştırma",
+        "deger_adi": "Ortak Miras",
+        "beceri_cumlesi": "Bu medeniyetlerin ortak mirasa katkılarını karşılaştırdığımızda, birinin bilgi ve kültürün, diğerinin ise ekonomi ve ticaretin gelişimine temel oluşturduğunu görürüz.",
+        "deger_cumlesi": "Bu icatlar, birbirini tamamlayarak bugünkü modern dünyanın temellerini atmıştır."
     },
     {
         "zorluk": "zor",
-        "metin": "Cumhuriyet, halkın kendi kendini yönettiği bir yönetim şeklidir. Bu yönetim biçiminde egemenlik, yani yönetme gücü kayıtsız şartsız millete aittir. Demokrasi ise bu yönetimin uygulanma biçimini ifade eden bir yaşam tarzıdır. İnsanların eşit haklara sahip olduğu, düşüncelerini özgürce ifade edebildiği ve seçimlerle yöneticilerini belirlediği bir sistemdir. Yani cumhuriyet bir devletin yönetim şeklini tanımlarken, demokrasi bu yönetimin temelini oluşturan ilkeleri ve değerleri içerir. Bu iki kavram birbiriyle iç içedir; cumhuriyetin tam anlamıyla yaşanabilmesi için demokratik ilkelerin hayata geçirilmesi gerekir.",
+        "metin": "Demokrasi, halkın kendi kendini yönetmesi fikrine dayanır ve temelinde seçimler, katılım ve özgürlükler yatar. Cumhuriyet ise bu demokratik fikirlerin uygulandığı bir devlet yönetim biçimidir. Yani cumhuriyet, yöneticilerin halk tarafından belirli bir süre için seçildiği, egemenliğin millete ait olduğu bir sistemdir. Bu iki kavram arasındaki ilişki çok güçlüdür; demokrasi bir yaşam biçimiyken, cumhuriyet bu yaşam biçimini güvence altına alan siyasi bir çatıdır. Bir ülkede cumhuriyetin varlığı, demokratik hakların korunması için en önemli temeldir. Bu nedenle vatandaşların bu ilişkiyi iyi anlaması ve her ikisine de sahip çıkması gerekir.",
         "beceri_adi": "Kavramsal İlişki Kurma",
         "deger_adi": "Milli Egemenlik",
-        "beceri_cumlesi": "Yani cumhuriyet bir devletin yönetim şeklini tanımlarken, demokrasi bu yönetimin temelini oluşturan ilkeleri ve değerleri içerir.",
-        "deger_cumlesi": "Bu yönetim biçiminde egemenlik, yani yönetme gücü kayıtsız şartsız millete aittir."
+        "beceri_cumlesi": "Demokrasi bir yaşam biçimiyken, cumhuriyet bu yaşam biçimini güvence altına alan siyasi bir çatıdır.",
+        "deger_cumlesi": "Bir ülkede cumhuriyetin varlığı, demokratik hakların korunması için en önemli temeldir."
     },
     {
         "zorluk": "zor",
-        "metin": "Ülkemiz, deprem gibi önemli bir doğal afet riski taşıyan bir coğrafyada yer almaktadır. Bu nedenle afetlere karşı her zaman hazırlıklı olmalıyız. Afet öncesinde evimizde bir acil durum çantası hazırlamak ve güvenli alanları belirlemek hayat kurtarır. Afet anında ve sonrasında ise sakin kalıp doğru davranışları sergilemek çok önemlidir. Benzer şekilde, komşumuz Yunanistan da sık sık depremlerle karşılaşıyor. Böyle büyük afetler yaşandığında, ülkeler arasındaki siyasi farklılıklar bir kenara bırakılarak uluslararası yardımlaşma ve iş birliği ruhu öne çıkar. İnsan hayatını kurtarmak için yapılan bu dayanışma, komşuluk ilişkilerini de güçlendirir.",
-        "beceri_adi": "Farkındalık Geliştirme",
-        "deger_adi": "İş Birliği",
-        "beceri_cumlesi": "Afet öncesinde evimizde bir acil durum çantası hazırlamak ve güvenli alanları belirlemek hayat kurtarır.",
-        "deger_cumlesi": "Böyle büyük afetler yaşandığında, ülkeler arasındaki siyasi farklılıklar bir kenara bırakılarak uluslararası yardımlaşma ve iş birliği ruhu öne çıkar."
+        "metin": "Su, elektrik ve doğal gaz gibi kaynaklar sınırsız değildir. Bu kaynakları verimli kullanmak, sadece aile bütçemize değil, aynı zamanda doğaya da büyük katkı sağlar. Örneğin, gereksiz yanan bir lambayı söndürmek, küçük bir elektrik tasarrufu gibi görünse de milyonlarca insan bunu yaptığında ülkenin enerji kaynakları korunmuş olur. Benzer şekilde, suyu israf etmemek, gelecekte yaşanabilecek kuraklık riskini azaltır. Kaynakların bilinçli tüketimi, hem bugünkü yaşam kalitemizi artırır hem de gelecek nesillerin de bu kaynaklardan faydalanabilmesini sağlar. Bu, doğaya ve insanlığa karşı en büyük sorumluluklarımızdan biridir.",
+        "beceri_adi": "Etki Yorumlama",
+        "deger_adi": "Verimlilik",
+        "beceri_cumlesi": "Kaynakların bilinçli tüketimi, hem bugünkü yaşam kalitemizi artırır hem de gelecek nesillerin de bu kaynaklardan faydalanabilmesini sağlar.",
+        "deger_cumlesi": "Bu, doğaya ve insanlığa karşı en büyük sorumluluklarımızdan biridir."
     },
     {
         "zorluk": "kolay",
-        "metin": "Ali, 5. sınıf öğrencisidir ve okul futbol takımının kaptanıdır. Okulda en önemli rolü derslerini dinlemek ve ödevlerini yapmaktır. Takımda ise kaptan olarak arkadaşlarını motive etmek ve oyun planını organize etmek onun görevidir. Geçen hafta takıma yeni bir arkadaş katıldı. Ali, ona kuralları anlatarak ve antrenmanlarda destek olarak hızla alışmasına yardımcı oldu. Bu sayede takım daha da güçlendi. Ali, farklı gruplardaki rollerini bilmenin ve sorumluluklarını yerine getirmenin önemini anlamıştı. Takım arkadaşına yardım etmenin, birlik ve beraberliği artırdığını da görmüştü.",
+        "metin": "Elif, okulun \"Yeşil Eller\" kulübüne yeni katılmıştı. Kulüp başkanı ona, okul bahçesindeki çiçekleri sulama görevini verdi. Elif, bu görevin sadece bir iş olmadığını, aynı zamanda okula karşı bir sorumluluk olduğunu biliyordu. Her gün öğle arasında, arkadaşları oyun oynarken o, sulama kabını alıp çiçeklerin yanına koşuyordu. Bu küçük görevi yerine getirmek, onun kulüpteki rolünü daha anlamlı kılıyordu. Bu sayede hem yeni arkadaşlar edindi hem de okulunu güzelleştirmeye katkı sağladı. Üstlendiği bu görev sayesinde kendini daha değerli hissediyordu.",
+        "beceri_adi": "Katılım",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Elif, okulun \"Yeşil Eller\" kulübüne yeni katılmıştı.",
+        "deger_cumlesi": "Elif, bu görevin sadece bir iş olmadığını, aynı zamanda okula karşı bir sorumluluk olduğunu biliyordu."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Arda, uzun zamandır hayalini kurduğu bisikleti almak istiyordu. Babası ona haftalık harçlık veriyor ve \"İhtiyaçların ile isteklerini iyi ayırmalısın,\" diyordu. Arda, bir bütçe planı yapmaya karar verdi. Harçlığının bir kısmını temel ihtiyaçları için ayırırken, kalanını kumbarasına atıyordu. Her hafta kumbarasına para ekledikçe bisiklete daha da yaklaştığını hissediyordu. Bu plan sayesinde, gereksiz harcamalardan kaçınarak para biriktirmenin önemini öğrendi. Birkaç ay sonra, kendi birikimiyle o bisikleti almanın mutluluğunu yaşadı. Bu durum ona parayı yönetme becerisi kazandırdı.",
+        "beceri_adi": "Planlama",
+        "deger_adi": "Tasarruf",
+        "beceri_cumlesi": "Arda, bir bütçe planı yapmaya karar verdi.",
+        "deger_cumlesi": "Bu plan sayesinde, gereksiz harcamalardan kaçınarak para biriktirmenin önemini öğrendi."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Öğretmenimiz, \"İnternet bir okyanus gibidir, içinde hem hazineler hem de tehlikeler barındırır,\" dedi. Bu yüzden interneti kullanırken her zaman bilinçli olmamız gerektiğini anlattı. Özellikle kişisel bilgilerimizi, yani adresimizi, telefon numaramızı veya şifrelerimizi asla tanımadığımız kişilerle paylaşmamamız gerektiğini vurguladı. Bu, dijital güvenliğimiz için en temel kuraldır. İnternette karşılaştığımız her bilgiye hemen inanmamalı, güvenilir kaynaklardan doğrulamalıyız. Bu sayede teknolojinin faydalarından güvenli bir şekilde yararlanabiliriz. Ailemizden izin almadan dosya indirmemek de önemlidir.",
+        "beceri_adi": "Bilinçli Teknoloji Kullanımı",
+        "deger_adi": "Güvenlik",
+        "beceri_cumlesi": "Bu yüzden interneti kullanırken her zaman bilinçli olmamız gerektiğini anlattı.",
+        "deger_cumlesi": "Özellikle kişisel bilgilerimizi, yani adresimizi, telefon numaramızı veya şifrelerimizi asla tanımadığımız kişilerle paylaşmamamız gerektiğini vurguladı."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Ailemle birlikte Antalya'da yaşıyorum. Şehrimiz, Türkiye'nin güneyinde, Akdeniz kıyısında yer alır. Batısında Toros Dağları'nın heybetli manzarası, güneyinde ise masmavi denizi bulunur. Bu coğrafi konum, şehrimizin iklimini ve turizm faaliyetlerini doğrudan etkiliyor. Ancak son yıllarda artan yapılaşma, doğal güzelliklerimizi tehdit etmeye başladı. Özellikle kıyı şeridindeki ormanlık alanların azalması beni üzüyor. Bu beşerî unsurlardaki değişim, hem doğal dengeyi bozuyor hem de gelecek nesiller için endişe yaratıyor. Doğal çevremizi korumak hepimizin görevidir.",
+        "beceri_adi": "Konum Belirleme",
+        "deger_adi": "Çevre Bilinci",
+        "beceri_cumlesi": "Şehrimiz, Türkiye'nin güneyinde, Akdeniz kıyısında yer alır.",
+        "deger_cumlesi": "Doğal çevremizi korumak hepimizin görevidir."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Sınıfımıza Suriye'den yeni bir arkadaşımız geldi. Adı Leyla'ydı ve ilk başta çok çekingendi. Bazı alışkanlıkları ve yemekleri bizden farklıydı. Öğretmenimiz, kültürel farklılıkların bir zenginlik olduğunu ve herkesin geleneklerine saygı duymamız gerektiğini anlattı. Biz de Leyla'ya kendi bayramlarımızı ve oyunlarımızı öğretirken, ondan da kendi kültürüne ait güzel şeyler öğrendik. Mesela onun anlattığı yemeklerin tadını çok merak ettik. Birbirimizin farklılıklarına saygı gösterdiğimizde, aramızdaki dostluk bağının daha da güçlendiğini fark ettik. Birlikte yaşamanın temeli bu anlayıştır.",
+        "beceri_adi": "Kültürel Duyarlılık",
+        "deger_adi": "Saygı",
+        "beceri_cumlesi": "Öğretmenimiz, kültürel farklılıkların bir zenginlik olduğunu ve herkesin geleneklerine saygı duymamız gerektiğini anlattı.",
+        "deger_cumlesi": "Birbirimizin farklılıklarına saygı gösterdiğimizde, aramızdaki dostluk bağının daha da güçlendiğini fark ettik."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Mahallemizdeki parkın oyuncakları eskimiş ve tehlikeli hale gelmişti. Ailelerimizle konuştuğumuzda, bir şeyler yapmamız gerektiğini anladık. Ben ve birkaç arkadaşım, \"Dilekçe Hakkı\"mızı kullanarak belediyeye bir başvuru yapmaya karar verdik. Dilekçemizde parkın durumunu anlattık ve yenilenmesini talep ettik. Bu, bir vatandaş olarak yaşadığımız çevreyle ilgili sorunlara çözüm arama sorumluluğumuzdu. Birkaç hafta sonra belediyeden ekipler gelip parkı inceledi ve kısa sürede oyuncaklar yenilendi. Etkin bir vatandaş olmak, sadece şikâyet etmek değil, aynı zamanda çözüm için harekete geçmektir.",
+        "beceri_adi": "Etkin Vatandaşlık",
+        "deger_adi": "Hak Arama",
+        "beceri_cumlesi": "Etkin bir vatandaş olmak, sadece şikâyet etmek değil, aynı zamanda çözüm için harekete geçmektir.",
+        "deger_cumlesi": "Ben ve birkaç arkadaşım, \"Dilekçe Hakkı\"mızı kullanarak belediyeye bir başvuru yapmaya karar verdik."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Tarih dersinde Anadolu'da yaşamış ilk uygarlıklardan Hititleri öğrendik. Onların binlerce yıl önce, bizim yaşadığımız topraklarda krallıklar kurduğunu, anallar yazdığını ve tarihin ilk yazılı antlaşması olan Kadeş Antlaşması'nı imzaladığını hayal etmek çok heyecan vericiydi. O dönemde yaşayan bir çocuk olsam nasıl bir hayatım olurdu diye düşündüm. Onların bıraktığı tabletler, mühürler ve kabartmalar, bizim için paha biçilmez birer ortak mirastır. Bu eserleri korumak ve gelecek nesillere aktarmak, onlara ve tarihimize karşı en büyük sorumluluğumuzdur. Çorum'daki kalıntıları ziyaret etmeyi çok isterim.",
+        "beceri_adi": "Tarihsel Empati",
+        "deger_adi": "Kültürel Mirasa Sahip Çıkma",
+        "beceri_cumlesi": "O dönemde yaşayan bir çocuk olsam nasıl bir hayatım olurdu diye düşündüm.",
+        "deger_cumlesi": "Bu eserleri korumak ve gelecek nesillere aktarmak, onlara ve tarihimize karşı en büyük sorumluluğumuzdur."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Mezopotamya uygarlıklarından Sümerler, Fırat ve Dicle nehirleri arasındaki verimli topraklarda tarım yapmış ve çivi yazısını icat ederek tarihi başlatmışlardır. Onların bu buluşu, bilginin kaydedilmesini sağlamıştır. Anadolu'da ise Hititler, Sümerlerden öğrendikleri çivi yazısını kullanarak devlet arşivleri oluşturmuş ve anallar (yıllıklar) tutmuşlardır. Her iki medeniyet de yazıyı kullanmış olsa da kullanım amaçları farklılık gösterir. Mezopotamya'da zigguratlar dini merkezken, Anadolu'da kale-şehirler ön plandaydı. Bu iki büyük medeniyetin dünya ortak mirasına katkılarını karşılaştırarak incelemek, tarihin ne kadar bağlantılı olduğunu gösterir.",
+        "beceri_adi": "Karşılaştırma",
+        "deger_adi": "Bilimsel Merak",
+        "beceri_cumlesi": "Bu iki büyük medeniyetin dünya ortak mirasına katkılarını karşılaştırarak incelemek, tarihin ne kadar bağlantılı olduğunu gösterir.",
+        "deger_cumlesi": "Onların bu buluşu, bilginin kaydedilmesini sağlamıştır."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Dedem, eskiden yaşadığımız ildeki nehrin kenarında yemyeşil ormanlar olduğunu ve suyunun çok temiz olduğunu anlatır. Ancak zamanla nehrin etrafına fabrikalar kurulmuş ve şehir büyümüş. Bu beşerî faaliyetler sonucunda fabrika atıkları nehre karışmış ve ormanların bir kısmı yok edilmiş. Bu durum, nehirdeki canlı yaşamının azalmasına ve suyun kirlenmesine neden olmuştur. Doğal çevredeki bu olumsuz değişimin temel sebebi, plansız sanayileşme ve çevreye duyarsız yaklaşımlardır. Gelecekte yaşanabilir bir çevreye sahip olabilmek için kaynaklarımızı sürdürülebilir bir şekilde kullanmayı öğrenmeliyiz.",
+        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
+        "deger_adi": "Sürdürülebilirlik",
+        "beceri_cumlesi": "Doğal çevredeki bu olumsuz değişimin temel sebebi, plansız sanayileşme ve çevreye duyarsız yaklaşımlardır.",
+        "deger_cumlesi": "Gelecekte yaşanabilir bir çevreye sahip olabilmek için kaynaklarımızı sürdürülebilir bir şekilde kullanmayı öğrenmeliyiz."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Demokrasi, halkın kendi kendini yönetmesi anlamına gelen bir yaşam biçimidir. Cumhuriyet ise bu yönetim biçiminin devlet düzeyindeki en iyi uygulanış şeklidir. Çünkü cumhuriyette egemenlik, yani devleti yönetme gücü, kayıtsız şartsız millete aittir. Millet, bu hakkını belirli süreler için seçtiği temsilcileri aracılığıyla kullanır. Dolayısıyla demokrasi bir ilkeyse, cumhuriyet bu ilkenin hayata geçirildiği bir yapıdır. Biri olmadan diğerinin tam anlamıyla var olması düşünülemez. Bu iki kavram, bir bütünün parçaları gibi birbirini tamamlar ve özgür bir toplumun temelini oluşturur.",
+        "beceri_adi": "Kavramsal İlişkilendirme",
+        "deger_adi": "Ulusal Egemenlik",
+        "beceri_cumlesi": "Bu iki kavram, bir bütünün parçaları gibi birbirini tamamlar ve özgür bir toplumun temelini oluşturur.",
+        "deger_cumlesi": "Çünkü cumhuriyette egemenlik, yani devleti yönetme gücü, kayıtsız şartsız millete aittir."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Okulda düzenlenen bilgi yarışması için dörder kişilik gruplar oluşturulmuştu. Ayşe’nin grubunda herkesin bir görevi vardı. Ayşe, grup lideri olarak görev dağılımını adil bir şekilde yaptı ve herkesin fikrini aldı. Mehmet, kendisine düşen tarih sorularını araştırma rolünü üstlendi. Elif, coğrafya konularını hazırladı ve sunumu tasarladı. Tüm grup üyeleri zamanında çalışmalarını tamamlayarak birbirlerine destek oldu. Bu sayede yarışmada başarılı oldular ve ekip çalışmasının önemini anladılar. Herkes kendi görevini eksiksiz yerine getirdiğinde başarının geldiğini gördüler.",
+        "beceri_adi": "Rolünü Bilme",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Mehmet, kendisine düşen tarih sorularını araştırma rolünü üstlendi.",
+        "deger_cumlesi": "Tüm grup üyeleri zamanında çalışmalarını tamamlayarak birbirlerine destek oldu."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Can, bayramda büyüklerinden topladığı harçlıklarla uzun zamandır istediği uzaktan kumandalı arabayı almayı hayal ediyordu. Ancak parasının tamamının arabaya yetmeyeceğini fark etti. Bu yüzden bir plan yaptı ve annesinden yardım istedi. Annesiyle birlikte bir bütçe oluşturdular. Can, bir ay boyunca gereksiz abur cubur harcamalarından kaçınmaya ve parasının bir kısmını kumbarasına atmaya karar verdi. Bu sayede hem sabırlı olmayı öğrendi hem de parasını bilinçli kullanarak hedefine ulaştı. Tutumlu davranarak istediği oyuncağı almanın mutluluğunu yaşadı.",
+        "beceri_adi": "Bütçe Yapma",
+        "deger_adi": "Tutumluluk",
+        "beceri_cumlesi": "Annesiyle birlikte bir bütçe oluşturdular.",
+        "deger_cumlesi": "Tutumlu davranarak istediği oyuncağı almanın mutluluğunu yaşadı."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Sınıf başkanı olan Zeynep, okul bahçesindeki oyun alanında bulunan salıncaklardan birinin kırık olduğunu fark etti. Bu durumun arkadaşları için tehlikeli olabileceğini düşündü. Hemen durumu okul müdürüne bildirmek için harekete geçti. Arkadaşlarıyla konuşarak sorunu anlatan kısa bir dilekçe hazırladı. Dilekçeyi hep birlikte imzalayarak okul idaresine teslim ettiler. Bu davranışları sayesinde okul yönetimi sorundan haberdar oldu ve salıncak kısa sürede tamir edildi. Zeynep, etkin bir vatandaş olarak çevresindeki sorunlara karşı duyarlı davranmıştı.",
+        "beceri_adi": "Katılım",
+        "deger_adi": "Duyarlılık",
+        "beceri_cumlesi": "Arkadaşlarıyla konuşarak sorunu anlatan kısa bir dilekçe hazırladı.",
+        "deger_cumlesi": "Zeynep, etkin bir vatandaş olarak çevresindeki sorunlara karşı duyarlı davranmıştı."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "5. sınıf öğrencisi Mert, Sosyal Bilgiler dersinde yaşadığı şehir olan Antalya’yı tanıtacaktı. Antalya'nın göreceli konumunu anlatırken Akdeniz kıyısında yer aldığını, batısında Muğla, kuzeyinde ise Burdur ve Isparta gibi komşu illerin bulunduğunu belirtti. Önemli turizm merkezlerinden biri olmasının bu coğrafi konumundan kaynaklandığını vurguladı. Toros Dağları'nın denize paralel uzandığını ve bunun iklim üzerindeki etkilerini anlattı. Şehrini ve onun özelliklerini öğrenmek, Mert'in ülkesine olan sevgisini daha da artırdı. Ülkemizin her köşesinin ayrı bir güzelliğe sahip olduğunu bir kez daha anladı.",
+        "beceri_adi": "Konum Belirleme",
+        "deger_adi": "Vatanseverlik",
+        "beceri_cumlesi": "Antalya'nın göreceli konumunu anlatırken Akdeniz kıyısında yer aldığını, batısında Muğla, kuzeyinde ise Burdur ve Isparta gibi komşu illerin bulunduğunu belirtti.",
+        "deger_cumlesi": "Şehrini ve onun özelliklerini öğrenmek, Mert'in ülkesine olan sevgisini daha da artırdı."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Öğretmen, öğrencilerden yaşadıkları ildeki ortak miras ögelerini tanıtan birer ürün hazırlamalarını istedi. Deniz, ailesiyle sık sık ziyaret ettiği İzmir'deki Efes Antik Kenti'ni seçti. Kütüphaneden ve internetten güvenilir kaynakları kullanarak bilgiler topladı. Celsus Kütüphanesi ve Büyük Tiyatro gibi önemli yapıların fotoğraflarını buldu. Hazırladığı posteri sınıfta arkadaşlarına sundu ve bu tarihi zenginliğin sadece bize değil, tüm insanlığa ait olduğunu anlattı. Bu değerli mirasın korunması gerektiğini ve onu ziyaret ederken dikkatli olmamız gerektiğini vurguladı. Herkesin bu mirasa sahip çıkması gerektiğini belirtti.",
+        "beceri_adi": "Ürün Oluşturma",
+        "deger_adi": "Kültürel Mirasa Saygı",
+        "beceri_cumlesi": "Hazırladığı posteri sınıfta arkadaşlarına sundu ve bu tarihi zenginliğin sadece bize değil, tüm insanlığa ait olduğunu anlattı.",
+        "deger_cumlesi": "Bu değerli mirasın korunması gerektiğini ve onu ziyaret ederken dikkatli olmamız gerektiğini vurguladı."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Emir, gününün büyük bir kısmını tabletinde oyun oynayarak ve videolar izleyerek geçiriyordu. Bu durum ders notlarının düşmesine ve ailesiyle daha az vakit geçirmesine neden oluyordu. Ailesiyle konuştuktan sonra teknolojiyi daha bilinçli kullanmaya karar verdi. Kendisine günlük bir saatlik ekran süresi hedefi koydu. Bu süreyi hem ödev araştırmaları hem de eğlence için dengeli bir şekilde paylaştırdı. Kalan zamanında ise kitap okumaya, arkadaşlarıyla dışarıda oynamaya ve ailesiyle sohbet etmeye başladı. Öz denetim sağlayarak hayatını daha verimli hale getirmişti.",
+        "beceri_adi": "Bilinçli Kullanım",
+        "deger_adi": "Öz Denetim",
+        "beceri_cumlesi": "Ailesiyle konuştuktan sonra teknolojiyi daha bilinçli kullanmaya karar verdi.",
+        "deger_cumlesi": "Öz denetim sağlayarak hayatını daha verimli hale getirmişti."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Okul yönetimi, ülkemizin doğusundaki bir köy okulunda okuyan öğrencilerin kışlık kıyafet ve kırtasiye malzemesi ihtiyacı olduğunu duyurdu. Bunun üzerine 5-B sınıfı öğrencileri bir kampanya düzenlemeye karar verdi. Sınıfta iş birliği yaparak görev dağılımı yaptılar. Bir grup öğrenci, kampanyayı anlatan afişler hazırlarken diğer bir grup da diğer sınıfları dolaşarak yardım topladı. Kısa sürede çok sayıda mont, bot ve defter-kalem biriktirdiler. Toplanan malzemeleri kolilere yerleştirip o okula gönderdiler. Bu etkinlik, onlara yardımlaşma ve dayanışmanın toplumsal birlik için ne kadar önemli olduğunu göstermişti.",
+        "beceri_adi": "İş Birliği Yapma",
+        "deger_adi": "Yardımlaşma",
+        "beceri_cumlesi": "Sınıfta iş birliği yaparak görev dağılımı yaptılar.",
+        "deger_cumlesi": "Bu etkinlik, onlara yardımlaşma ve dayanışmanın toplumsal birlik için ne kadar önemli olduğunu göstermişti."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "İnsanlık tarihini incelerken medeniyetlerin ortak mirasa katkılarını görmek mümkündür. Örneğin Mezopotamya’da yaşayan Sümerler, M.Ö. 3500’lerde çivi yazısını icat ederek bilginin kaydedilmesini sağlamıştır. Anadolu’da hüküm süren Hititler ise Mısırlılar ile imzaladıkları Kadeş Antlaşması ile tarihin ilk yazılı antlaşmasına imza atmışlardır. Sümerlerin buluşu bilimin ve tarihin yazımının temelini atarken, Hititlerin bu adımı diplomasi ve uluslararası ilişkilerin başlangıcı sayılabilir. Bu iki önemli gelişmeyi karşılaştırmak, medeniyetlerin insanlığa farklı alanlarda nasıl yön verdiğini bilimsel bir bakış açısıyla anlamamızı sağlar.",
+        "beceri_adi": "Karşılaştırma",
+        "deger_adi": "Bilimsellik",
+        "beceri_cumlesi": "Sümerlerin buluşu bilimin ve tarihin yazımının temelini atarken, Hititlerin bu adımı diplomasi ve uluslararası ilişkilerin başlangıcı sayılabilir.",
+        "deger_cumlesi": "Bu iki önemli gelişmeyi karşılaştırmak, medeniyetlerin insanlığa farklı alanlarda nasıl yön verdiğini bilimsel bir bakış açısıyla anlamamızı sağlar."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Son yirmi yılda yaşadığımız şehirdeki nüfus artışı ve sanayileşme, çevrede gözle görülür değişikliklere yol açtı. Şehrin etrafındaki yemyeşil ormanlık alanların yerini beton binalar ve fabrikalar aldı. Bu durumun bir sonucu olarak, bölgedeki hava kirliliği arttı ve birçok hayvan doğal yaşam alanını kaybetti. Kurulan fabrikaların atıkları yakındaki nehre karıştığı için suyun rengi değişti ve balık türleri azaldı. İnsanların yaptığı bu beşerî müdahalelerin doğal çevre üzerindeki olumsuz etkilerini anlamak, doğaya karşı sorumluluklarımızı hatırlatır ve ona saygı duymamız gerektiğini gösterir.",
+        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
+        "deger_adi": "Doğaya Saygı",
+        "beceri_cumlesi": "Kurulan fabrikaların atıkları yakındaki nehre karıştığı için suyun rengi değişti ve balık türleri azaldı.",
+        "deger_cumlesi": "İnsanların yaptığı bu beşerî müdahalelerin doğal çevre üzerindeki olumsuz etkilerini anlamak, doğaya karşı sorumluluklarımızı hatırlatır ve ona saygı duymamız gerektiğini gösterir."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Demokrasi, halkın egemenliğine dayanan bir yönetim anlayışıdır ve en temel ilkesi tüm vatandaşların eşit haklara sahip olmasıdır. Cumhuriyet ise bu anlayışın hayata geçirildiği en yaygın yönetim biçimidir. Cumhuriyet rejiminde yöneticiler halk tarafından belirli bir süre için seçimle iş başına getirilir ve hiç kimsenin ayrıcalığı yoktur. Dolayısıyla demokrasi bir ideal iken, cumhuriyet bu idealin kurallarını ve kurumlarını belirleyen somut bir sistemdir. Bu iki kavram arasındaki ilişki, halkın kendi kendini yönetme gücünün adalet ve eşitlik temelinde nasıl işlediğini gösterir.",
+        "beceri_adi": "İlişkilendirme",
+        "deger_adi": "Eşitlik",
+        "beceri_cumlesi": "Bu iki kavram arasındaki ilişki, halkın kendi kendini yönetme gücünün adalet ve eşitlik temelinde nasıl işlediğini gösterir.",
+        "deger_cumlesi": "Demokrasi, halkın egemenliğine dayanan bir yönetim anlayışıdır ve en temel ilkesi tüm vatandaşların eşit haklara sahip olmasıdır."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Elif, her hafta ailesinden harçlık alıyordu ve uzun zamandır istediği bir kitabı almak istiyordu. Kitabın fiyatını öğrendikten sonra bir plan yaptı. Önce, o haftaki zorunlu ihtiyaçlarını (kantin masrafı gibi) bir kenara yazdı. Kalan parasının bir kısmını kumbarasına atarak birikim yapmaya karar verdi. İsteklerini erteleyerek ve gereksiz harcamalardan kaçınarak parasını dikkatli kullandı. Birkaç hafta sonra kumbarasında yeterli parayı biriktirmişti. Hayalindeki kitabı alırken hem planlı olmanın hem de sabırlı davranmanın ne kadar doğru olduğunu anladı. Artık harçlığını daha bilinçli yönetiyordu.",
+        "beceri_adi": "Bütçe Planlama",
+        "deger_adi": "Tutumlu Olma",
+        "beceri_cumlesi": "Önce, o haftaki zorunlu ihtiyaçlarını (kantin masrafı gibi) bir kenara yazdı.",
+        "deger_cumlesi": "İsteklerini erteleyerek ve gereksiz harcamalardan kaçınarak parasını dikkatli kullandı."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Can, okulda açılan satranç kulübüne katılmak istiyordu. Eğitim alma hakkının bir parçası olarak, okuldaki sosyal etkinliklere katılma hakkına sahip olduğunu biliyordu. Kulübe kaydını yaptırdıktan sonra çok mutlu oldu. Ancak bu hakkın ona bir görev de getirdiğinin farkındaydı. Kulüp toplantılarına düzenli olarak katılmak ve verilen görevleri zamanında yapmak onun en önemli sorumluluğuydu. Bu sayede hem kendisi gelişiyor hem de kulübün başarılı olmasına katkı sağlıyordu. Can, haklarını kullanırken sorumluluklarını da yerine getiren örnek bir öğrenciydi ve bu dengeli davranışını herkes takdir ediyordu.",
+        "beceri_adi": "Hakkını Bilme",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Eğitim alma hakkının bir parçası olarak, okuldaki sosyal etkinliklere katılma hakkına sahip olduğunu biliyordu.",
+        "deger_cumlesi": "Kulüp toplantılarına düzenli olarak katılmak ve verilen görevleri zamanında yapmak onun en önemli sorumluluğuydu."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Ali, okulda \"Yeşil Okulum\" projesi için bir gruba dâhil oldu. Gruptaki herkesin farklı bir görevi vardı ve Ali'nin rolü, proje için kütüphaneden bilgi toplamaktı. Ali, görevini zamanında ve eksiksiz bir şekilde tamamladı. Arkadaşı Ayşe'nin ise çizim yaparken zorlandığını fark etti. Ayşe'ye yardım etmenin, grubun başarısı için önemli olduğunu düşündü. Bu yüzden, kendi işi bitince Ayşe'nin yanına giderek ona çizimlerinde destek oldu. Birlikte çalışarak projeyi harika bir şekilde tamamladılar ve öğretmenlerinden büyük bir tebrik aldılar. Bu durum takım çalışmasının önemini gösterdi.",
         "beceri_adi": "Rolünü Bilme",
         "deger_adi": "Yardımlaşma",
-        "beceri_cumlesi": "Takımda ise kaptan olarak arkadaşlarını motive etmek ve oyun planını organize etmek onun görevidir.",
-        "deger_cumlesi": "Ali, ona kuralları anlatarak ve antrenmanlarda destek olarak hızla alışmasına yardımcı oldu."
+        "beceri_cumlesi": "Gruptaki herkesin farklı bir görevi vardı ve Ali'nin rolü, proje için kütüphaneden bilgi toplamaktı.",
+        "deger_cumlesi": "Ayşe'ye yardım etmenin, grubun başarısı için önemli olduğunu düşündü."
     },
     {
-        "zorluk": "kolay",
-        "metin": "Zeynep'in ailesi bu ay elektrik ve su faturalarının yüksek geldiğini fark etti. Ailece bir toplantı yapıp kaynakları daha verimli kullanmaya karar verdiler. Artık odadan çıkarken ışıkları kapatıyor, dişlerini fırçalarken musluğu açık bırakmıyorlardı. Zeynep, bu görevi çok ciddiye aldı ve küçük kardeşine de bu konuda örnek oldu. Aile olarak kaynakları korumanın hem bütçelerine hem de doğaya karşı bir sorumluluk olduğunu anladılar. Bir sonraki ay faturalar düştüğünde, tasarruf etmenin ne kadar önemli ve faydalı olduğunu hep birlikte gördüler. Bu davranışları, gelecek nesiller için de temiz bir çevre bırakmalarına yardımcı olacaktı.",
-        "beceri_adi": "Tasarruf Yapma",
-        "deger_adi": "Sorumluluk",
-        "beceri_cumlesi": "Artık odadan çıkarken ışıkları kapatıyor, dişlerini fırçalarken musluğu açık bırakmıyorlardı.",
-        "deger_cumlesi": "Aile olarak kaynakları korumanın hem bütçelerine hem de doğaya karşı bir sorumluluk olduğunu anladılar."
-    },
-    {
-        "zorluk": "kolay",
-        "metin": "Okulumuzda \"Kültür Şenliği\" düzenlendi. Herkes kendi yöresine veya ailesinin geldiği ülkeye ait geleneksel yemekler ve kıyafetler getirdi. Ayşe Karadeniz'den mısır ekmeği, Ahmet ise Güneydoğu'dan içli köfte getirmişti. Sınıfımıza yeni gelen yabancı uyruklu arkadaşımız da kendi ülkesine özgü tatlılar ikram etti. Başta bazı yemekler bize farklı gelse de hepsinin tadına baktık ve çok beğendik. Farklı kültürlere ait özellikleri tanımanın ve onlara saygı duymanın, aramızdaki dostluğu güçlendirdiğini gördük. Bir arada ne kadar renkli ve zengin bir bütün olduğumuzu anladık. Hoşgörü, hepimizi birleştiren en güzel duyguydu.",
-        "beceri_adi": "Farklılıkları Tanıma",
+        "zorluk": "orta",
+        "metin": "Zeynep'in sınıfına başka bir ülkeden yeni bir öğrenci geldi: Kenji. Kenji'nin yemekleri, kutladığı bayramlar ve giyim tarzı diğerlerinden biraz farklıydı. Başta bazı öğrenciler bu durumu garipsedi. Ancak Zeynep, bu farklılıkların Kenji'nin kültürünün bir parçası olduğunu düşündü ve ona saygı duydu. Merak ettiği konuları Kenji'ye nazikçe sordu ve ondan kendi kültürü hakkında çok ilginç şeyler öğrendi. Zeynep'in bu anlayışlı tavrı sayesinde diğer öğrenciler de Kenji ile arkadaş oldu. Sınıfları, farklı kültürlerin bir araya geldiği daha zengin ve eğlenceli bir yer haline geldi.",
+        "beceri_adi": "Farklılıkları Yorumlama",
         "deger_adi": "Hoşgörü",
-        "beceri_cumlesi": "Farklı kültürlere ait özellikleri tanımanın ve onlara saygı duymanın, aramızdaki dostluğu güçlendirdiğini gördük.",
-        "deger_cumlesi": "Hoşgörü, hepimizi birleştiren en güzel duyguydu."
+        "beceri_cumlesi": "Zeynep, bu farklılıkların Kenji'nin kültürünün bir parçası olduğunu düşündü ve ona saygı duydu.",
+        "deger_cumlesi": "Zeynep'in bu anlayışlı tavrı sayesinde diğer öğrenciler de Kenji ile arkadaş oldu."
     },
     {
         "zorluk": "orta",
-        "metin": "Eskiden yemyeşil ormanları ve tertemiz bir nehri olan bir kasabaya büyük bir fabrika kuruldu. Fabrikanın kurulmasıyla kasabada yeni iş imkânları ortaya çıktı. Ancak bir süre sonra fabrikanın atıkları nehre karışınca balıklar ölmeye, nehrin rengi değişmeye başladı. Bacasından çıkan dumanlar ise havayı kirletti. Kasaba halkı, ekonomik gelişmenin çevreye zarar vermemesi gerektiğini anladı. Doğal güzelliklerini korumanın ne kadar önemli olduğunu fark ettiler. Bu durum, beşerî bir faaliyetin doğal çevre üzerindeki etkisini açıkça gösteriyordu. İnsanlar, çevreye duyarlı davranmanın önemini acı bir tecrübeyle öğrenmişti.",
+        "metin": "Eskiden yemyeşil ormanları ve tertemiz bir deresi olan bir köy vardı. Köy halkı, bu doğal güzelliklerle iç içe yaşardı. Ancak birkaç yıl önce köyün yakınına büyük bir fabrika kuruldu. Fabrika, üretim yaparken atıklarını dereye bırakmaya ve bacasından zehirli dumanlar salmaya başladı. Bunun sonucunda, bir zamanlar balıkların yüzdüğü dere kirlendi ve etrafındaki ağaçlar kurumaya yüz tuttu. Köy halkı, çevrelerindeki bu değişimin sebebinin fabrikanın sorumsuz davranışı olduğunu anladı. Doğayı korumanın ne kadar önemli olduğunu acı bir tecrübeyle öğrenerek yetkililere başvurdular.",
         "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
-        "deger_adi": "Çevreye Duyarlılık",
-        "beceri_cumlesi": "Ancak bir süre sonra fabrikanın atıkları nehre karışınca balıklar ölmeye, nehrin rengi değişmeye başladı.",
-        "deger_cumlesi": "İnsanlar, çevreye duyarlı davranmanın önemini acı bir tecrübeyle öğrenmişti."
+        "deger_adi": "Çevre Duyarlılığı",
+        "beceri_cumlesi": "Bunun sonucunda, bir zamanlar balıkların yüzdüğü dere kirlendi ve etrafındaki ağaçlar kurumaya yüz tuttu.",
+        "deger_cumlesi": "Köy halkı, çevrelerindeki bu değişimin sebebinin fabrikanın sorumsuz davranışı olduğunu anladı."
     },
     {
         "zorluk": "orta",
-        "metin": "Okulun bahçesindeki salıncaklardan biri kırılmıştı ve bu durum tehlike yaratıyordu. Etkin bir vatandaş olmanın önemini derste öğrenen bir grup öğrenci, bu sorunu çözmek için harekete geçti. Sadece şikâyet etmek yerine, bir çözüm yolu bulmaya karar verdiler. Birlikte bir dilekçe hazırladılar ve sorunu net bir şekilde anlattılar. Diğer öğrencilerden de imza toplayarak dilekçeyi okul müdürlüğüne verdiler. Bu katılımcı davranışları sayesinde okul yönetimi sorundan haberdar oldu ve kısa sürede salıncağı tamir ettirdi. Öğrenciler, sorunların çözümünde aktif rol almanın ne kadar etkili olduğunu yaşayarak öğrendiler.",
-        "beceri_adi": "Sorun Çözme",
-        "deger_adi": "Katılımcılık",
-        "beceri_cumlesi": "Birlikte bir dilekçe hazırladılar ve sorunu net bir şekilde anlattılar.",
-        "deger_cumlesi": "Bu katılımcı davranışları sayesinde okul yönetimi sorundan haberdar oldu ve kısa sürede salıncağı tamir ettirdi."
+        "metin": "Öğretmenimiz, yaşadığımız şehirdeki ortak miras ögeleri hakkında bir proje yapmamızı istedi. Sınıfça, şehrimizin simgesi olan tarihi kaleyi tanıtmaya karar verdik. Kalenin tarihini, mimari özelliklerini ve onunla ilgili efsaneleri araştırdık. Topladığımız bu değerli bilgiler ve çektiğimiz fotoğraflarla rengarenk bir broşür hazırladık. Amacımız, hem turistlerin hem de şehirde yaşayanların bu önemli eseri daha iyi tanımasını sağlamaktı. Hazırladığımız bu ürünü okul panosunda sergileyerek ortak mirasımıza sahip çıkmanın bir vatandaşlık görevi olduğunu arkadaşlarımıza gösterdik. Mirasımızı korumak, onu geleceğe taşımaktır.",
+        "beceri_adi": "Ürün Oluşturma",
+        "deger_adi": "Kültürel Mirasa Sahip Çıkma",
+        "beceri_cumlesi": "Topladığımız bu değerli bilgiler ve çektiğimiz fotoğraflarla rengarenk bir broşür hazırladık.",
+        "deger_cumlesi": "Hazırladığımız bu ürünü okul panosunda sergileyerek ortak mirasımıza sahip çıkmanın bir vatandaşlık görevi olduğunu arkadaşlarımıza gösterdik."
     },
     {
         "zorluk": "orta",
-        "metin": "Arda yeni tabletine kavuştuğunda çok mutlu olmuştu. Başta sadece eğitici oyunlar oynuyor ve ödevleri için araştırma yapıyordu. Ancak zamanla tableti elinden düşürmemeye, arkadaşlarıyla oynamak yerine saatlerce video izlemeye başladı. Ailesi bu durumdan endişelendi. Arda bir gün, teknolojik aletleri bilinçli kullanmanın ne kadar önemli olduğunu fark etti. Teknolojinin faydaları olduğu gibi, aşırıya kaçıldığında sosyal ilişkileri ve sorumlulukları olumsuz etkileyebileceğini anladı. Artık tabletini sadece belirli saatlerde kullanmaya, arkadaşlarına ve derslerine daha fazla zaman ayırmaya karar verdi. Bu sayede hayatında bir denge kurmayı başardı.",
-        "beceri_adi": "Eleştirel Düşünme",
-        "deger_adi": "Bilinçli Olma",
-        "beceri_cumlesi": "Teknolojinin faydaları olduğu gibi, aşırıya kaçıldığında sosyal ilişkileri ve sorumlulukları olumsuz etkileyebileceğini anladı.",
-        "deger_cumlesi": "Arda bir gün, teknolojik aletleri bilinçli kullanmanın ne kadar önemli olduğunu fark etti."
-    },
-    {
-        "zorluk": "orta",
-        "metin": "Sosyal Bilgiler dersinde afetler konusunu işleyen Elif, eve gidince öğrendiklerini ailesiyle paylaştı. Türkiye'nin bir deprem ülkesi olduğunu ve her an hazırlıklı olmaları gerektiğini anlattı. Bunun üzerine ailece bir \"Afet ve Acil Durum Çantası\" hazırlamaya karar verdiler. Bu önemli bir planlama gerektiriyordu. İçine el feneri, pilli radyo, ilk yardım malzemeleri, bozulmayacak yiyecekler ve su koydular. Ayrıca evde devrilebilecek eşyaları duvara sabitlediler. Tedbirli olmanın, paniği azaltacağını ve olası bir afetin etkilerini en aza indireceğini biliyorlardı. Bu hazırlık sayesinde kendilerini daha güvende hissettiler.",
-        "beceri_adi": "Planlama Yapma",
-        "deger_adi": "Tedbirli Olma",
-        "beceri_cumlesi": "Bunun üzerine ailece bir \"Afet ve Acil Durum Çantası\" hazırlamaya karar verdiler.",
-        "deger_cumlesi": "Tedbirli olmanın, paniği azaltacağını ve olası bir afetin etkilerini en aza indireceğini biliyorlardı."
+        "metin": "Dedem, eskiden uzaktaki akrabalarıyla mektuplaştıklarını ve bir haberin haftalar sonra ulaştığını anlatır. Bugün ise akıllı telefonlar sayesinde dünyanın öbür ucundaki biriyle anında görüntülü konuşabiliyoruz. Bu teknolojik gelişme, iletişimi inanılmaz hızlandırdı ve kolaylaştırdı. Ancak bu durum, bazen yüz yüze sohbetlerin sıcaklığını unutturabiliyor. Yan yana oturan insanların bile birbirleriyle konuşmak yerine telefonlarına baktığını görüyoruz. Bu nedenle, teknolojinin faydalarından yararlanırken sosyal ilişkilerimizi zayıflatmamasına dikkat etmeliyiz. Önemli olan, bu araçları hayatımızı kontrol etmesine izin vermeden, bilinçli bir şekilde kullanmaktır.",
+        "beceri_adi": "Değişimi Tartışma",
+        "deger_adi": "Bilinçli Kullanım",
+        "beceri_cumlesi": "Bu teknolojik gelişme, iletişimi inanılmaz hızlandırdı ve kolaylaştırdı.",
+        "deger_cumlesi": "Önemli olan, bu araçları hayatımızı kontrol etmesine izin vermeden, bilinçli bir şekilde kullanmaktır."
     },
     {
         "zorluk": "zor",
-        "metin": "Tarih dersinde öğretmen, Anadolu ve Mezopotamya medeniyetlerinin insanlığın ortak mirasına katkılarını anlattı. Mezopotamya'da yaşayan Sümerler, çivi yazısını icat ederek bilginin kaydedilmesini ve gelecek nesillere aktarılmasını sağladılar. Bu, tarihin başlangıcı olarak kabul edilir. Anadolu'da kurulan Hititler ise bu yazı sistemini kullanarak tarihteki ilk yazılı antlaşma olan Kadeş Antlaşması'nı imzaladılar. Sümerler bilginin temelini atarken, Hititler ise diplomasi ve devletler arası ilişkilerde yazının önemini göstermiştir. Bu iki büyük katkıyı karşılaştırmak, medeniyetlerin birbirinden nasıl etkilendiğini ve ortak mirası nasıl zenginleştirdiğini anlamamızı sağlar.",
+        "metin": "Cumhuriyet ve demokrasi kavramları sık sık bir arada kullanılır çünkü birbirlerini tamamlarlar. Cumhuriyet, devletin başındaki yöneticinin seçimle iş başına geldiği bir yönetim şeklidir. Yani yönetim, babadan oğula geçen bir saltanat değildir. Demokrasi ise halkın egemenliğine dayanan bir anlayıştır; halkın kendi kendini yönetmesidir. İşte bu noktada ikisi birleşir: Cumhuriyet yönetiminde, yöneticileri seçme gücünü halka veren ilke demokrasidir. Türkiye Cumhuriyeti'nde milletvekillerini ve cumhurbaşkanını seçimlerde oy kullanarak belirlememiz, demokrasinin cumhuriyetle nasıl iç içe geçtiğinin en güzel kanıtıdır.",
+        "beceri_adi": "İlişki Çözümleme",
+        "deger_adi": "Milli Egemenlik",
+        "beceri_cumlesi": "Cumhuriyet yönetiminde, yöneticileri seçme gücünü halka veren ilke demokrasidir.",
+        "deger_cumlesi": "Demokrasi ise halkın egemenliğine dayanan bir anlayıştır; halkın kendi kendini yönetmesidir."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Tarih dersinde Mezopotamya ve Anadolu'da kurulan ilk medeniyetleri inceliyorduk. Öğretmenimiz, bu iki bölgenin de insanlık tarihine büyük katkılar sunduğunu söyledi. Örneğin Mezopotamya'daki Sümerler, M.Ö. 3500'lerde çivi yazısını icat ederek bilginin kaydedilmesini ve aktarılmasını sağladılar. Anadolu'daki Hititler ise tarihin ilk yazılı antlaşması olan Kadeş Antlaşması'nı imzalayarak diplomasi ve devletler arası hukuk alanında bir çığır açtılar. Bir medeniyetin yazıyı bularak temel bir başlangıç yapmasıyla, diğerinin bu yazıyı kullanarak uluslararası bir metin oluşturması, ortak mirasa farklı ama eşit derecede değerli katkılardır.",
         "beceri_adi": "Karşılaştırma Yapma",
         "deger_adi": "Bilimsellik",
-        "beceri_cumlesi": "Bu iki büyük katkıyı karşılaştırmak, medeniyetlerin birbirinden nasıl etkilendiğini ve ortak mirası nasıl zenginleştirdiğini anlamamızı sağlar.",
-        "deger_cumlesi": "Mezopotamya'da yaşayan Sümerler, çivi yazısını icat ederek bilginin kaydedilmesini ve gelecek nesillere aktarılmasını sağladılar."
+        "beceri_cumlesi": "Bir medeniyetin yazıyı bularak temel bir başlangıç yapmasıyla, diğerinin bu yazıyı kullanarak uluslararası bir metin oluşturması, ortak mirasa farklı ama eşit derecede değerli katkılardır.",
+        "deger_cumlesi": "Örneğin Mezopotamya'daki Sümerler, M.Ö. 3500'lerde çivi yazısını icat ederek bilginin kaydedilmesini ve aktarılmasını sağladılar."
     },
     {
         "zorluk": "zor",
-        "metin": "Demokrasi, halkın kendi kendini yönetmesi demektir. Ancak milyonlarca insanın bir araya gelip her konuda tek tek karar alması mümkün değildir. İşte bu noktada cumhuriyet devreye girer. Cumhuriyet, halkın belirli aralıklarla oy kullanarak kendi temsilcilerini seçtiği ve bu temsilcilerin halk adına ülkeyi yönettiği bir yönetim şeklidir. Yani cumhuriyet, demokrasinin uygulanabilmesi için en uygun yönetim biçimidir. Egemenliğin, yani yönetme gücünün millete ait olması, bu iki kavramın temelini oluşturur. Bu yüzden Mustafa Kemal Atatürk, \"Egemenlik, kayıtsız şartsız milletindir.\" sözüyle bu ilişkiyi en güzel şekilde özetlemiştir.",
+        "metin": "Evimizde suyu boşa akıttığımızda bunun sadece bizim faturamızı etkilediğini düşünebiliriz. Ancak bu davranışın çok daha geniş etkileri vardır. Bizim israf ettiğimiz su, barajlardaki su seviyesini düşürür ve bu durum tüm şehri etkiler. Çiftçiler tarlalarını sulamak için yeterli su bulamaz, bu da gıda üretiminin azalmasına ve fiyatların artmasına neden olur. Ayrıca, su gibi sınırlı bir kaynağı bugün bilinçsizce tüketmek, gelecek nesillerin bu temel ihtiyaca ulaşmasını zorlaştırır. Bu yüzden kaynakları verimli kullanmak, sadece bir tasarruf meselesi değil, doğaya ve bizden sonraki insanlara karşı bir sorumluluktur.",
+        "beceri_adi": "Etki Yorumlama",
+        "deger_adi": "Sürdürülebilirlik",
+        "beceri_cumlesi": "Çiftçiler tarlalarını sulamak için yeterli su bulamaz, bu da gıda üretiminin azalmasına ve fiyatların artmasına neden olur.",
+        "deger_cumlesi": "Ayrıca, su gibi sınırlı bir kaynağı bugün bilinçsizce tüketmek, gelecek nesillerin bu temel ihtiyaca ulaşmasını zorlaştırır."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Ali, okulun basketbol takımında bir oyuncu, evde ise bir ağabeydi. Antrenmanlarda takım kaptanının direktiflerini dinler, paslaşarak oynamanın önemini bilirdi. Bu, takım içindeki rolünü iyi anladığını gösteriyordu. Evde ise küçük kardeşine ödevlerinde yardım etmek gibi bir görevi vardı. Bu sorumluluğunu her zaman yerine getirirdi, çünkü ailesinin bir parçası olmanın bunu gerektirdiğini biliyordu. Ali, hem takımda hem de ailede üzerine düşeni yaparak mutlu oluyordu. Farklı gruplardaki rollerimizin, farklı sorumluluklar getirdiğini çok iyi kavramıştı. Herkesin görevini yapmasıyla hayatın daha kolaylaştığını düşünürdü.",
+        "beceri_adi": "Rolünü Bilme",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Bu, takım içindeki rolünü iyi anladığını gösteriyordu.",
+        "deger_cumlesi": "Bu sorumluluğunu her zaman yerine getirirdi, çünkü ailesinin bir parçası olmanın bunu gerektirdiğini biliyordu."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Zeynep, her hafta ailesinden harçlık alıyordu. Bu hafta, çok istediği bir kitabı almak için para biriktirmeye karar verdi. Öncelikle bir kâğıda haftalık gelirini yani harçlığını yazdı. Sonra okul kantinindeki zorunlu ihtiyaçlarını listeledi. Kalan paranın bir kısmını kumbarasına atarak tasarruf etti. Bu sayede hem gereksiz harcamalardan kaçınmış oldu hem de kitabına daha çabuk kavuşacaktı. Zeynep, isteklerini ve ihtiyaçlarını ayırarak bilinçli bir tüketici olmanın ilk adımını atmıştı. Parasını idareli kullanmak, ona hem istediği şeye ulaşma hem de sorumluluk duygusu kazandırıyordu.",
+        "beceri_adi": "Bütçe Planlama",
+        "deger_adi": "Tutumlu Olma",
+        "beceri_cumlesi": "Öncelikle bir kâğıda haftalık gelirini yani harçlığını yazdı.",
+        "deger_cumlesi": "Kalan paranın bir kısmını kumbarasına atarak tasarruf etti."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Mahallemizde yalnız yaşayan Ayşe Teyze'nin bahçesi, yağan şiddetli yağmurdan sonra çamur içinde kalmıştı. Bahçesini tek başına temizlemesi çok zordu. Bunu gören mahalle sakinleri hemen organize oldular. Komşulardan biri çizmeleri, diğeri eldivenleri getirdi. Gençler, bahçedeki çamurları ve dökülen yaprakları temizlemek için birlikte çalıştılar. Birkaç saat içinde bahçe eskisinden de güzel olmuştu. Bu olay, zor zamanlarda bir araya gelmenin ve birbirimize destek olmanın ne kadar değerli olduğunu herkese gösterdi. Birlikten kuvvet doğar sözü, o gün mahallemizde yeniden anlam bulmuştu.",
+        "beceri_adi": "Çözüm Üretme",
+        "deger_adi": "Yardımlaşma",
+        "beceri_cumlesi": "Bunu gören mahalle sakinleri hemen organize oldular.",
+        "deger_cumlesi": "Gençler, bahçedeki çamurları ve dökülen yaprakları temizlemek için birlikte çalıştılar."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Sınıfımıza başka bir şehirden gelen yeni arkadaşımız Ayşe, yöresel yemeklerini ve bayramlarını anlattığında hepimiz merakla dinledik. Onun anlattığı özel yemekler bizim bildiklerimize hiç benzemiyordu ama çok ilginçti. Ayşe, bayramlarda büyüklerin ellerini öptükten sonra onlara kolonya ve şeker ikram etme geleneğinden bahsetti. Başta farklı gibi görünse de aslında hepimizin ortak değerleri vardı. Birbirimizin kültürel özelliklerini öğrenmek, aramızdaki arkadaşlık bağını daha da güçlendirdi. Farklılıkların bir zenginlik olduğunu ve bunlara saygı duymanın ne kadar önemli olduğunu anladık.",
+        "beceri_adi": "Farklılıkları Anlama",
+        "deger_adi": "Hoşgörü",
+        "beceri_cumlesi": "Başta farklı gibi görünse de aslında hepimizin ortak değerleri vardı.",
+        "deger_cumlesi": "Farklılıkların bir zenginlik olduğunu ve bunlara saygı duymanın ne kadar önemli olduğunu anladık."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Eskiden yemyeşil tarlaları ve temiz bir deresi olan köyümüze büyük bir fabrika kuruldu. Fabrikanın kurulmasıyla birlikte köydeki birçok insan iş sahibi oldu, bu olumlu bir gelişmeydi. Ancak zamanla fabrikanın atıkları dereye karışmaya başladı ve derenin rengi değişti, balıklar öldü. Bu durum, plansız sanayileşmenin doğal çevreye verdiği zararın bir sonucuydu. Köylüler, çevreye daha saygılı üretim yöntemleri için yetkililerle konuşmaya karar verdiler. Doğayı korumanın, en az ekonomik kalkınma kadar önemli olduğunu anlamışlardı. Çünkü temiz bir çevrede yaşamak herkesin hakkıydı.",
+        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
+        "deger_adi": "Çevre Duyarlılığı",
+        "beceri_cumlesi": "Bu durum, plansız sanayileşmenin doğal çevreye verdiği zararın bir sonucuydu.",
+        "deger_cumlesi": "Köylüler, çevreye daha saygılı üretim yöntemleri için yetkililerle konuşmaya karar verdiler."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Okul bahçemizdeki salıncaklardan biri kırılmıştı ve bu durum tehlike yaratıyordu. Bazı arkadaşlarımız \"Birileri tamir eder,\" deyip geçti. Ama Elif ve arkadaşları bu soruna kayıtsız kalmadılar. Okul yönetimine durumu bildiren bir dilekçe yazmaya karar verdiler. Dilekçeye, sorunun ne olduğunu ve neden düzeltilmesi gerektiğini açıkça yazdılar. İmza toplayarak diğer öğrencilerin de desteğini aldılar. Bu girişimleri sayesinde okul yönetimi sorundan haberdar oldu ve salıncak kısa sürede onarıldı. Elif ve arkadaşları, sorunlara duyarsız kalmayıp çözümün bir parçası olmanın önemini kavramışlardı.",
+        "beceri_adi": "Çıkarımda Bulunma",
+        "deger_adi": "Katılımcılık",
+        "beceri_cumlesi": "Elif ve arkadaşları, sorunlara duyarsız kalmayıp çözümün bir parçası olmanın önemini kavramışlardı.",
+        "deger_cumlesi": "Okul yönetimine durumu bildiren bir dilekçe yazmaya karar verdiler."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Akıllı telefonlar hayatımızın vazgeçilmez bir parçası haline geldi. Uzaktaki akrabalarımızla görüntülü konuşabiliyor, anında bilgiye ulaşabiliyoruz. Bu, teknolojinin sosyal ilişkileri güçlendiren olumlu bir yönüdür. Ancak bazen aynı masada oturan insanların bile birbirleriyle konuşmak yerine telefonlarına baktığını görüyoruz. Bu durum, yüz yüze iletişimi zayıflatabilir. Teknolojinin faydaları kadar zararları da olabileceğini unutmamalıyız. Önemli olan, bu araçları bilinçli bir şekilde kullanarak hayatımızı kolaylaştırmasını sağlamak, sosyal bağlarımızı zayıflatmasına izin vermemektir.",
+        "beceri_adi": "Etkileri Değerlendirme",
+        "deger_adi": "Bilinçli Olma",
+        "beceri_cumlesi": "Teknolojinin faydaları kadar zararları da olabileceğini unutmamalıyız.",
+        "deger_cumlesi": "Önemli olan, bu araçları bilinçli bir şekilde kullanarak hayatımızı kolaylaştırmasını sağlamak, sosyal bağlarımızı zayıflatmasına izin vermemektir."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Tarih dersinde öğretmenimiz, Mezopotamya ve Anadolu medeniyetlerinin insanlığa katkılarını incelememizi istedi. Mezopotamya’da yaşayan Sümerler, çivi yazısını icat ederek bilginin kaydedilmesini sağladılar. Anadolu’da kurulan Hititler ise tarihteki ilk yazılı antlaşma olan Kadeş Antlaşması'nı imzalayarak diplomasi ve hukuk alanında önemli bir adım attılar. Her iki medeniyet de yazıyı kullanmış olsa da, kullanım amaçları ve geliştirdikleri sistemler farklılık gösteriyordu. Sümerlerin icadı genel bir devrimken, Hititlerin antlaşması devletler arası ilişkiler için bir ilkti. Bu eski uygarlıkları araştırmak, günümüz dünyasını daha iyi anlamamızı sağlıyor.",
+        "beceri_adi": "Karşılaştırma Yapabilme",
+        "deger_adi": "Bilimsel Merak",
+        "beceri_cumlesi": "Her iki medeniyet de yazıyı kullanmış olsa da, kullanım amaçları ve geliştirdikleri sistemler farklılık gösteriyordu.",
+        "deger_cumlesi": "Bu eski uygarlıkları araştırmak, günümüz dünyasını daha iyi anlamamızı sağlıyor."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Demokrasi, halkın kendi kendini yönetmesi anlamına gelen bir yönetim ilkesidir. Bu ilkenin en iyi uygulandığı yönetim biçimi ise cumhuriyettir. Cumhuriyet yönetiminde, devleti yönetecek kişiler halk tarafından belirli bir süre için seçimle belirlenir. Yani, egemenlik kayıtsız şartsız milletindir ve millet bu hakkını seçtiği temsilciler aracılığıyla kullanır. Bu iki kavram birbiriyle ayrılmaz bir bütündür; cumhuriyet, demokrasinin somut bir şekilde hayata geçtiği bir rejimdir. Atatürk'ün \"Egemenlik kayıtsız şartsız milletindir.\" sözü, bu temel ilişkiyi en güzel şekilde özetler ve yönetme gücünün kaynağının halk olduğunu vurgular.",
         "beceri_adi": "İlişki Kurma",
         "deger_adi": "Milli Egemenlik",
-        "beceri_cumlesi": "Yani cumhuriyet, demokrasinin uygulanabilmesi için en uygun yönetim biçimidir.",
-        "deger_cumlesi": "Egemenliğin, yani yönetme gücünün millete ait olması, bu iki kavramın temelini oluşturur."
+        "beceri_cumlesi": "Bu iki kavram birbiriyle ayrılmaz bir bütündür; cumhuriyet, demokrasinin somut bir şekilde hayata geçtiği bir rejimdir.",
+        "deger_cumlesi": "Yani, egemenlik kayıtsız şartsız milletindir ve millet bu hakkını seçtiği temsilciler aracılığıyla kullanır."
     },
     {
         "zorluk": "zor",
-        "metin": "Can, ailesiyle birlikte Anadolu'daki ilk şehir yerleşimlerinden biri olan Çatalhöyük'ü ziyaret etti. Rehber, insanların evlere çatılardaki açıklıklardan merdivenlerle girdiğini anlattı. Can, gözlerini kapatıp binlerce yıl öncesini hayal etti. O dönemde yaşayan bir çocuk gibi düşündü: Okul yoktu, teknoloji yoktu ama güçlü bir toplumsal yaşam ve sanat vardı. Bu gezi, Can'ın o insanların sosyal hayatına yönelik farklı bir bakış açısı geliştirmesini sağladı. Okula döndüğünde, öğrendiklerinden yola çıkarak Çatalhöyük'teki bir evin maketini yaptı. Bu ürünü sınıf arkadaşlarıyla paylaşarak ortak mirasımıza sahip çıkmanın önemini gösterdi.",
-        "beceri_adi": "Bakış Açısı Geliştirme",
+        "metin": "Su, hayatın temel kaynağıdır ancak sınırsız değildir. Bugün suyu boşa harcamamız, gelecekte hem doğa hem de insanlar için ciddi sorunlar yaratabilir. Örneğin, tarımda kullanılan suyun azalması gıda üretimini düşürebilir. Barajlardaki su seviyesinin düşmesi, elektrik üretimini olumsuz etkileyebilir. Bu durum, kaynakların verimsiz kullanılmasının zincirleme bir etki yarattığını gösterir. Suyu tasarruflu kullanmak sadece bugünün faturasını düşürmek değil, aynı zamanda gelecek nesillerin de bu hayati kaynağa ulaşabilmesini sağlamaktır. Bu bilinçle hareket etmek, gezegenimize karşı en büyük sorumluluğumuzdur.",
+        "beceri_adi": "Yorumlama",
+        "deger_adi": "Sürdürülebilirlik",
+        "beceri_cumlesi": "Bu durum, kaynakların verimsiz kullanılmasının zincirleme bir etki yarattığını gösterir.",
+        "deger_cumlesi": "Suyu tasarruflu kullanmak sadece bugünün faturasını düşürmek değil, aynı zamanda gelecek nesillerin de bu hayati kaynağa ulaşabilmesini sağlamaktır."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Ali, sınıfın \"Sosyal Yardımlaşma\" kulübünün bir üyesiydi. Gruptaki rolü, dönem başında ihtiyaç sahipleri için toplanacak kitap ve kırtasiye malzemelerini listelemek ve düzenlemekti. Bu görevini her zaman eksiksiz yapmaya çalışırdı. Bir gün, arkadaşı Can'ın ödevini yapmakta zorlandığını fark etti. Kendi görevleri bitmiş olmasına rağmen, hemen Can'ın yanına giderek ona destek oldu. Birlikte çalışarak ödevi tamamladılar. Ali, hem grubundaki sorumluluğunu yerine getirmiş hem de arkadaşına el uzatarak dayanışmanın önemini göstermişti. Bu davranışıyla herkesin takdirini kazandı.",
+        "beceri_adi": "Rolünü Bilme",
+        "deger_adi": "Yardımlaşma",
+        "beceri_cumlesi": "Gruptaki rolü, dönem başında ihtiyaç sahipleri için toplanacak kitap ve kırtasiye malzemelerini listelemek ve düzenlemekti.",
+        "deger_cumlesi": "Kendi görevleri bitmiş olmasına rağmen, hemen Can'ın yanına giderek ona destek oldu."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Zeynep, uzun zamandır hayalini kurduğu bisikleti alabilmek için para biriktirmeye karar verdi. Babasının verdiği haftalık harçlığı hemen harcamak yerine, bir kumbara aldı. Önce bir kâğıda ihtiyaçlarını ve isteklerini yazdı. Okul kantininden her gün atıştırmalık almak yerine, parasının bir kısmını biriktirmeyi seçti. Bu şekilde gereksiz harcamalardan kaçınarak hedefine daha hızlı ulaşabileceğini biliyordu. Birkaç ay sonra, planlı davranması sayesinde kumbarasında yeterli parayı biriktirmeyi başardı. Artık hayalindeki bisiklete kavuşabilirdi, çünkü kaynaklarını akıllıca kullanmıştı.",
+        "beceri_adi": "Bütçe Planlama",
+        "deger_adi": "Tutumlu Olma",
+        "beceri_cumlesi": "Önce bir kâğıda ihtiyaçlarını ve isteklerini yazdı.",
+        "deger_cumlesi": "Bu şekilde gereksiz harcamalardan kaçınarak hedefine daha hızlı ulaşabileceğini biliyordu."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "İnternet, ödevlerimizi yaparken veya yeni şeyler öğrenirken bize müthiş kolaylıklar sağlayan bir teknoloji. Ancak onu kullanırken bazı kurallara uymak gerekiyor. Örneğin, sosyal medya hesaplarımızda kişisel bilgilerimizi, adresimizi veya telefon numaramızı tanımadığımız kişilerle asla paylaşmamalıyız. Bu, bizim güvenliğimiz için çok önemlidir. Ayrıca, saatlerce ekran başında kalmak yerine, internet kullanımımıza bir sınır koymalıyız. Böylece hem göz sağlığımızı korumuş oluruz hem de ailemize ve arkadaşlarımıza daha fazla vakit ayırabiliriz. Teknoloji, sorumlu kullanıldığında en iyi dostumuzdur.",
+        "beceri_adi": "Bilinçli Kullanım",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Ayrıca, saatlerce ekran başında kalmak yerine, internet kullanımımıza bir sınır koymalıyız.",
+        "deger_cumlesi": "Örneğin, sosyal medya hesaplarımızda kişisel bilgilerimizi, adresimizi veya telefon numaramızı tanımadığımız kişilerle asla paylaşmamalıyız."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Ankara, Türkiye'nin coğrafi olarak merkezine yakın bir konumda bulunur ve başkentimizdir. Doğusunda Kırıkkale, batısında Eskişehir gibi komşu illerle çevrilidir. Bu konumu, ulaşım açısından ona büyük bir avantaj sağlar. Son yıllarda şehrin çevresine kurulan yeni sanayi tesisleri, bölgedeki ekonomik hayatı canlandırsa da hava kirliliğinde artışa neden olmuştur. Bu durum, şehrin doğal çevresindeki değişimi gözler önüne sermektedir. Bu nedenle, kalkınma planları yapılırken yeşil alanların korunması ve doğal dengeye saygı gösterilmesi büyük önem taşımaktadır.",
+        "beceri_adi": "Konum Belirleme",
+        "deger_adi": "Çevreye Duyarlılık",
+        "beceri_cumlesi": "Doğusunda Kırıkkale, batısında Eskişehir gibi komşu illerle çevrilidir.",
+        "deger_cumlesi": "Bu nedenle, kalkınma planları yapılırken yeşil alanların korunması ve doğal dengeye saygı gösterilmesi büyük önem taşımaktadır."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Mahalle parkındaki salıncağın kırık olduğunu gören bir grup öğrenci, sadece şikâyet etmekle yetinmedi. Toplumun bir parçası olarak üzerlerine düşeni yapmaya karar verdiler. Önce aralarında bir dilekçe hazırladılar ve parktaki sorunu detaylıca anlattılar. Bu dilekçeyi imzalayarak belediyenin ilgili birimine başvurdular. Güvenli bir çevrede yaşamanın temel hakları olduğunu, bu hakkı korumak için harekete geçmenin ise bir vatandaşlık sorumluluğu olduğunu biliyorlardı. Bu davranışları, sorunlar karşısında nasıl çözüm odaklı ve adil bir yol izlenmesi gerektiğine güzel bir örnekti.",
+        "beceri_adi": "Etkin Vatandaşlık",
+        "deger_adi": "Adalet",
+        "beceri_cumlesi": "Bu dilekçeyi imzalayarak belediyenin ilgili birimine başvurdular.",
+        "deger_cumlesi": "Güvenli bir çevrede yaşamanın temel hakları olduğunu, bu hakkı korumak için harekete geçmenin ise bir vatandaşlık sorumluluğu olduğunu biliyorlardı."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Sınıfımıza bu yıl farklı bir ülkeden yeni bir arkadaşımız katıldı. Adı Leyla'ydı ve başta biraz çekingendi. Onun konuştuğu dil, yemek alışkanlıkları ve kutladığı bazı özel günler bizden farklıydı. Öğretmenimiz, bu farklılıkların birer zenginlik olduğunu anlattı. Biz de Leyla'ya kendi kültürünü bize anlatması için sorular sorduk. Onun getirdiği farklı bir yemeği tattık ve çok beğendik. Kısa sürede, birbirimizin kültürel özelliklerine karşı anlayışlı olmanın arkadaşlığımızı daha da güçlendirdiğini fark ettik. Artık hep birlikte daha mutlu bir sınıf ortamı oluşturmuştuk.",
+        "beceri_adi": "Farklılıklara Saygı",
+        "deger_adi": "Hoşgörü",
+        "beceri_cumlesi": "Kısa sürede, birbirimizin kültürel özelliklerine karşı anlayışlı olmanın arkadaşlığımızı daha da güçlendirdiğini fark ettik.",
+        "deger_cumlesi": "Biz de Leyla'ya kendi kültürünü bize anlatması için sorular sorduk."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Ayşe'nin yaşadığı şehir olan Gaziantep, Zeugma Antik Kenti gibi paha biçilmez tarihi eserlere ev sahipliği yapıyordu. Öğretmeni, \"Yaşadığımız Yerin Ortak Mirası\" konulu bir proje ödevi verdi. Ayşe, bu ödev için Zeugma Mozaik Müzesi'ni ziyaret etti, bol bol fotoğraf çekti ve mozaiklerin hikayelerini araştırdı. Topladığı bilgilerle harika bir sunum hazırladı ve bu sunumu sınıf arkadaşlarıyla paylaştı. Şehrinin bu kadar köklü bir tarihe sahip olmasından gurur duyuyordu. Bu ortak mirası korumanın ve gelecek nesillere aktarmanın bir vatandaşlık görevi olduğunu düşünüyordu.",
+        "beceri_adi": "Kültürel Mirası Tanıtma",
+        "deger_adi": "Vatanseverlik",
+        "beceri_cumlesi": "Topladığı bilgilerle harika bir sunum hazırladı ve bu sunumu sınıf arkadaşlarıyla paylaştı.",
+        "deger_cumlesi": "Bu ortak mirası korumanın ve gelecek nesillere aktarmanın bir vatandaşlık görevi olduğunu düşünüyordu."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Türkiye, önemli deprem kuşakları üzerinde yer alan bir ülkedir. Bu nedenle her an bir depreme hazırlıklı olmalıyız. Afet öncesinde içinde el feneri, su, ilk yardım malzemesi gibi temel ihtiyaçların bulunduğu bir afet çantası hazırlamak hayati önem taşır. Komşumuz İran da benzer bir coğrafi kadere sahiptir ve sık sık depremlerle yüzleşir. Büyük afetler yaşandığında, ülkeler arasındaki siyasi sınırlar önemini yitirir. Komşu ülkeler, arama kurtarma ekipleri göndererek ve yardım malzemeleri sağlayarak birbirlerine destek olur. Bu durum, zor zamanlarda uluslararası dayanışmanın ne kadar değerli olduğunu gösterir.",
+        "beceri_adi": "Afet Farkındalığı",
+        "deger_adi": "İş birliği",
+        "beceri_cumlesi": "Afet öncesinde içinde el feneri, su, ilk yardım malzemesi gibi temel ihtiyaçların bulunduğu bir afet çantası hazırlamak hayati önem taşır.",
+        "deger_cumlesi": "Komşu ülkeler, arama kurtarma ekipleri göndererek ve yardım malzemeleri sağlayarak birbirlerine destek olur."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Tarih, insanlığın ortak hafızasıdır ve bu hafızanın oluşmasında bazı medeniyetlerin katkısı diğerlerinden daha fazladır. Örneğin Mezopotamya'da yaşamış olan Sümerler, MÖ 3500'lerde çivi yazısını icat ederek bilginin kaydedilmesini ve nesilden nesile aktarılmasını sağlamıştır. Bu, insanlık için dev bir adımdı. Anadolu'da kurulan Hititler ise, Mısırlılarla imzaladıkları Kadeş Antlaşması ile tarihteki ilk yazılı barış antlaşmasına imza atmışlardır. Sümerlerin buluşu bilimin temelini atarken, Hititlerin bu adımı diplomasi fikrinin ilk tohumlarını ekmiştir. Her iki medeniyet de farklı alanlarda ortak dünya mirasına silinmez izler bırakmıştır.",
+        "beceri_adi": "Medeniyetleri Karşılaştırma",
+        "deger_adi": "Bilimsellik",
+        "beceri_cumlesi": "Sümerlerin buluşu bilimin temelini atarken, Hititlerin bu adımı diplomasi fikrinin ilk tohumlarını ekmiştir.",
+        "deger_cumlesi": "Her iki medeniyet de farklı alanlarda ortak dünya mirasına silinmez izler bırakmıştır."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Cumhuriyet ve demokrasi, birbiriyle sıkı sıkıya bağlı iki temel kavramdır. Cumhuriyet, devlet başkanının halk tarafından belirli bir süre için seçildiği yönetim biçimidir. Yani yönetimin kaynağının halk olduğunu ifade eder. Demokrasi ise halkın egemenliğine dayanan bir yönetim anlayışıdır ve halkın seçme ve seçilme hakkını kullanarak bu egemenliği kullanmasını sağlar. Dolayısıyla, Türkiye Cumhuriyeti'nde yöneticilerin seçimle iş başına gelmesi, cumhuriyetin demokratik ilkelere dayandığını gösterir. Halkın özgür iradesiyle yöneticilerini belirleyebilmesi, bu iki kavramın bir arada var olmasının en somut kanıtıdır.",
+        "beceri_adi": "Kavramsal İlişki Kurma",
+        "deger_adi": "Özgürlük",
+        "beceri_cumlesi": "Dolayısıyla, Türkiye Cumhuriyeti'nde yöneticilerin seçimle iş başına gelmesi, cumhuriyetin demokratik ilkelere dayandığını gösterir.",
+        "deger_cumlesi": "Halkın özgür iradesiyle yöneticilerini belirleyebilmesi, bu iki kavramın bir arada var olmasının en somut kanıtıdır."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Okul futbol takımına bu yıl kaptan olarak seçildim. Bu benim için sadece bir unvan değil, aynı zamanda büyük bir görev demek. Antrenman saatlerini arkadaşlarıma hatırlatmak, sahada takım ruhunu canlı tutmak ve herkesin birbirine saygılı davranmasını sağlamak gibi önemli işlerim var. Her oyuncunun sorununu dinlemek ve çözüm bulmaya çalışmak benim en temel görevim. Bu rol, bana takım çalışmasının ne kadar değerli olduğunu ve bir liderin görevlerini zamanında yapmasının başarıyı nasıl etkilediğini öğretti. Üzerimdeki bu görevin farkındayım ve en iyi şekilde yerine getirmek için çabalıyorum.",
+        "beceri_adi": "Rol Üstlenme",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Okul futbol takımına bu yıl kaptan olarak seçildim.",
+        "deger_cumlesi": "Her oyuncunun sorununu dinlemek ve çözüm bulmaya çalışmak benim en temel görevim."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Annem ve babam bana her hafta harçlık veriyor. Ben de bu harçlığımla uzun zamandır hayalini kurduğum bisikleti almak istiyorum. Bunun için bir plan yaptım. Önce bir deftere haftalık gelirimi ve zorunlu harcamalarımı yazdım. Kantin masrafım gibi ihtiyaçlarımı ayırdıktan sonra, kalan paranın bir kısmını kumbarama atıyorum. Bazen canım çikolata veya oyuncak almak istese de hedefimi düşünerek vazgeçiyorum. Bu sayede paramı biriktirerek hem isteklerime ulaşabileceğimi hem de gereksiz harcamalardan kaçınabileceğimi öğrendim. Hedefime ulaşmak için sabırla para biriktirmeye devam edeceğim.",
+        "beceri_adi": "Bütçe Planlama",
+        "deger_adi": "Tasarruf",
+        "beceri_cumlesi": "Önce bir deftere haftalık gelirimi ve zorunlu harcamalarımı yazdım.",
+        "deger_cumlesi": "Kantin masrafım gibi ihtiyaçlarımı ayırdıktan sonra, kalan paranın bir kısmını kumbarama atıyorum."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Teknolojiyi çok seviyorum ve tabletimde oyun oynamak, internette araştırma yapmak hoşuma gidiyor. Ancak ailemle bir kural belirledik: Günde sadece bir saat ekran sürem var. Bu kural, ödevlerime ve derslerime daha fazla zaman ayırmamı sağlıyor. Ayrıca akşamları ailemle sohbet etmek veya kitap okumak için de vaktim kalıyor. Bazen arkadaşlarım yeni bir oyundan bahsettiğinde daha fazla oynamak istesem de kendimi kontrol ediyorum. Çünkü teknolojiyi amaçlarıma uygun ve sınırlı bir şekilde kullanmanın daha faydalı olduğunu biliyorum. Bu sayede hem eğleniyor hem de sorumluluklarımı aksatmıyorum.",
+        "beceri_adi": "Bilinçli Kullanım",
+        "deger_adi": "Öz Denetim",
+        "beceri_cumlesi": "Çünkü teknolojiyi amaçlarıma uygun ve sınırlı bir şekilde kullanmanın daha faydalı olduğunu biliyorum.",
+        "deger_cumlesi": "Bazen arkadaşlarım yeni bir oyundan bahsettiğinde daha fazla oynamak istesem de kendimi kontrol ediyorum."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Yaşadığım kasabanın yakınlarına büyük bir sanayi tesisi kuruldu. Bu tesis sayesinde birçok insan iş buldu ve kasabamız ekonomik olarak canlandı. Ancak bir süre sonra fabrikanın bacasından çıkan dumanlar nedeniyle hava kirliliği arttı. Bunun sonucunda, kasabamızın etrafındaki ormanlık alanda ağaçların yaprakları sararmaya ve yakındaki derede yaşayan balıkların sayısı azalmaya başladı. İnsanlar daha sık solunum yolu hastalıkları yaşamaya başladı. Bu durum, bize ekonomik gelişmenin çevreye zarar vermeden yapılması gerektiğini acı bir şekilde gösterdi. Doğayı korumak hepimizin görevidir.",
+        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
+        "deger_adi": "Çevre Duyarlılığı",
+        "beceri_cumlesi": "Ancak bir süre sonra fabrikanın bacasından çıkan dumanlar nedeniyle hava kirliliği arttı.",
+        "deger_cumlesi": "Bu durum, bize ekonomik gelişmenin çevreye zarar vermeden yapılması gerektiğini acı bir şekilde gösterdi."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Mahallemizdeki parkta bulunan salıncaklardan biri kırılmıştı ve uzun süredir tamir edilmiyordu. Bu durum, küçük çocuklar için tehlike oluşturuyordu. Arkadaşlarımla bir araya gelip bu sorunu çözmek için ne yapabileceğimizi düşündük. İlk olarak, mahalle sakinlerinden imza toplamaya karar verdik ve bir dilekçe hazırladık. Topladığımız imzalarla birlikte hazırladığımız dilekçeyi belediyeye başvuru yaparak teslim ettik. Sadece şikâyet etmek yerine harekete geçmenin ne kadar önemli olduğunu anladık. Bir vatandaş olarak yaşadığımız çevrenin sorunlarına karşı duyarlı olmak ve çözüm için çaba göstermek hepimizin sorumluluğudur.",
+        "beceri_adi": "Etkin Vatandaşlık",
+        "deger_adi": "Katılımcılık",
+        "beceri_cumlesi": "Bir vatandaş olarak yaşadığımız çevrenin sorunlarına karşı duyarlı olmak ve çözüm için çaba göstermek hepimizin sorumluluğudur.",
+        "deger_cumlesi": "Topladığımız imzalarla birlikte hazırladığımız dilekçeyi belediyeye başvuru yaparak teslim ettik."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Sınıfımıza bu yıl başka bir ülkeden yeni bir arkadaşımız katıldı. İlk başlarda dili ve alışkanlıkları bizden farklı olduğu için iletişim kurmakta zorlandık. Ancak öğretmenimiz, onun kültürünü tanımamız için bir etkinlik düzenledi. Arkadaşımız bize kendi ülkesinin yemeklerini, müziklerini ve bayramlarını anlattı. Onun anlattıklarını dinledikçe, farklılıkların aslında bir zenginlik olduğunu anladık. Artık hep birlikte oyunlar oynuyoruz ve birbirimizden yeni şeyler öğreniyoruz. Birbirimizin kültürel özelliklerine anlayış göstermenin, birlikte mutlu yaşamanın en önemli anahtarı olduğunu öğrendik. Bu sayede sınıfımız daha renkli bir yer oldu.",
+        "beceri_adi": "Farklılıklara Saygı",
+        "deger_adi": "Hoşgörü",
+        "beceri_cumlesi": "Onun anlattıklarını dinledikçe, farklılıkların aslında bir zenginlik olduğunu anladık.",
+        "deger_cumlesi": "Birbirimizin kültürel özelliklerine anlayış göstermenin, birlikte mutlu yaşamanın en önemli anahtarı olduğunu öğrendik."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Şehrimizde yüzlerce yıllık tarihi bir köprü var. Bu köprü, atalarımızdan bize kalan değerli bir armağan. Ancak son zamanlarda bazı insanların köprünün duvarlarına yazılar yazdığını ve çöplerini etrafa attığını fark ettik. Bu duruma çok üzüldük ve okulumuzun sosyal bilgiler kulübü olarak bir proje başlattık. Köprünün tarihini ve önemini anlatan broşürler hazırlayıp halka dağıttık. Ayrıca, belediye ile görüşerek köprünün çevresine uyarı levhaları ve çöp kutuları konulmasını sağladık. Bizden sonraki nesillerin de bu güzelliği görebilmesi için ortak mirasımıza sahip çıkmalıyız.",
+        "beceri_adi": "Mirası Koruma",
+        "deger_adi": "Kültürel Değerlere Sahip Çıkma",
+        "beceri_cumlesi": "Bizden sonraki nesillerin de bu güzelliği görebilmesi için ortak mirasımıza sahip çıkmalıyız.",
+        "deger_cumlesi": "Bu köprü, atalarımızdan bize kalan değerli bir armağan."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Tarih dersinde Anadolu ve Mezopotamya uygarlıklarını öğrendik. Her iki bölge de insanlık tarihine büyük katkılar sunmuş. Örneğin Mezopotamya'da yaşayan Sümerler, çivi yazısını icat ederek bilginin kaydedilmesini ve gelecek nesillere aktarılmasını sağlamıştır. Anadolu'da kurulan Hititler ise tarihin ilk yazılı antlaşması olan Kadeş Antlaşması'nı imzalayarak diplomasi ve devletler arası hukuk alanında önemli bir adım atmıştır. Sümerler yazıyı günlük yaşam ve ticaret için kullanırken, Hititler bu icadı siyasi ilişkileri düzenlemek için de kullanmıştır. Bu iki farklı coğrafyadaki medeniyetlerin insanlığın ortak mirasına ne kadar çeşitli katkılar yaptığını görmek çok etkileyici.",
+        "beceri_adi": "Karşılaştırma Yapma",
+        "deger_adi": "Tarih Bilinci",
+        "beceri_cumlesi": "Sümerler yazıyı günlük yaşam ve ticaret için kullanırken, Hititler bu icadı siyasi ilişkileri düzenlemek için de kullanmıştır.",
+        "deger_cumlesi": "Bu iki farklı coğrafyadaki medeniyetlerin insanlığın ortak mirasına ne kadar çeşitli katkılar yaptığını görmek çok etkileyici."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Cumhuriyet, egemenliğin yani yönetme yetkisinin millete ait olduğu bir yönetim şeklidir. Bu yönetim biçiminde hiç kimse veya hiçbir grup, halkın iradesinin üzerinde değildir. Demokrasi ise bu egemenliğin nasıl kullanılacağını gösteren bir yaşam biçimidir. Halk, yöneticilerini belirli aralıklarla yapılan seçimlerle kendisi belirler ve bu yolla yönetime katılır. Böylece cumhuriyetin sağladığı halk egemenliği, demokrasinin araçları olan seçimler ve katılım ile hayata geçer. Bu iki kavram, birbirini tamamlayarak her vatandaşın eşit haklara sahip olduğu, adil bir toplum düzeninin temelini oluşturur.",
+        "beceri_adi": "Kavramsal İlişki Kurma",
+        "deger_adi": "Adalet",
+        "beceri_cumlesi": "Böylece cumhuriyetin sağladığı halk egemenliği, demokrasinin araçları olan seçimler ve katılım ile hayata geçer.",
+        "deger_cumlesi": "Bu iki kavram, birbirini tamamlayarak her vatandaşın eşit haklara sahip olduğu, adil bir toplum düzeninin temelini oluşturur."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Yaşadığımız bölgenin bir deprem kuşağında olduğunu öğrendikten sonra ailece bir afet planı hazırlamaya karar verdik. İlk olarak evimizdeki devrilebilecek eşyaları duvara sabitledik. Ardından içinde el feneri, su, ilk yardım malzemeleri ve düdük gibi temel ihtiyaçların olduğu bir afet ve acil durum çantası hazırladık. Olası bir deprem anında ev içinde ve dışında nerede toplanacağımızı kararlaştırdık ve birkaç kez tatbikat yaptık. Doğal afetlere karşı önlem almanın, paniği azaltacağını ve güvende kalmamıza yardımcı olacağını artık çok daha iyi anlıyoruz. Bu hazırlık, bilinçli ve sorumlu bir davranışın en önemli parçasıdır.",
+        "beceri_adi": "Farkındalık Geliştirme",
+        "deger_adi": "Tedbirlilik",
+        "beceri_cumlesi": "Doğal afetlere karşı önlem almanın, paniği azaltacağını ve güvende kalmamıza yardımcı olacağını artık çok daha iyi anlıyoruz.",
+        "deger_cumlesi": "İlk olarak evimizdeki devrilebilecek eşyaları duvara sabitledik."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Elif, hem ailesinin bir üyesi hem de okulun satranç kulübünün başkanıdır. Evde, odasını toplamak ve küçük kardeşine ödevlerinde yardım etmek gibi sorumlulukları vardır. Bu görevleri, ailesindeki \"abla\" rolünün bir parçasıdır. Okulda ise kulüp başkanı olarak turnuva düzenlemek ve yeni üyelere oyunu öğretmek onun görevidir. Geçen hafta, arkadaşı Ali hastalandığı için ders notlarını tutamamıştı. Elif, kendi notlarını Ali ile paylaşarak onun derslerinden geri kalmamasını sağladı. Bu sayede Ali, sınavına daha iyi hazırlanabildi. Elif, farklı gruplardaki rollerini başarıyla yerine getirirken, arkadaşlarını da unutmuyordu.",
+        "beceri_adi": "Rolünü Bilme",
+        "deger_adi": "Yardımlaşma",
+        "beceri_cumlesi": "Evde, odasını toplamak ve küçük kardeşine ödevlerinde yardım etmek gibi sorumlulukları vardır.",
+        "deger_cumlesi": "Elif, kendi notlarını Ali ile paylaşarak onun derslerinden geri kalmamasını sağladı."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Arda, yeni tabletiyle oynamayı çok seviyordu. Ancak bir süre sonra ödevlerini aksattığını ve ailesiyle daha az vakit geçirdiğini fark etti. Annesi, teknolojinin faydalı olduğunu ama bilinçli kullanılması gerektiğini söyledi. Birlikte bir plan yaptılar. Arda, artık tabletini sadece ödevlerini bitirdikten sonra ve günde en fazla bir saat kullanacaktı. Kalan zamanında ise kitap okuyor, arkadaşlarıyla dışarıda oynuyor ve ailesine yardım ediyordu. Bu plan sayesinde hem derslerinde daha başarılı oldu hem de teknolojiyle arasındaki dengeyi kurmayı öğrendi. Arda, teknolojiyi sorumlu bir şekilde kullanmanın ne kadar önemli olduğunu anlamıştı.",
+        "beceri_adi": "Zaman Yönetimi",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Arda, artık tabletini sadece ödevlerini bitirdikten sonra ve günde en fazla bir saat kullanacaktı.",
+        "deger_cumlesi": "Bu plan sayesinde hem derslerinde daha başarılı oldu hem de teknolojiyle arasındaki dengeyi kurmayı öğrendi."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Mert, Konya'da yaşıyor ve ailesi buğday tarımıyla uğraşıyor. Şehrin geniş ovalarında traktörlerin tarlaları sürdüğünü ve yaz aylarında buğday başaklarının sapsarı olduğunu sıkça görür. Babası ona, Konya'nın Türkiye'nin \"tahıl ambarı\" olarak bilindiğini anlatır. Ancak su kaynaklarının ne kadar değerli olduğunu da sık sık hatırlatır. Bu yüzden, tarlalarını sabahtan çok erken veya akşam saatlerinde, yani suyun buharlaşmasının az olduğu zamanlarda sularlar. Bu yöntemle hem sudan tasarruf ederler hem de bitkilerin daha iyi büyümesini sağlarlar. Mert, ekonomik faaliyetlerin doğayla ne kadar iç içe olduğunu bu şekilde öğrenir.",
+        "beceri_adi": "Gözlem Yapma",
+        "deger_adi": "Tasarruf",
+        "beceri_cumlesi": "Şehrin geniş ovalarında traktörlerin tarlaları sürdüğünü ve yaz aylarında buğday başaklarının sapsarı olduğunu sıkça görür.",
+        "deger_cumlesi": "Bu yüzden, tarlalarını sabahtan çok erken veya akşam saatlerinde, yani suyun buharlaşmasının az olduğu zamanlarda sularlar."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Okulumuzda \"Lezzetler Şenliği\" düzenlendi. Herkes kendi memleketine özgü bir yemeği getirmişti. Ayşe, Karadeniz'den mıhlama getirirken, Ahmet Güneydoğu'dan içli köfte yapmıştı. Zeynep ise Ege'den zeytinyağlı enginar getirmişti. Başta bazı yemekler birbirimize çok farklı geldi. Ancak öğretmenimiz, bu farklılıkların ülkemizin kültürel zenginliği olduğunu söyledi. Herkes birbirinin yemeğinden tattığında, ne kadar lezzetli olduklarını gördüler. O gün, farklı damak tatlarına ve geleneklere saygı duymanın, bir arada keyifle yaşamanın en güzel yolu olduğunu anladık. Farklılıklar bizi ayıran değil, birleştiren bir zenginlikti.",
+        "beceri_adi": "Farklılıkları Tanıma",
+        "deger_adi": "Hoşgörü",
+        "beceri_cumlesi": "Ayşe, Karadeniz'den mıhlama getirirken, Ahmet Güneydoğu'dan içli köfte yapmıştı.",
+        "deger_cumlesi": "O gün, farklı damak tatlarına ve geleneklere saygı duymanın, bir arada keyifle yaşamanın en güzel yolu olduğunu anladık."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Dedem, eskiden köyümüzün yemyeşil ormanlarla kaplı olduğunu, derelerin şırıl şırıl aktığını anlatır. O zamanlar evlerin yerinde meyve bahçeleri varmış. Bugün ise o ormanların bir kısmının yerinde yeni binalar ve geniş yollar var. Dere yatağına yakın yerlere fabrikalar kurulmuş. Bu beşerî unsurlar hayatımızı kolaylaştırsa da dedem, havanın eskisi kadar temiz olmadığını söylüyor. Bu değişimi görmek beni düşündürüyor. Doğal çevreyi koruyarak gelişmenin yollarını bulmalıyız, yoksa gelecekte nefes alacak temiz bir havamız kalmayabilir.",
+        "beceri_adi": "Karşılaştırma Yapma",
+        "deger_adi": "Çevreye Duyarlılık",
+        "beceri_cumlesi": "Bugün ise o ormanların bir kısmının yerinde yeni binalar ve geniş yollar var.",
+        "deger_cumlesi": "Doğal çevreyi koruyarak gelişmenin yollarını bulmalıyız, yoksa gelecekte nefes alacak temiz bir havamız kalmayabilir."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Can ve arkadaşları, mahallelerindeki parkın salıncağının kırık olduğunu fark ettiler. Bu durum küçük çocuklar için tehlikeliydi. Sadece şikâyet etmek yerine bir şeyler yapmaya karar verdiler. Öğretmenlerine danışarak, bu tür sorunlarla belediyenin ilgilendiğini öğrendiler. Ailelerinin de yardımıyla, belediyenin \"Beyaz Masa\" birimine bir dilekçe yazdılar. Dilekçede sorunu anlattılar ve parkın onarılmasını rica ettiler. Birkaç hafta sonra, belediye ekipleri parka gelip hem salıncağı tamir etti hem de diğer oyuncakların bakımını yaptı. Çocuklar, sorunların çözümü için kurumlara başvurmanın etkin bir vatandaşlık görevi olduğunu yaşayarak öğrenmiş oldular.",
+        "beceri_adi": "Sorun Çözme",
+        "deger_adi": "Katılımcılık",
+        "beceri_cumlesi": "Ailelerinin de yardımıyla, belediyenin \"Beyaz Masa\" birimine bir dilekçe yazdılar.",
+        "deger_cumlesi": "Çocuklar, sorunların çözümü için kurumlara başvurmanın etkin bir vatandaşlık görevi olduğunu yaşayarak öğrenmiş oldular."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Öğretmenimiz, yaşadığımız ildeki ortak miras ögeleriyle ilgili bir sunum hazırlamamızı istedi. Ben de Şanlıurfa'da bulunan ve \"tarihin sıfır noktası\" olarak bilinen Göbeklitepe'yi seçtim. Kütüphaneden ve internetten Göbeklitepe'nin 12.000 yıl önce inşa edilmiş, dünyanın bilinen en eski tapınağı olduğunu öğrendim. Üzerindeki hayvan figürlerinin ve T şeklindeki sütunların gizemini araştırdım. Bu yapının sadece bizim değil, tüm insanlığın ortak mirası olduğunu anladım. Onu korumak ve gelecek nesillere aktarmak hepimizin görevidir. Sunumumda, bu eşsiz mirasa nasıl sahip çıkmamız gerektiğini de anlattım.",
+        "beceri_adi": "Araştırma Yapma",
         "deger_adi": "Kültürel Mirasa Sahip Çıkma",
-        "beceri_cumlesi": "Bu gezi, Can'ın o insanların sosyal hayatına yönelik farklı bir bakış açısı geliştirmesini sağladı.",
-        "deger_cumlesi": "Bu ürünü sınıf arkadaşlarıyla paylaşarak ortak mirasımıza sahip çıkmanın önemini gösterdi."
+        "beceri_cumlesi": "Kütüphaneden ve internetten Göbeklitepe'nin 12.000 yıl önce inşa edilmiş, dünyanın bilinen en eski tapınağı olduğunu öğrendim.",
+        "deger_cumlesi": "Onu korumak ve gelecek nesillere aktarmak hepimizin görevidir."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Sosyal bilgiler dersinde Anadolu ve Mezopotamya medeniyetlerini karşılaştırdık. Öğretmenimiz, Mezopotamya'da yaşayan Sümerlerin yazıyı icat ederek bilginin kalıcı olmasını sağladığını anlattı. Bu icat, tarihin başlangıcı kabul edilir. Anadolu'da ise Hititler, tarihin ilk yazılı antlaşması olan Kadeş Antlaşması'nı imzalayarak diplomasi ve devletler arası hukuk alanında önemli bir adım atmışlardır. İki medeniyet de farklı coğrafyalarda yaşamalarına rağmen, insanlık tarihini derinden etkilemişlerdir. Sümerlerin yazısı olmasaydı Hititlerin antlaşması yazılamazdı. Bu durum, medeniyetlerin birbirinden nasıl etkilendiğini ve ortak mirası nasıl zenginleştirdiğini gösterir.",
+        "beceri_adi": "Analitik Düşünme",
+        "deger_adi": "Tarihe Saygı",
+        "beceri_cumlesi": "Sümerlerin yazısı olmasaydı Hititlerin antlaşması yazılamazdı.",
+        "deger_cumlesi": "Bu durum, medeniyetlerin birbirinden nasıl etkilendiğini ve ortak mirası nasıl zenginleştirdiğini gösterir."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Demokrasi ve cumhuriyet, sık sık karıştırılan ama birbirini tamamlayan iki önemli kavramdır. Demokrasiyi bir binanın temeli gibi düşünebiliriz; eşitlik, özgürlük ve adaleti temsil eder. Halkın kendi kendini yönetme fikridir. Cumhuriyet ise bu temel üzerine inşa edilen binanın kendisidir. Yani, halkın egemenliğine dayanan yönetim biçimidir. Bu yönetim biçiminde, yöneticiler halk tarafından belirli bir süre için seçimle iş başına getirilir. Kısacası, demokrasi bir yaşam biçimi ve ilkeyken, cumhuriyet bu ilkenin hayata geçtiği en adil devlet şeklidir. Biri olmadan diğeri eksik kalır.",
+        "beceri_adi": "Kavramsal İlişki Kurma",
+        "deger_adi": "Adalet",
+        "beceri_cumlesi": "Kısacası, demokrasi bir yaşam biçimi ve ilkeyken, cumhuriyet bu ilkenin hayata geçtiği en adil devlet şeklidir.",
+        "deger_cumlesi": "Demokrasiyi bir binanın temeli gibi düşünebiliriz; eşitlik, özgürlük ve adaleti temsil eder."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Benim yaşadığım şehir Kars, Türkiye'nin en doğusunda yer alır. Göreceli konumunu anlatırken sık sık komşularımızdan bahsederiz. Kars, doğuda Ermenistan sınır kapısına yakınlığıyla stratejik bir öneme sahiptir. Ayrıca kuzeydoğusunda Gürcistan'a ve Nahçıvan üzerinden Azerbaycan'a ulaşım yolları üzerinde bir geçiş noktasıdır. Şehrimiz, yüksek platoları ve kış turizmiyle de ünlüdür. Bu konum, hem ticari hem de kültürel ilişkilerimizi şekillendirir. Ülkemizin bir serhat (sınır) şehri olan Kars'ta yaşamak, vatanın sınırlarını korumanın ne demek olduğunu insana daha derinden hissettirir ve bu topraklara olan bağlılığımızı artırır.",
+        "beceri_adi": "Mekânsal Düşünme",
+        "deger_adi": "Vatanseverlik",
+        "beceri_cumlesi": "Kars, doğuda Ermenistan sınır kapısına yakınlığıyla stratejik bir öneme sahiptir.",
+        "deger_cumlesi": "Ülkemizin bir serhat (sınır) şehri olan Kars'ta yaşamak, vatanın sınırlarını korumanın ne demek olduğunu insana daha derinden hissettirir ve bu topraklara olan bağlılığımızı artırır."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Ayşe, okulun bilim fuarı için arkadaşları Ali ve Zeynep ile bir grup kurdu. Projeleri 'Güneş Sistemi' maketi yapmaktı. Görev dağılımında Ayşe'ye gezegenleri boyama görevi verildi. Ali maket iskeletini hazırlayacak, Zeynep ise bilgileri toplayıp sunum kartları yazacaktı. Ayşe, kendi görevini zamanında ve özenle yapmanın tüm grubun başarısı için ne kadar önemli olduğunu biliyordu. Bu yüzden boyalarını ve fırçalarını hazırlayarak işe koyuldu. Eğer görevini aksatırsa, arkadaşlarının da işlerinin yarım kalacağını anladı. Bu bilinçle, en güzel gezegenleri boyamak için elinden geleni yaptı. Herkes kendi görevini tamamlayınca ortaya harika bir proje çıktı.",
+        "beceri_adi": "Rolünü Bilme",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Görev dağılımında Ayşe'ye gezegenleri boyama görevi verildi.",
+        "deger_cumlesi": "Ayşe, kendi görevini zamanında ve özenle yapmanın tüm grubun başarısı için ne kadar önemli olduğunu biliyordu."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Can, her hafta ailesinden 20 TL harçlık alıyordu. Bu hafta hem çok istediği yeni bir oyuncak araba vitrinde göz kırpıyor hem de okulun ay sonunda düzenleyeceği gezi için para biriktirmesi gerekiyordu. Can, bir kâğıt kalem alıp küçük bir bütçe planı yaptı. Harçlığının yarısını, yani 10 TL'yi doğrudan gezi kumbarasına attı. Geriye kalan 10 TL ile de temel ihtiyaçları olan bir defter aldı ve artan parayı da oyuncak araba için biriktirmeye karar verdi. İsteklerini erteleyerek önceliklerini belirlemesi, onun ne kadar bilinçli bir tüketici olduğunu gösteriyordu. Bu sayede hem gezisine katılabilecek hem de oyuncağına daha sonra kavuşacaktı.",
+        "beceri_adi": "Bütçe Planlama",
+        "deger_adi": "Tutumluluk",
+        "beceri_cumlesi": "Can, bir kâğıt kalem alıp küçük bir bütçe planı yaptı.",
+        "deger_cumlesi": "Harçlığının yarısını, yani 10 TL'yi doğrudan gezi kumbarasına attı."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Elif ve arkadaşları, okul bahçesindeki çöplerin arttığını fark ettiler. Teneffüslerde oyun oynamak zorlaşıyor, kötü bir görüntü oluşuyordu. Sadece şikâyet etmek yerine bir şeyler yapmaya karar verdiler. Önce okul müdüründen izin alarak bir 'Temiz Bahçe' kampanyası başlattılar. Farklı sınıflardan gönüllü öğrencilerle bir ekip oluşturdular ve bahçeyi temizlediler. Ayrıca, geri dönüşüm kutuları yerleştirilmesi için belediyeye bir dilekçe yazdılar. Bu davranışlarıyla, yaşadıkları çevreyi güzelleştirmenin sadece büyüklerin değil, kendilerinin de sorumluluğunda olduğunu gösterdiler. Diğer öğrencilere de iyi bir örnek oldular. Artık herkes bahçeyi daha temiz tutmaya özen gösteriyordu.",
+        "beceri_adi": "Etkin Vatandaşlık",
+        "deger_adi": "Çevreye Duyarlılık",
+        "beceri_cumlesi": "Ayrıca, geri dönüşüm kutuları yerleştirilmesi için belediyeye bir dilekçe yazdılar.",
+        "deger_cumlesi": "Bu davranışlarıyla, yaşadıkları çevreyi güzelleştirmenin sadece büyüklerin değil, kendilerinin de sorumluluğunda olduğunu gösterdiler."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Sınıfımıza bu yıl Japonya'dan yeni bir öğrenci olan Kenji katıldı. Başta Kenji'nin yemek yeme şekli ve bazı davranışları bize farklı gelmişti. Örneğin, beslenme saatinde getirdiği suşileri ilk başta yadırgadık. Ama öğretmenimiz bize her kültürün kendine özgü yemekleri, bayramları ve gelenekleri olduğunu anlattı. Birlikte mutlu yaşamanın sırrının bu farklılıklara saygı duymaktan geçtiğini söyledi. Biz de Kenji'ye kendi kültürümüzü anlattık, o da bize Japonya'daki festivalleri ve origami sanatını öğretti. Farklılıkların aslında bir zenginlik olduğunu ve birbirimizden öğrenecek ne kadar çok şeyimiz olduğunu anladık. Artık hepimiz Kenji'nin getirdiği farklı lezzetleri merakla bekliyoruz.",
+        "beceri_adi": "Farklılıklara Saygı",
+        "deger_adi": "Hoşgörü",
+        "beceri_cumlesi": "Farklılıkların aslında bir zenginlik olduğunu ve birbirimizden öğrenecek ne kadar çok şeyimiz olduğunu anladık.",
+        "deger_cumlesi": "Birlikte mutlu yaşamanın sırrının bu farklılıklara saygı duymaktan geçtiğini söyledi."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Dedem, eskiden köyümüzün yemyeşil ormanlarla kaplı ve deremizin suyunun şırıl şırıl aktığı bir yer olduğunu anlatır. Köylüler bu dereden balık tutar, tarlalarını sularmış. Ancak on yıl önce derenin kenarına büyük bir fabrika kurulmuş. Fabrikanın atıkları dereye karıştığı için balıklar ölmüş ve suyun rengi değişmiş. Fabrika için yeni yollar açılırken de birçok ağaç kesilmiş. Sonuç olarak, köyün doğal güzelliği bozulmuş ve hava kirliliği artmış. Dedemin anlattıklarından anlıyorum ki, insan eliyle yapılan bazı değişiklikler, yani beşerî unsurlar, doğa üzerinde geri dönülmez olumsuz etkilere yol açabiliyor. Doğal dengeyi korumak çok önemli.",
+        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
+        "deger_adi": "Doğayı Koruma",
+        "beceri_cumlesi": "Sonuç olarak, köyün doğal güzelliği bozulmuş ve hava kirliliği artmış.",
+        "deger_cumlesi": "Dedemin anlattıklarından anlıyorum ki, insan eliyle yapılan bazı değişiklikler, yani beşerî unsurlar, doğa üzerinde geri dönülmez olumsuz etkilere yol açabiliyor."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Sosyal Bilgiler dersinde öğretmenimiz yaşadığımız ilin ortak miras ögeleri hakkında bir araştırma ödevi verdi. Ben, şehrimizin simgesi olan tarihi kaleyi seçtim. Kütüphaneye gidip kale hakkında kitaplar okudum, internetten eski fotoğraflarını buldum ve hatta hafta sonu ailemle kaleyi ziyaret ettim. Topladığım bilgilerle renkli kartonlara bir sunum hazırladım. Sunumumda kalenin kimler tarafından, ne zaman yapıldığını ve geçmişte nasıl kullanıldığını anlattım. Bu mirasın sadece eski bir yapı olmadığını, şehrimizin kimliğini ve tarihini yansıttığını vurguladım. Arkadaşlarım sunumumu çok beğendi. Tarihi eserlerimizi korumanın ve gelecek nesillere aktarmanın ne kadar önemli olduğunu hepimiz bir kez daha anladık.",
+        "beceri_adi": "Sunum Yapma",
+        "deger_adi": "Kültürel Mirasa Sahip Çıkma",
+        "beceri_cumlesi": "Topladığım bilgilerle renkli kartonlara bir sunum hazırladım.",
+        "deger_cumlesi": "Tarihi eserlerimizi korumanın ve gelecek nesillere aktarmanın ne kadar önemli olduğunu hepimiz bir kez daha anladık."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Annem, kendi çocukluğunda yurt dışındaki teyzesiyle haberleşmek için haftalarca mektup beklediğini söyler. Mektuplar hem çok yavaş ulaşırmış hem de anlık duyguları yansıtmak zor olurmuş. Bugün ise ben, aynı teyzemle tabletimden bir tuşa basarak anında görüntülü konuşabiliyorum. Bu, teknolojinin insan ilişkilerini nasıl hızlandırdığını ve kolaylaştırdığını gösteren harika bir örnek. Ancak bu kolaylığın bir de diğer yüzü var; bazen yan yana oturduğumuz halde birbirimizle konuşmak yerine telefonlarımıza bakıyoruz. Teknolojiyi, insanları birbirinden koparmak için değil, onları birleştirmek için akıllıca kullanmalıyız. Bu dengeyi kurmak bizim elimizde.",
+        "beceri_adi": "Değişimi Yorumlama",
+        "deger_adi": "Bilinçli Teknoloji Kullanımı",
+        "beceri_cumlesi": "Bu, teknolojinin insan ilişkilerini nasıl hızlandırdığını ve kolaylaştırdığını gösteren harika bir örnek.",
+        "deger_cumlesi": "Teknolojiyi, insanları birbirinden koparmak için değil, onları birleştirmek için akıllıca kullanmalıyız."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Yaşadığım şehir, Türkiye'nin önemli bir deprem kuşağı üzerinde yer alıyor. Bu gerçeği bilmek beni ilk başta korkutsa da, Sosyal Bilgiler dersinde afetlerin etkilerini azaltmanın mümkün olduğunu öğrendim. Sadece korkmak yerine, ailemle birlikte ne yapabileceğimizi düşündük. Evdeki büyük ve devrilebilecek dolapları duvara sabitleme kararı aldık. Ayrıca, içinde el feneri, su, düdük ve ilk yardım malzemeleri olan bir afet ve acil durum çantası hazırladık. Okulda da bir deprem tatbikatı düzenlenmesi için öğretmenimize öneride bulunduk. Afetler doğa olayıdır ama onları felakete dönüştüren bizim hazırlıksız olmamızdır. Önceden alınacak küçük tedbirler, büyük kayıpları önleyebilir.",
+        "beceri_adi": "Çözüm Üretme",
+        "deger_adi": "Önlem Alma",
+        "beceri_cumlesi": "Evdeki büyük ve devrilebilecek dolapları duvara sabitleme kararı aldık.",
+        "deger_cumlesi": "Önceden alınacak küçük tedbirler, büyük kayıpları önleyebilir."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Tarih, medeniyetlerin birbirine yaptığı katkılarla dolu bir zincir gibidir. Örneğin, Mezopotamya'da yaşayan Sümerler, M.Ö. 3500'lerde çivi yazısını icat ederek insanlık tarihinin en büyük adımlarından birini attılar. Bu icat, bilgilerin kaydedilmesini ve nesilden nesile aktarılmasını sağladı. Anadolu'da kurulan Hititler ise bu yazı sistemini alıp daha da geliştirdiler. Hatta Mısırlılarla yaptıkları Kadeş Antlaşması'nı çivi yazısıyla kil tabletlere yazarak tarihin ilk yazılı antlaşmasına imza attılar. Sümerler bilginin kapısını aralarken, Hititler bu bilgiyi kullanarak diplomasi ve hukuk gibi alanlarda kalıcı eserler bıraktılar. Bir medeniyetin buluşu, diğerinin elinde nasıl farklı bir amaca hizmet edebiliyor görmek çok etkileyici.",
+        "beceri_adi": "Karşılaştırma Yapma",
+        "deger_adi": "Bilimsel Merak",
+        "beceri_cumlesi": "Sümerler bilginin kapısını aralarken, Hititler bu bilgiyi kullanarak diplomasi ve hukuk gibi alanlarda kalıcı eserler bıraktılar.",
+        "deger_cumlesi": "Bir medeniyetin buluşu, diğerinin elinde nasıl farklı bir amaca hizmet edebiliyor görmek çok etkileyici."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Cumhuriyet ve demokrasi, sık sık birlikte duyduğumuz ama aralarında önemli bir bağ olan iki kavramdır. Cumhuriyet, devletin başında bir kral veya sultan gibi ömür boyu kalan bir yönetici yerine, halkın belirli bir süre için seçtiği bir cumhurbaşkanının olduğu yönetim şeklidir. Peki, bu seçim nasıl yapılır? İşte burada devreye demokrasi girer. Demokrasi, 'halkın egemenliği' demektir. Yani, yönetme gücünün halkta olması ve halkın bu gücü seçimler yoluyla kullanarak kendi temsilcilerini belirlemesidir. Dolayısıyla, cumhuriyet yönetiminin temelini demokrasi ilkesi oluşturur. Biri sistemin adıysa, diğeri o sistemi çalıştıran ruhtur.",
+        "beceri_adi": "Kavramsal İlişki Kurma",
+        "deger_adi": "Milli Egemenlik",
+        "beceri_cumlesi": "Dolayısıyla, cumhuriyet yönetiminin temelini demokrasi ilkesi oluşturur.",
+        "deger_cumlesi": "Demokrasi, 'halkın egemenliği' demektir."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Selin, 5-A sınıfında bir öğrenci, okul basketbol takımında bir sporcu ve evde ailesinin bir üyesidir. Her bir gruptaki rolü, ona farklı sorumluluklar yükler. Okulda derslerini dinleyip ödevlerini yapmak onun öğrenci rolünün bir gereğidir. Basketbol takımında ise iyi bir takım oyuncusu olmak ve antrenmanlara düzenli katılmak zorundadır. Ailesinin bir parçası olarak odasını temiz tutmak ve ev işlerine yardım etmek gibi görevleri vardır. Bu farklı roller, Selin'in gün içinde çeşitli sorumluluklar üstlenerek dengeli bir yaşam sürmesine yardımcı olur ve onu daha sorumlu bir birey yapar.",
+        "beceri_adi": "Rol Farkındalığı",
+        "deger_adi": "Sorumluluk",
+        "beceri_cumlesi": "Selin, 5-A sınıfında bir öğrenci, okul basketbol takımında bir sporcu ve evde ailesinin bir üyesidir.",
+        "deger_cumlesi": "Ailesinin bir parçası olarak odasını temiz tutmak ve ev işlerine yardım etmek gibi görevleri vardır."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Türkiye, coğrafi konumu sayesinde üç kıtanın birleştiği önemli bir noktada yer alır. Ülkemizin komşuları da bu konumun bir parçasıdır. Örneğin, batıda Yunanistan ve Bulgaristan, doğuda ise İran, Nahçıvan, Ermenistan ve Gürcistan bulunur. Her komşu ülkenin kendine özgü yemekleri, müzikleri, bayramları ve gelenekleri vardır. Bu kültürel zenginlikleri tanımak, farklılıklara saygı duymamızı sağlar. Komşularımızın kültürlerini öğrenmek, onlarla daha güçlü dostluk bağları kurmamıza ve birlikte barış içinde yaşamamıza olanak tanır. Bu sayede dünya daha renkli ve anlaşılır bir yer haline gelir.",
+        "beceri_adi": "Coğrafi Farkındalık",
+        "deger_adi": "Kültürel Saygı",
+        "beceri_cumlesi": "Örneğin, batıda Yunanistan ve Bulgaristan, doğuda ise İran, Nahçıvan, Ermenistan ve Gürcistan bulunur.",
+        "deger_cumlesi": "Bu kültürel zenginlikleri tanımak, farklılıklara saygı duymamızı sağlar."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Tarih boyunca Anadolu ve Mezopotamya, insanlığın en büyük medeniyetlerinden bazılarına ev sahipliği yapmıştır. Mezopotamya'da yaşayan Sümerler, çivi yazısını icat ederek bilginin kaydedilmesini ve gelecek nesillere aktarılmasını sağlamıştır. Bu, tarihin başlangıcı olarak kabul edilir. Anadolu'da kurulan Hititler ise tarihin ilk yazılı antlaşması olan Kadeş Antlaşması'nı imzalayarak diplomasi ve devletler arası hukuk alanında insanlığa önemli bir katkı sunmuştur. Her iki medeniyetin de bu buluşları, günümüz dünyasının temelini oluşturan ortak mirasın değerli birer parçasıdır ve korunmaları gerekir.",
+        "beceri_adi": "Karşılaştırma Yapma",
+        "deger_adi": "Mirasa Sahip Çıkma",
+        "beceri_cumlesi": "Mezopotamya'da yaşayan Sümerler, çivi yazısını icat ederken, Anadolu'da kurulan Hititler ise tarihin ilk yazılı antlaşması olan Kadeş Antlaşması'nı imzalamıştır.",
+        "deger_cumlesi": "Her iki medeniyetin de bu buluşları, günümüz dünyasının temelini oluşturan ortak mirasın değerli birer parçasıdır ve korunmaları gerekir."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Cumhuriyet ve demokrasi, birbiriyle yakından ilişkili ancak farklı anlamlara sahip iki önemli kavramdır. Cumhuriyet, devlet başkanının halk tarafından belirli bir süre için seçildiği bir yönetim biçimidir; yani yönetim babadan oğula geçmez. Demokrasi ise halkın egemenliğine dayanan bir yönetim anlayışıdır ve bu sistemde halk, yöneticilerini seçme hakkına sahiptir. Türkiye Cumhuriyeti, gücünü halktan alan demokratik bir cumhuriyettir. Bu sistemde egemenliğin kayıtsız şartsız millete ait olması, en temel ve vazgeçilmez ilkedir. Vatandaşlar oy kullanarak bu egemenlik hakkını kullanır ve yönetime katılırlar.",
+        "beceri_adi": "Kavramsal İlişkilendirme",
+        "deger_adi": "Milli Egemenlik",
+        "beceri_cumlesi": "Cumhuriyet, devlet başkanının halk tarafından belirli bir süre için seçildiği bir yönetim biçimiyken; demokrasi ise halkın egemenliğine dayanan bir yönetim anlayışıdır.",
+        "deger_cumlesi": "Bu sistemde egemenliğin kayıtsız şartsız millete ait olması, en temel ve vazgeçilmez ilkedir."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Emre, ailesinden aldığı haftalık harçlıkla hem okul kantinindeki ihtiyaçlarını karşılıyor hem de çok istediği uzaktan kumandalı arabayı almak için para biriktirmeye çalışıyordu. Bu hedefine ulaşmak için bir plan yapması gerektiğini fark etti. Bir kâğıda haftalık gelirini ve zorunlu harcamalarını yazdı. Kalan paranın bir kısmını kumbarasına atarak tasarruf etmeye başladı. İstekleri olan çikolata ve gazoz gibi harcamalarını azalttı. Ay sonunda yaptığı bu bütçe planı sayesinde hem ihtiyaçlarını karşıladı hem de hayalindeki arabayı almak için önemli bir miktar biriktirmiş oldu.",
+        "beceri_adi": "Finansal Planlama",
+        "deger_adi": "Tasarruf",
+        "beceri_cumlesi": "Bir kâğıda haftalık gelirini ve zorunlu harcamalarını yazdı.",
+        "deger_cumlesi": "İstekleri olan çikolata ve gazoz gibi harcamalarını azalttı."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Teknolojinin gelişmesiyle hayatımıza giren internet, toplum üzerinde hem olumlu hem de olumsuz etkiler yaratmıştır. Olumlu yanı, bilgiye saniyeler içinde ulaşabilmemiz ve dünyanın farklı yerlerindeki insanlarla kolayca iletişim kurabilmemizdir. Ancak, internetin kontrolsüz kullanımı siber zorbalık, yanlış bilginin hızla yayılması ve sosyal ilişkilerin zayıflaması gibi ciddi sorunlara yol açabilir. Bu nedenle, teknolojiyi bir amaç olarak değil, hayatımızı kolaylaştıran bir araç olarak görmeliyiz. Teknolojik ürünleri bilinçli kullanmak, onun faydalarından en iyi şekilde yararlanırken zararlarından korunmamızı sağlayan en önemli anahtardır.",
+        "beceri_adi": "Eleştirel Düşünme",
+        "deger_adi": "Bilinçli Kullanım",
+        "beceri_cumlesi": "Ancak, internetin kontrolsüz kullanımı siber zorbalık, yanlış bilginin hızla yayılması ve sosyal ilişkilerin zayıflaması gibi ciddi sorunlara yol açabilir.",
+        "deger_cumlesi": "Teknolojik ürünleri bilinçli kullanmak, onun faydalarından en iyi şekilde yararlanırken zararlarından korunmamızı sağlayan en önemli anahtardır."
+    },
+    {
+        "zorluk": "kolay",
+        "metin": "Okulumuzda, ihtiyaç sahibi ailelere destek olmak amacıyla bir kermes düzenlendi. Öğrenciler ve veliler evlerinde hazırladıkları yiyecekleri, el işi ürünleri ve kullanmadıkları eşyaları kermeste satmak için getirdiler. Bütün okul bu etkinlik için seferber oldu. Herkesin küçük de olsa bir katkı sağlamasıyla büyük bir dayanışma örneği sergilendi. Kermesten elde edilen gelir, belirlenen ailelerin ihtiyaçlarını karşılamak için kullanıldı. Bu tür faaliyetler, toplumdaki bireyler arasındaki yardımlaşma duygusunu güçlendirir ve bize birlik olmanın ne kadar değerli olduğunu bir kez daha hatırlatır.",
+        "beceri_adi": "Sosyal Katılım",
+        "deger_adi": "Yardımlaşma",
+        "beceri_cumlesi": "Öğrenciler ve veliler evlerinde hazırladıkları yiyecekleri, el işi ürünleri ve kullanmadıkları eşyaları kermeste satmak için getirdiler.",
+        "deger_cumlesi": "Bu tür faaliyetler, toplumdaki bireyler arasındaki yardımlaşma duygusunu güçlendirir ve bize birlik olmanın ne kadar değerli olduğunu bir kez daha hatırlatır."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Yaşadığımız mahallede eskiden yemyeşil bir ormanlık alan vardı. Ancak son yıllarda artan nüfus nedeniyle bu alana yeni binalar inşa edildi. Bu beşerî müdahale sonucunda ağaçlar kesildi ve birçok canlının doğal yaşam alanı yok oldu. Binaların yapılması, insanların barınma ihtiyacını karşılaması açısından bir gereklilikti. Fakat bu durum, aynı zamanda bölgenin doğal güzelliğini kaybetmesine ve hava kirliliğinin artmasına neden oldu. Doğal kaynaklarımızı korumanın ve onları bilinçli kullanmanın gelecek nesiller için ne kadar hayati olduğunu bu örnekle daha iyi anlıyoruz.",
+        "beceri_adi": "Neden-Sonuç İlişkisi Kurma",
+        "deger_adi": "Çevre Duyarlılığı",
+        "beceri_cumlesi": "Bu beşerî müdahale sonucunda ağaçlar kesildi ve birçok canlının doğal yaşam alanı yok oldu.",
+        "deger_cumlesi": "Doğal kaynaklarımızı korumanın ve onları bilinçli kullanmanın gelecek nesiller için ne kadar hayati olduğunu bu örnekle daha iyi anlıyoruz."
+    },
+    {
+        "zorluk": "orta",
+        "metin": "Etkin bir vatandaş olmak, sadece vergisini ödemek veya seçimlerde oy kullanmakla sınırlı değildir. Etkin bir vatandaş, aynı zamanda yaşadığı toplumun daha iyi bir yer olması için sorumluluk alır ve çözümün bir parçası olmaya çalışır. Örneğin, mahallesindeki parkın temiz tutulması için belediyeye dilekçe yazmak veya bir çevre temizliği kampanyasına katılmak, etkin vatandaşlığın en güzel örneklerindendir. Bu tür davranışlar, bireylerin yönetime katılımını artırır ve toplumsal sorunların daha hızlı çözülmesini sağlar. Katılımcı bir toplum, daha güçlü ve daha demokratik bir toplum demektir.",
+        "beceri_adi": "Vatandaşlık Bilinci",
+        "deger_adi": "Katılımcılık",
+        "beceri_cumlesi": "Etkin bir vatandaş, aynı zamanda yaşadığı toplumun daha iyi bir yer olması için sorumluluk alır ve çözümün bir parçası olmaya çalışır.",
+        "deger_cumlesi": "Örneğin, mahallesindeki parkın temiz tutulması için belediyeye dilekçe yazmak veya bir çevre temizliği kampanyasına katılmak, etkin vatandaşlığın en güzel örneklerindendir."
+    },
+    {
+        "zorluk": "zor",
+        "metin": "Anadolu'da kurulan ilk yerleşim yerlerinden biri olan Çatalhöyük'teki yaşam, günümüzden oldukça farklıydı. İnsanlar, aralarında sokak olmayan, bitişik düzendeki evlerde yaşıyor ve evlerine çatılardaki açıklıklardan merdivenle giriyorlardı. Bu durumun, hem vahşi hayvanlardan korunma hem de güçlü bir topluluk bağı kurma amacı taşıdığı düşünülmektedir. O dönemde yaşayan birinin gözünden dünyaya bakmaya çalışmak, onların neden bu şekilde yaşadığını anlamamıza yardımcı olur. Onların tarım yapma biçimleri, sanat eserleri ve sosyal ilişkileri, bugün sahip olduğumuz kültürel zenginliğin ilk tohumlarıdır ve insanlığın ortak mirasıdır.",
+        "beceri_adi": "Tarihsel Empati",
+        "deger_adi": "Kültürel Miras",
+        "beceri_cumlesi": "O dönemde yaşayan birinin gözünden dünyaya bakmaya çalışmak, onların neden bu şekilde yaşadığını anlamamıza yardımcı olur.",
+        "deger_cumlesi": "Onların tarım yapma biçimleri, sanat eserleri ve sosyal ilişkileri, bugün sahip olduğumuz kültürel zenginliğin ilk tohumlarıdır ve insanlığın ortak mirasıdır."
     }
 ]

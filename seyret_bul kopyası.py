@@ -23,17 +23,6 @@ VIDEOS_FILE = "seyret_bul_videos.json"
 SKORLAR_FILE = "seyret_bul_skorlar.json"
 ADMIN_SIFRE = "97032647"
 
-# --- YENİ EKLENDİ: ÜNİTE VE KONU BAŞLIKLARI GRUPLAMASI ---
-UNITE_YAPISI = {
-    "Birlikte Yaşamak": ["SB.5.1.1.", "SB.5.1.2.", "SB.5.1.3."],
-    "Evimiz Dünya": ["SB.5.2.1.", "SB.5.2.2.", "SB.5.2.3.", "SB.5.2.4."],
-    "Ortak Mirasımız": ["SB.5.3.1.", "SB.5.3.2.", "SB.5.3.3."],
-    "Yaşayan Demokrasimiz": ["SB.5.4.1.", "SB.5.4.2.", "SB.5.4.3.", "SB.5.4.4."],
-    "Hayatımızdaki Ekonomi": ["SB.5.5.1.", "SB.5.5.2.", "SB.5.5.3."],
-    "Teknoloji ve Sosyal Bilimler": ["SB.5.6.1.", "SB.5.6.2."]
-}
-
-
 # --- SÜREÇ BİLEŞENLERİ ---
 SURECLER = {
     "SB.5.1.1.": "Dâhil olduğu gruplar ve bu gruplardaki rolleri arasındaki ilişkileri çözümleyebilme",

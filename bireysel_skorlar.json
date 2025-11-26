@@ -3,6 +3,7 @@
         "dogru_soru_sayisi": 0,
         "toplam_sure_saniye": 640,
         "rozetler": [
+            "bronz",
             "bronz"
         ],
         "altin_rozet_tarihi": null,
@@ -37,7 +38,27 @@
         "dogru_soru_sayisi": 0,
         "toplam_sure_saniye": 25,
         "rozetler": [],
+        "altin_rozet_tarihi": null,
+        "gunluk_elenme_sayisi": 0,
+        "son_elenme_tarihi": null
+    },
+    "991": {
+        "dogru_soru_sayisi": 0,
+        "toplam_sure_saniye": 102,
+        "rozetler": [
+            "bronz",
+            "gumus",
+            "altin"
+        ],
+        "altin_rozet_tarihi": "2025-11-26",
         "gunluk_elenme_sayisi": 1,
-        "son_elenme_tarihi": "2025-11-24"
+        "son_elenme_tarihi": "2025-11-26"
+    },
+    "113": {
+        "dogru_soru_sayisi": 0,
+        "toplam_sure_saniye": 35,
+        "rozetler": [],
+        "gunluk_elenme_sayisi": 1,
+        "son_elenme_tarihi": "2025-11-26"
     }
 }

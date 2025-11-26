@@ -32,7 +32,7 @@ app = Flask(__name__)
 
 # EN SON config'e kaydet
 app.config['GEMINI_API_KEY'] = GEMINI_API_KEY
-app.config['SECRET_KEY'] = '9d561fff7453e6d49348297774e6c1a21c8f4b9907880a5aebccce7861a8324c'
+app.config['SECRET_KEY'] = 'bu-cok-gizli-bir-anahtar-olmalı-321'
 
 # --- Haritada Bul Modülünü Kaydet ---
 GOOGLE_MAPS_API_KEY = ""
@@ -40,109 +40,104 @@ harita_bul.register_harita_bul_routes(app, GOOGLE_MAPS_API_KEY)
 
 
 # --- Lokal Videoları (ve Arka Planı) Serve Et ---
-# --- Lokal Videoları (ve Arka Planı) Serve Et ---
 @app.route('/videolar/<path:filename>')
 def serve_video(filename):
-    """Videolar klasöründeki dosyaları serve eder"""
+    """Videolar klasöründeki dosyaları serve eder (maarif.png<div id="card-metin" class="card" style="background-image: url('https://source.unsplash.com/800x1000?student,writing,notebook');"> dahil)"""
+    """Videolar klasöründeki dosyaları serve eder (maarif.png dahil)"""
     return send_from_directory('videolar', filename)
 # --- BİTTİ ---
 
 # --- Kalıcı Veritabanı Ayarları ---
-DB_FILE = 'users.json'
+DB_FILE = 'users.json' # Öğrenci kayıtları için
 
-# (SİLİNDİ) VIDEO_ISTEKLERI_DB_FILE satırı artık yok.
-# (SİLİNDİ) video_istekleri = load_video_istekleri() satırı artık yok.
+VIDEO_ISTEKLERI_DB_FILE = 'video_istekleri.json'
+
+def load_video_istekleri():
+    """ Sunucu başladığında JSON dosyasından video isteklerini yükler. """
+    if os.path.exists(VIDEO_ISTEKLERI_DB_FILE):
+        try:
+            with open(VIDEO_ISTEKLERI_DB_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            return [] # Liste olarak başlat
+    return []
+
+def save_video_istekleri(data):
+    """ Video isteklerini JSON dosyasına kaydeder. """
+    try:
+        with open(VIDEO_ISTEKLERI_DB_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        print(f"Video istekleri '{VIDEO_ISTEKLERI_DB_FILE}' dosyasına başarıyla kaydedildi.")
+    except Exception as e:
+        print(f"Video istekleri kaydetme hatası: {e}")
+
+# Video isteklerini yükle
+video_istekleri = load_video_istekleri()
+# --- Video İstekleri Bitişi ---
 
 def check_and_update_soru_limit(student_no):
     from datetime import datetime, timedelta
-    
-    # load_soru_limits fonksiyonunu güvenli çağırma
-    try:
-        # Bu fonksiyon app.py'nin aşağılarında tanımlı olmalı veya db_helper'dan gelmeli
-        # Eğer yoksa hata vermemesi için boş sözlükle devam ediyoruz
-        if 'load_soru_limits' in globals():
-            limits = load_soru_limits()
-        else:
-            limits = {}
-    except:
-        limits = {}
-
+    limits = load_soru_limits()
     today = datetime.now().date()
     user_data = limits.get(student_no, {"count": 0, "reset_date": str(today)})
-    
-    try:
-        reset_date = datetime.strptime(user_data["reset_date"], "%Y-%m-%d").date()
-    except:
-        reset_date = today
-
+    reset_date = datetime.strptime(user_data["reset_date"], "%Y-%m-%d").date()
     if today >= reset_date:
         user_data["count"] = 0
         user_data["reset_date"] = str(today + timedelta(days=7))
-    
-    HAFTALIK_LIMIT = 20
-    
     if user_data["count"] >= HAFTALIK_LIMIT:
         kalan_gun = (reset_date - today).days
         return {
-            "success": False,
+            "success": False, 
             "hata": f"Haftalık soru üretim limitiniz ({HAFTALIK_LIMIT}) dolmuştur. Lütfen {kalan_gun} gün sonra tekrar deneyin."
         }
-    
     user_data["count"] += 1
     limits[student_no] = user_data
-    
-    # save_soru_limits fonksiyonunu güvenli çağırma
-    try:
-        if hasattr(db_helper, 'save_soru_limits'):
-            db_helper.save_soru_limits(limits)
-        elif 'save_soru_limits' in globals():
-            save_soru_limits(limits)
-    except:
-        pass # Kayıt fonksiyonu bulunamazsa çökmesin
-            
+    db_helper.save_soru_limits(limits)
     return {"success": True}
 # --- Soru Üretim Limiti Bitişi ---
 
-# --- KRİTİK EKLEME: Tabloları Başlat ---
-# Kullanıcıları yüklemeden önce tabloların varlığından emin oluyoruz
-try:
-    db_helper.init_db()
-    print("✅ Veritabanı tabloları başlatıldı.")
-except Exception as e:
-    print(f"⚠️ Veritabanı başlatma uyarısı: {e}")
-
-# Öğrenci veritabanını (PostgreSQL'den) yükle
+# Öğrenci veritabanını (users.json) yükle
 users = db_helper.load_users()
 
+# --- YENİ EKLENECEK TAMİR KODU BAŞLANGICI ---
+def veritabani_tamir_et():
+    """Eksik öğrenci numaralarını anahtardan (key) alıp içeri kopyalar."""
+    duzeltilen_sayisi = 0
+    degisiklik_var = False
+    
+    for user_id, data in users.items():
+        # Sadece öğrenciler için işlem yap
+        if data.get('role') == 'student':
+            # Eğer 'student_no' alanı yoksa veya boşsa
+            if 'student_no' not in data or not data['student_no']:
+                data['student_no'] = user_id  # Anahtarı (user_id) içeri kopyala
+                duzeltilen_sayisi += 1
+                degisiklik_var = True
+    
+    if degisiklik_var:
+        print(f"✅ OTOMATİK DÜZELTME: {duzeltilen_sayisi} öğrenci kaydı onarıldı ve kaydedildi.")
+    else:
+        print("✅ Veritabanı kontrol edildi, eksik kayıt yok.")
+
+# Fonksiyonu hemen çalıştır
+veritabani_tamir_et()
+# --- YENİ EKLENECEK TAMİR KODU BİTİŞİ ---
+
 # --- Gemini Modelini Yükle ---
-gemini_model = None
+gemini_model = None 
 try:
     if GEMINI_API_KEY and GEMINI_API_KEY != "":
         genai.configure(api_key=GEMINI_API_KEY)
         gemini_model = genai.GenerativeModel('models/gemini-pro-latest')
         print("Gemini API modeli başarıyla yüklendi.")
     else:
-        print("UYARI: Gemini API Anahtarı girilmemiş.")
+        print("UYARI: Gemini API Anahtarı girilmemiş. Metin üretme, Analiz ve Bireysel Yarışma özellikleri çalışmayacak.")
 except Exception as e:
     print(f"Gemini API yüklenirken HATA oluştu: {e}")
 # --- BİTTİ ---
 
 # Aktif Takım Yarışmaları
 active_team_games = {}
-
-# Video İstekleri
-video_istekleri = []
-# Video isteklerini PostgreSQL'den yükle
-def load_video_istekleri():
-    try:
-        return db_helper.get_all_video_istekleri()
-    except Exception as e:
-        print(f"Video istekleri yükleme hatası: {e}")
-        return []
-
-# Uygulama başlarken video isteklerini yükle
-video_istekleri = load_video_istekleri()
-
 # Otomatik Yönlendirme Kaydı
 game_redirects = {}
 # --- YENİ EKLENDİ: Çevrimiçi Kullanıcı Takibi ---
@@ -150,6 +145,60 @@ online_users = {} # Format: {'ogrenci_no': timestamp}
 
 # --- GİRİŞ/KAYIT SAYFASI HTML KODU (AŞAMA 5 - HATALAR DÜZELTİLDİ) ---
 
+# (Base64 fonksiyonları kaldırıldı)
+
+# HATA DÜZELTMESİ: f-string kaldırıldı, normal string (f"" -> """) kullanıldı.
+# Bu, JavaScript'teki { } karakterlerinin SyntaxError vermesini engeller.
+# HTML_CONTENT -> templates/login.html konumuna taşındı.
+# --- GİRİŞ/KAYIT HTML KODU BİTTİ ---
+
+# ###############################################################
+# --- PANEL (DASHBOARD) SAYFASI ---
+# ###############################################################
+# DASHBOARD_HTML_CONTENT -> templates/dashboard.html konumuna taşındı.
+# --- PANEL HTML KODU BİTTİ ---
+
+# ########## YENİ EKLENDİ (Daha önce silinmişti): METİN ÜRETİM SAYFASI HTML ##########
+# METIN_URETIM_PAGE_HTML -> templates/metin_uretim.html konumuna taşındı.
+
+# ########## METİN ANALİZ HTML KODU BİTTİ ##########
+
+# --- METİN ÜRETİM HTML KODU BİTTİ ---
+# ########## YENİ EKLENDİ: METİN ANALİZ SAYFASI HTML ##########
+# METIN_ANALIZ_PAGE_HTML -> templates/metin_analiz.html konumuna taşındı.
+# ########## METİN ANALİZ HTML KODU BİTTİ ##########
+
+
+# ########## YENİ EKLENDİ: SORU ÜRETİM SAYFASI HTML ##########
+# SORU_URETIM_PAGE_HTML -> templates/soru_uretim.html konumuna taşındı.
+
+# --- YARIŞMA SEÇİM SAYFASI HTML ---
+# YARISMA_SECIM_PAGE_HTML -> templates/yarisma_secim.html konumuna taşındı.
+# --- YARIŞMA SEÇİM HTML KODU BİTTİ ---
+
+
+# --- Bireysel Yarışma Sayfası (Dinamik) ---
+# BIREYSEL_YARISMA_HTML -> templates/bireysel_yarisma.html konumuna taşındı.
+# --- BİREYSEL YARIŞMA HTML KODU BİTTİ ---
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI HTML (GELİŞMİŞ KURULUM) ##########
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI HTML (GELİŞMİŞ KURULUM - DÜZELTİLDİ) ##########
+# TAKIM_YARISMA_HTML -> templates/takim_kurulum.html konumuna taşındı.
+
+# --- TAKIM YARIŞMA HTML KODU BİTTİ ---
+
+
+# --- Liderlik Tablosu Sayfası HTML ---
+# LEADERBOARD_PAGE_HTML -> templates/leaderboard.html konumuna taşındı.
+# --- LİDERLİK TABLOSU HTML KODU BİTTİ ---
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI OYUN EKRANI ##########
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI OYUN EKRANI (GÜNCELLENDİ V3) ##########
+# TAKIM_OYUN_EKRANI_HTML -> templates/takim_oyun.html konumuna taşındı.
+
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI LİDERLİK TABLOSU ##########
+# TAKIM_LIDERLIK_TABLOSU_HTML -> templates/takim_leaderboard.html konumuna taşındı.
+
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI LİDERLİK TABLOSU ##########
+# TAKIM_LIDERLIK_TABLOSU_HTML -> templates/takim_leaderboard.html konumuna taşındı.
 
 # --- YENİ LİDERLİLK HTML BİTTİ
 
@@ -618,8 +667,7 @@ def api_generate_text():
         
         # Parametreleri al
         bilesen_kodu = data.get('bilesen_kodu')
-        metin_tipi_adi = data.get('metin_tipi_adi')
-        student_no = data.get('student_no')  # YENİ: student_no'yu al
+        metin_tipi_adi = data.get('metin_tipi_adi') 
         
         print(f"Metin üretme isteği: {bilesen_kodu}, {metin_tipi_adi}")
         
@@ -629,10 +677,6 @@ def api_generate_text():
         
         # metin_uretim.py'daki fonksiyonu çağır
         result = metin_uretim.metin_uret(bilesen_kodu, metin_tipi_adi, gemini_model)
-
-        # YENİ: RAPORLAMAYA EKLE - Metin başarıyla üretildiyse
-        if result.get('success') and student_no:
-            db_helper.kaydet_kullanim(student_no, "Metin Oluşturma", "Metin oluşturuldu")
         
         return jsonify(result)
         
@@ -668,10 +712,6 @@ def api_analyze_text():
         # metin_analiz.py'deki ana fonksiyonu çağırıyoruz
         result = metin_analiz.metin_analiz_et(metin, student_no, gemini_model)
 
-        # YENİ: RAPORLAMAYA EKLE - Metin analiz başarılıysa
-        if result.get('success'):
-            db_helper.kaydet_kullanim(student_no, "Metin Analiz", "Metin analiz edildi")
-
         return jsonify(result)
 
     except Exception as e:
@@ -694,49 +734,63 @@ def soru_uretim_page():
 
 @app.route('/api/generate-question', methods=['POST'])
 def api_generate_question():
+    """AJAX isteği ile soru üretir. (Haftalık Limit Kontrollü)"""
     try:
-        data = request.get_json()
-        student_no = data.get('student_no')
-        
-        # KESİN TEST - Her durumda kayıt yap
-        print(f"🎯 KESİN TEST - student_no: {student_no}")
-        
-        # TEST: Her durumda kayıt yap (başarılı/başarısız fark etmez)
-        if student_no:
-            print(f"✅ KESİN KAYIT - {student_no} için kayıt yapılıyor")
-            db_helper.kaydet_kullanim(student_no, "Soru Üretim", "Soru üretildi")
-        else:
-            print(f"❌ student_no YOK - data: {data}")
-        
-        # Mevcut kodun devamı...
         global gemini_model
         if not gemini_model:
             return jsonify({"success": False, "metin": "Sunucuda Gemini API Anahtarı yapılandırılmamış!"})
 
+        data = request.get_json()
         bilesen_kodu = data.get('bilesen_kodu')
         soru_tipi_adi = data.get('soru_tipi_adi')
+        student_no = data.get('student_no') # YENİ
 
         if not bilesen_kodu or not soru_tipi_adi:
              return jsonify({"success": False, "metin": "Eksik parametre: Süreç Bileşeni veya Soru Tipi."})
+        
+        if not student_no:
+             return jsonify({"success": False, "metin": "Hata: Kullanıcı ID'si alınamadı. Lütfen tekrar giriş yapın."})
 
-        # Limit kontrolü
+        # --- YENİ ADIM: LİMİT KONTROLÜ ---
         limit_result = check_and_update_soru_limit(student_no)
         if not limit_result["success"]:
+            # Limit aşıldıysa, hata mesajını Gemini'den gelmiş gibi döndür
             return jsonify({"success": False, "metin": limit_result["hata"]})
+        # --- LİMİT KONTROLÜ BİTTİ ---
 
+        # soru_uretim.py'deki ana fonksiyonu çağırıyoruz
         result = soru_uretim.soru_uret(bilesen_kodu, soru_tipi_adi, gemini_model)
 
+        # JSON olarak tüm detayları gönder
         return jsonify({
             "success": result.get("success", False),
             "metin": result.get("metin", "Hata oluştu."),
-            "rubrik_cevap": result.get("rubrik_cevap"),
-            "is_mcq": result.get("is_mcq", False),
+            "rubrik_cevap": result.get("rubrik_cevap"), # YENİ
+            "is_mcq": result.get("is_mcq", False),     # YENİ
             "kelime_sayisi": result.get("kelime_sayisi", 0)
         })
 
     except Exception as e:
-        print(f"❌ SORU ÜRETİM HATASI: {e}")
+        print(f"Soru üretme API hatası: {e}")
+        if "API_KEY_INVALID" in str(e):
+             return jsonify({"success": False, "metin": "Geçersiz Gemini API Anahtarı!"})
         return jsonify({"success": False, "metin": f"Sunucu hatası: {str(e)}"})
+        
+# ########## SORU ÜRETİM ROTALARI BİTTİ ##########
+@app.route('/api/seyret_bul/get_surecler', methods=['GET'])
+def api_get_seyret_bul_surecler():
+    """
+    Yönetici panelindeki 'Seyret Bul' formunun açılır menüsünü
+    doldurmak için süreç bileşenlerini LİSTE olarak döndürür.
+    """
+    try:
+        # seyret_bul.py'den SÖZLÜK olarak al
+        surecler_dict = seyret_bul.tum_surecleri_getir() 
+        # JavaScript için LİSTE'ye çevir
+        surecler_listesi = [{"kod": kod, "aciklama": aciklama} for kod, aciklama in surecler_dict.items()]
+        return jsonify({"success": True, "surecler": surecler_listesi})
+    except Exception as e:
+        return jsonify({"success": False, "hata": str(e)})
 # ########## YARIŞMA ROTALARI (GÜNCELLENDİ) ##########
 @app.route('/api/takim/get_sinif_listesi', methods=['POST'])
 def get_sinif_listesi():
@@ -963,144 +1017,120 @@ def delete_user():
 @app.route('/delete_student_bulk', methods=['POST'])
 def delete_student_bulk():
     try:
-        import db_helper
-        conn = db_helper.get_db_connection()
-        cur = conn.cursor()
-        
         data = request.get_json()
         student_ids = data.get('student_ids', [])
         
-        if not student_ids:
-            return jsonify({'success': False, 'message': 'Silinecek öğrenci seçilmedi.'})
-            
-        # SQL'den sil
-        # student_ids listesini tuple'a çevirip SQL'e veriyoruz
-        cur.execute("DELETE FROM users WHERE user_id = ANY(%s)", (student_ids,))
-        deleted_count = cur.rowcount
+        deleted_count = 0
+        for student_no in student_ids:
+            if student_no in users:
+                del users[student_no]
+                deleted_count += 1
         
-        conn.commit()
-        cur.close()
-        conn.close()
+        if deleted_count > 0:
+            print(f"{deleted_count} öğrenci toplu olarak silindi.")
         
-        # RAM'den de temizle
-        for sid in student_ids:
-            if sid in users:
-                del users[sid]
-        
-        return jsonify({'success': True, 'message': f'{deleted_count} öğrenci veritabanından silindi!'})
+        return jsonify({'success': True, 'message': f'{deleted_count} öğrenci silindi!'})
     except Exception as e:
-        print(f"Toplu silme hatası: {e}")
+        print(f"Toplu öğrenci silme hatası: {e}")
         return jsonify({'success': False, 'message': str(e)})
 
 @app.route('/update_student_bulk', methods=['POST'])
 def update_student_bulk():
     try:
-        import db_helper # Veritabanı bağlantısı
-        
         data = request.get_json()
         student_ids = data.get('student_ids', [])
         actions = data.get('actions', {})
         
         updated_count = 0
-        
-        # Seçili öğrencileri güncelle
         for student_no in student_ids:
-            # RAM'de var mı kontrol et (veya doğrudan DB'ye de bakılabilir)
             if student_no in users:
-                user_data = users[student_no] # Mevcut veriyi al
                 updated = False
                 
-                # Okul Güncelle
                 if actions.get('school'):
-                    user_data['school_name'] = actions['school']
+                    users[student_no]['school_name'] = actions['school']
                     updated = True
                 
-                # Sınıf Güncelle
                 if actions.get('class'):
-                    user_data['class'] = actions['class']
+                    users[student_no]['class'] = actions['class']
                     updated = True
                 
-                # Şifre Sıfırla
                 if actions.get('set_password_to_lastname'):
-                    last_name = user_data.get('last_name', '')
-                    if last_name:
-                        user_data['password'] = last_name
+                    last_name = users[student_no].get('last_name')
+                    if last_name: 
+                        users[student_no]['password'] = last_name
                         updated = True
                         
-                # Rol Değişimi (Güvenlikli)
-                if actions.get('role') == 'student':
-                    if user_data.get('role') not in ['teacher', 'admin']:
-                        user_data['role'] = 'student'
+                # --- YENİ EKLENDİ: Rol Atama Güvenlik Kilidi ---
+                if actions.get('role') == 'student': # Eğer istek "student" rolü atamaksa...
+                    # Mevcut rolün ne olduğunu KONTROL ET
+                    current_role = users[student_no].get('role')
+                    
+                    # Sadece 'teacher' veya 'admin' DEĞİLSE bu değişikliği yap.
+                    if current_role not in ['teacher', 'admin']:
+                        users[student_no]['role'] = 'student'
                         updated = True
+                    # (Eğer 'teacher' veya 'admin' ise, hiçbir şey yapma, koru)
+                        
+                elif actions.get('role'):
+                    # Gelecekte 'admin' yapmak gibi başka bir rol eklerseniz burası çalışır
+                    users[student_no]['role'] = actions.get('role')
+                    updated = True
+                # --- Güvenlik Kilidi Bitişi ---
                 
-                # Eğer değişiklik varsa VERİTABANINA YAZ
                 if updated:
-                    # RAM'i güncelle
-                    users[student_no] = user_data
-                    # SQL'i güncelle
-                    db_helper.save_user(student_no, user_data)
                     updated_count += 1
         
-        return jsonify({'success': True, 'message': f'{updated_count} öğrenci veritabanında güncellendi!'})
+        if updated_count > 0:
+            print(f"{updated_count} öğrenci toplu olarak güncellendi.")
+        
+        return jsonify({'success': True, 'message': f'{updated_count} öğrenci güncellendi!'})
     except Exception as e:
-        print(f"Toplu güncelleme hatası: {e}")
+        print(f"Toplu öğrenci güncelleme hatası: {e}")
         return jsonify({'success': False, 'message': str(e)})
 
 @app.route('/upload_excel', methods=['POST'])
 def upload_excel():
-    global users # <--- BU SATIRI EN BAŞA ALDIK (Düzeltme Burada)
     try:
-        import db_helper
-        
         if 'excelFile' not in request.files:
             return jsonify({'success': False, 'message': 'Dosya bulunamadı'})
             
         file = request.files['excelFile']
+        
         if file.filename == '':
             return jsonify({'success': False, 'message': 'Dosya seçilmedi'})
 
-        # Dosyayı oku
         if file.filename.endswith('.csv'):
             df = pd.read_csv(io.StringIO(file.read().decode('utf-8-sig')), dtype=str)
-            df.rename(columns={'NO': 'Öğrenci No', 'ADI': 'Adı', 'SOYADI': 'Soyadı', 'SINIF': 'Sınıf', 'OKUL': 'Okul'}, inplace=True)
+            df.rename(columns={'NO': 'Öğrenci No', 'ADI': 'Adı', 'SOYADI': 'Soyadı'}, inplace=True)
         else:
-            df = pd.read_excel(file, dtype=str)
-            df.rename(columns={'NO': 'Öğrenci No', 'ADI': 'Adı', 'SOYADI': 'Soyadı', 'SINIF': 'Sınıf', 'OKUL': 'Okul'}, inplace=True)
+            df = pd.read_excel(file, dtype=str) 
 
         required_columns = ['Öğrenci No', 'Adı', 'Soyadı']
         if not all(col in df.columns for col in required_columns):
-            return jsonify({'success': False, 'message': 'Excel dosyasında "Öğrenci No", "Adı", "Soyadı" sütunları mutlaka olmalı.'})
+            return jsonify({'success': False, 'message': 'Excel/CSV dosyasında "Öğrenci No", "Adı", "Soyadı" sütunları bulunmalı!'})
 
-        count = 0
         for index, row in df.iterrows():
-            student_no = str(row['Öğrenci No']).strip()
-            
-            user_data = {
-                'role': 'student',
-                'student_no': student_no,
-                'first_name': str(row['Adı']).strip(),
-                'last_name': str(row['Soyadı']).strip(),
-                'password': '',
-                'class': str(row['Sınıf']).strip() if 'Sınıf' in df.columns and pd.notna(row['Sınıf']) else '',
-                'school_name': str(row['Okul']).strip() if 'Okul' in df.columns and pd.notna(row['Okul']) else ''
-            }
-
-            # 1. RAM'i güncelle
-            users[student_no] = user_data
-            
-            # 2. VERİTABANINI GÜNCELLE
-            db_helper.save_user(student_no, user_data)
-            count += 1
+            student_no = str(row['Öğrenci No'])
+            if student_no not in users:
+                    users[student_no] = {
+                        'role': 'student',
+                        'student_no': student_no, # <--- BU SATIRI MUTLAKA EKLEYİN
+                        'first_name': str(row['Adı']),
+                        'last_name': str(row['Soyadı']),
+                        'class': '',       
+                        'password': '',    
+                        'school_name': ''  
+                    }
         
-        # Hafızayı veritabanından tazele (Reassign yapıldığı için global şarttı)
-        users = db_helper.load_users()
-        
-        print(f"✅ {count} öğrenci veritabanına başarıyla kaydedildi.")
-        return jsonify({'success': True, 'message': f'{count} öğrenci veritabanına yüklendi!'})
+        print(f"{len(df)} öğrenci Excel/CSV'den yüklendi/güncellendi.")
+        return jsonify({'success': True, 'message': f'{len(df)} öğrenci başarıyla yüklendi!'})
 
     except Exception as e:
         print(f"Excel yükleme hatası: {e}")
-        return jsonify({'success': False, 'message': f"Hata: {str(e)}"})
+        if "Missing optional dependency" in str(e):
+             return jsonify({'success': False, 'message': f'Hata: {e}. Gerekli kütüphaneyi kurun (örn: pip install openpyxl)'})
+        return jsonify({'success': False, 'message': str(e)})
+
 # ########## BİTTİ ##########
 # (Burası sosyallab.py dosyanızın sonu olmalı)
 # ... (Mevcut en son kodunuz, muhtemelen /upload_excel rotası) ...
@@ -1117,24 +1147,710 @@ if not os.path.exists('static'):
 # ==========================================
 # SEYRET BUL (ORİJİNAL SOL MENÜLÜ TASARIM)
 # ==========================================
-
 @app.route('/seyret-bul-liste')
 def seyret_bul_liste_page():
-    user_role = session.get('role', 'student')
+    """
+    seyret_bul.py'deki verileri kullanarak
+    Süreç Bileşenlerine göre video listesini gösterir.
+    (Düzeltilmiş ve çalışan versiyon)
+    """
     try:
+        # 1. seyret_bul.py'den SÖZLÜK olarak süreçleri al (Artık doğru çalışıyor)
         surecler_dict = seyret_bul.tum_surecleri_getir()
-        unite_yapisi = seyret_bul.UNITE_YAPISI
-        return render_template(
-            'seyret_bul.html',
-            role=user_role,
-            surecler_sozlugu=surecler_dict,
-            unite_yapisi=unite_yapisi
-        )
+        
+        # 2. JavaScript'in kullanabilmesi için LİSTE formatına çevir
+        surecler_listesi = [{"kod": kod, "aciklama": aciklama} for kod, aciklama in surecler_dict.items()]
+        
+        # Debug removed
+
+        # 3. HTML içeriğini oluştur
+        html_content = """
+        <!DOCTYPE html>
+        <html lang="tr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Seyret Bul</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+            <style> 
+                body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; } 
+                select:disabled { background-color: #f3f4f6; cursor: not-allowed; }
+            </style>
+        </head>
+        <body class="flex h-screen">
+            
+            <aside class="w-72 bg-white text-gray-800 shadow-lg flex flex-col fixed h-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h1 class="text-2xl font-extrabold text-blue-600 text-center tracking-wide mb-4">
+                        Maarif SosyalLab
+                    </h1>
+                    <div class="mb-4">
+                <div class="w-full p-2 flex items-center justify-center overflow-hidden">
+                    <img src="/videolar/maarif.png"  
+                         alt="Maarif Logo" 
+                         class="w-auto h-auto max-w-full max-h-24 object-contain rounded-lg">
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <div id="user-avatar-initial" class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-lg">K</div>
+                        <div class="ml-3">
+                            <span id="user-name-placeholder" class="block text-sm font-bold text-gray-800">Kullanıcı</span>
+                        </div>
+                    </div>
+                </div>
+                <nav class="flex-1 overflow-y-auto p-2 space-y-1 no-bounce">
+
+            <a id="link-metin-analiz" href="/metin-analiz"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-blue-500 hover:bg-blue-600 transition-all">
+                <i class="fa-solid fa-file-pen mr-3 w-6 text-center"></i>
+                <span>Metin Analiz</span>
+            </a>
+            <a id="link-soru-uretim" href="/soru-uretim"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-600 transition-all">
+                <i class="fa-solid fa-circle-question mr-3 w-6 text-center"></i>
+                <span>Soru Üretim</span>
+            </a>
+            <a id="link-haritada-bul" href="/haritada-bul"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-orange-500 hover:bg-orange-600 transition-all">
+                <i class="fa-solid fa-map-location-dot mr-3 w-6 text-center"></i>
+                <span>Haritada Bul</span>
+            </a>
+            <a id="link-podcast" href="/podcast_paneli"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all">
+                <i class="fa-solid fa-microphone-lines mr-3 w-6 text-center"></i>
+                <span>Podcast Yap</span>
+            </a>
+            <a id="link-seyret-bul" href="/seyret-bul-liste"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-indigo-500 hover:bg-indigo-600 transition-all">
+                <i class="fa-solid fa-magnifying-glass-plus mr-3 w-6 text-center"></i>
+                <span>Seyret Bul</span>
+            </a>
+            <a id="link-yarisma" href="/yarisma-secim"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-teal-500 hover:bg-teal-600 transition-all">
+                <i class="fa-solid fa-trophy mr-3 w-6 text-center"></i>
+                <span>Beceri/Değer Avcısı</span>
+            </a>
+            <a id="link-video-istegi" href="/video-istegi"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-pink-500 hover:bg-pink-600 transition-all">
+                <i class="fa-solid fa-video mr-3 w-6 text-center"></i>
+                <span>Video İsteği</span>
+            </a>
+            
+        </nav>
+                <div class="p-4 border-t border-gray-200">
+                    <a href="/dashboard" class="flex items-center w-full p-3 rounded-lg text-gray-600 font-semibold bg-gray-100 hover:bg-gray-200 transition-all">
+                        <i class="fa-solid fa-arrow-left mr-3 w-6 text-center"></i><span>Panele Geri Dön</span></a>
+                </div>
+            </aside>
+            
+            <main class="ml-72 flex-1 p-6 md:p-8 overflow-y-auto no-bounce">
+                
+                <h2 id="main-title" class="text-3xl font-bold text-gray-800 mb-6 cursor-pointer select-none">Seyret Bul</h2>
+                
+                <div id="student-view" class="bg-white p-6 rounded-lg shadow max-w-8xl mx-auto">
+    
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2 justify-center mb-4 mx-auto max-w-5xl">
+                    
+                    <div class="w-full"> 
+                        <label for="bilesen-kodu" class="block text-sm font-medium text-gray-700 mb-1">1. Süreç Bileşeni (Kazanım) Seçin:</label>
+                        <select id="bilesen-kodu" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" required>
+                            <option value="">Lütfen bir süreç bileşeni seçin...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="w-full">
+                        <label for="video-listesi" class="block text-sm font-medium text-gray-700 mb-1">2. Videoyu Seçin:</label>
+                        <select id="video-listesi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" required disabled>
+                            <option value="">Önce Süreç Bileşeni Seçin...</option>
+                        </select>
+                    </div>
+                    
+                </div> <div class="mt-4 flex justify-center"> <button id="izle-btn" class="w-1/2 bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-indigo-600 transition-all duration-300" disabled>
+                        Videoyu İzle
+                    </button>
+                </div>
+
+                </div>
+                
+                </button>
+                    
+                    <!-- VIDEO PLAYER (Gizli) -->
+                    <div id="videoContainer" class="hidden mt-6 bg-gray-50 p-6 rounded-lg">
+                        
+                        <div id="player" class="mb-1 w-full max-w-4xl mx-auto"></div> 
+                        
+                        <div id="timeline" class="w-full max-w-2xl mx-auto mb-4 bg-gray-200 rounded-full relative hidden" style="height: 2px;">
+                            <div id="progress" class="bg-indigo-500 rounded-full absolute left-0 top-0" style="width: 0%; height: 2px;"></div>
+                            <div id="markers"></div>
+                        </div>
+                    </div>
+                
+                <!-- SORU MODAL (Pop-up) -->
+                <div id="soruModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+                    <div class="bg-white rounded-lg max-w-2xl w-full p-8 shadow-2xl">
+                        <h4 id="soruMetni" class="text-2xl font-bold mb-6 text-gray-800"></h4>
+                        <div id="cevaplar" class="space-y-3"></div>
+                    </div>
+                </div>
+                
+            </main>
+
+            <script>
+               // --- Python'dan Gelen Veri (Bu satır Python tarafından doldurulacak) ---
+               var sureclerListesi = [];
+                
+                let titleClickCount = 0; 
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    // --- DOM Elementleri ---
+                    const bilesenSelect = document.getElementById('bilesen-kodu');
+                    const videoSelect = document.getElementById('video-listesi');
+                    const izleBtn = document.getElementById('izle-btn');
+                    const mainTitle = document.getElementById('main-title'); 
+                    
+                    // --- Kullanıcı Adı Yükleme ---
+                    try {{
+                        const userFullName = localStorage.getItem('loggedInUserName');
+                        const userRole = localStorage.getItem('loggedInUserRole'); // Rolü al
+
+                        if (userFullName) {{
+                            document.getElementById('user-name-placeholder').textContent = userFullName;
+                            document.getElementById('user-avatar-initial').textContent = userFullName[0] ? userFullName[0].toUpperCase() : 'K';
+                        }}
+                        
+                        // --- YAN MENÜ ROL KONTROLÜ (NİHAİ DOĞRU VERSİYON) ---
+                        const linkMetinAnaliz = document.getElementById('link-metin-analiz');
+                        const linkSoruUretim = document.getElementById('link-soru-uretim');
+                        const linkMetinOlusturma = document.getElementById('link-metin-olusturma');
+                        const linkHaritadaBul = document.getElementById('link-haritada-bul');
+                        const linkPodcast = document.getElementById('link-podcast');
+                        const linkSeyretBul = document.getElementById('link-seyret-bul');
+                        const linkYarisma = document.getElementById('link-yarisma');
+                        const linkVideoIstegi = document.getElementById('link-video-istegi');
+
+                        if (userRole === 'teacher') {{
+                            // --- ÖĞRETMEN GÖRÜNÜMÜ ---
+                            if (linkMetinAnaliz) linkMetinAnaliz.style.display = 'none';
+                            if (linkSeyretBul) linkSeyretBul.style.display = 'none';
+                            if (linkHaritadaBul) linkHaritadaBul.style.display = 'none'; 
+                        }} else {{
+                            // --- ÖĞRENCİ GÖRÜNÜMÜ ---
+                            if (linkMetinOlusturma) linkMetinOlusturma.style.display = 'none';
+                        }}
+                        // --- ROL KONTROLÜ BİTTİ ---
+
+                    }} catch (e) {{ console.error("Kullanıcı adı veya rol yüklenemedi:", e); }}
+
+                    // --- 1. Süreç Bileşeni Menüsünü Doldur ---
+                    try {
+                        console.log("DEBUG JS: Süreç Listesi Alındı, Boyut:", sureclerListesi.length);
+                        
+                        if (bilesenSelect && sureclerListesi.length > 0) {
+                            
+                            // Öğrenci menüsü
+                            sureclerListesi.forEach(surec => {
+                                const kisaAciklama = surec.aciklama.substring(0, 70) + '...';
+                                const optionText = `${surec.kod} - ${kisaAciklama}`;
+                                
+                                const optionOgrenci = document.createElement('option');
+                                optionOgrenci.value = surec.kod;
+                                optionOgrenci.textContent = optionText;
+                                optionOgrenci.title = surec.aciklama;
+                                bilesenSelect.appendChild(optionOgrenci);
+                            });
+                            
+                        } else if (sureclerListesi.length === 0) {
+                             console.warn("DEBUG JS: 'sureclerListesi' değişkeni boş!");
+                        }
+                    } catch (e) {
+                        console.error("Süreç bileşeni menüsü doldurulurken hata:", e);
+                    }
+                                      
+                    // --- 2. Süreç Bileşeni değiştiğinde Videoları API'den çek ---
+                    if (bilesenSelect) {
+                        bilesenSelect.addEventListener('change', async () => {
+                            const selectedBilesenKodu = bilesenSelect.value;
+                            videoSelect.innerHTML = '<option value="">Videolar yükleniyor...</option>';
+                            videoSelect.disabled = true;
+                            izleBtn.disabled = true;
+                            
+                            if (!selectedBilesenKodu) {
+                                videoSelect.innerHTML = '<option value="">Önce Süreç Bileşeni Seçin...</option>';
+                                return;
+                            }
+                            
+                            try {
+                                const response = await fetch(`/api/seyret-bul/videolar?kod=${selectedBilesenKodu}`);
+                                const data = await response.json();
+                            
+                                if (data.success && data.videolar.length > 0) {
+                                    videoSelect.innerHTML = '<option value="">Lütfen bir video seçin...</option>';
+                                    data.videolar.forEach(video => {
+                                        const option = document.createElement('option');
+                                        option.value = video.video_id;
+                                        option.textContent = video.baslik;
+                                        videoSelect.appendChild(option);
+                                    });
+                                    videoSelect.disabled = false;
+                                } else {
+                                    videoSelect.innerHTML = '<option value="">Bu kazanım için video bulunamadı.</option>';
+                                }
+                            } catch (error) {
+                                console.error("Video listesi çekilirken hata:", error);
+                                videoSelect.innerHTML = '<option value="">Videolar yüklenemedi (Hata).</option>';
+                            }
+                        });
+                    }
+                    
+                    // --- 3. Video Seçimi değiştiğinde İzle Butonunu Aktif Et ---
+                    if (videoSelect) {
+                        videoSelect.addEventListener('change', () => {
+                            if (videoSelect.value) {
+                                izleBtn.disabled = false;
+                            } else {
+                                izleBtn.disabled = true;
+                            }
+                        });
+                    }
+                        
+                    // --- 4. İzle Butonu ---
+                    if (izleBtn) {
+                        izleBtn.addEventListener('click', () => {
+                            const videoId = videoSelect.value;
+                            if(videoId) {
+                                openVideoModal(videoId);
+                            }
+                        });
+                    }
+                    
+                    // --- 5. Gizli Admin Paneli Tıklaması (ARTIK ÇALIŞMIYOR) ---
+                    // (Bu kodu silebiliriz bile, çünkü adminPanel elementi artık burada yok)
+                    if (mainTitle) {
+                        mainTitle.addEventListener('click', () => {
+                            titleClickCount++;
+                            if (titleClickCount >= 3) {
+                                titleClickCount = 0;
+                                // 'adminPanel' elementi artık burada olmadığı için
+                                // bu kod hiçbir şey yapmayacak.
+                                alert('Yönetim paneli artık ana giriş ekranında.');
+                            }
+                        });
+                    }
+                });
+                
+                // --- VIDEO MODAL FONKSİYONLARI ---
+                    function openVideoModal(videoId) {
+                        // Adım 1: Kullanıcı ID'sini ve video ID'sini al
+                        const studentNo = localStorage.getItem('loggedInUserNo');
+                        if (!studentNo) {
+                            alert("Hata: Öğrenci girişi bulunamadı. Lütfen tekrar giriş yapın.");
+                            return;
+                        }
+
+                        fetch(`/api/seyret-bul/video-detay/${videoId}`)
+                            .then(r => r.json())
+                            .then(data => {
+                                if (!data.success) {
+                                    alert("Video detayları yüklenemedi.");
+                                    return;
+                                }
+                                
+                                videoData = data.video;
+                                const allQuestions = videoData.sorular || []; // Videonun tüm (9) sorusu
+                                if (allQuestions.length === 0) {
+                                    alert("Bu video için henüz soru eklenmemiş.");
+                                    return;
+                                }
+
+                                // --- YENİ SEÇİM SİSTEMİ (1-1-1 KURALI) ---
+                                
+                                // Adım 2: "Görülmüş Sorular" veritabanını localStorage'dan yükle
+                                let seenQuestionsDB = JSON.parse(localStorage.getItem('seyretBulSeenDB')) || {};
+                                const dbKey = `${studentNo}_${videoId}`;
+                                let seenQuestionsForThisVideo = seenQuestionsDB[dbKey] || [];
+
+                                // Adım 3: Görülmemiş soruları tiplerine göre ayır
+                                const unseenQuestions = allQuestions.filter(q => !seenQuestionsForThisVideo.includes(q.id));
+                                let unseen_CS = unseenQuestions.filter(q => q.tip === 'CoktanSecmeli');
+                                let unseen_BD = unseenQuestions.filter(q => q.tip === 'BoslukDoldurma');
+                                let unseen_KC = unseenQuestions.filter(q => q.tip === 'KisaCevap');
+
+                                // Adım 4: Havuz Kuralı (Kural 4 - Tekrar Görme)
+                                // Eğer 1-1-1 setini oluşturmak için *herhangi* bir tipin havuzu boşsa,
+                                // tüm havuzu sıfırla ve *tüm* sorulardan seç.
+                                let pool_CS, pool_BD, pool_KC;
+                                let poolSifirlandi = false;
+
+                                if (unseen_CS.length === 0 || unseen_BD.length === 0 || unseen_KC.length === 0) {
+                                    console.log("DEBUG JS: Havuz sıfırlanıyor (1-1-1 için yeterli tip yok).");
+                                    poolSifirlandi = true;
+                                    seenQuestionsForThisVideo = []; // Görülmüş listesini sıfırla
+                                    
+                                    // Havuzları tüm sorularla doldur
+                                    pool_CS = allQuestions.filter(q => q.tip === 'CoktanSecmeli');
+                                    pool_BD = allQuestions.filter(q => q.tip === 'BoslukDoldurma');
+                                    pool_KC = allQuestions.filter(q => q.tip === 'KisaCevap');
+                                } else {
+                                    // Havuzları görülmemiş sorularla doldur
+                                    pool_CS = unseen_CS;
+                                    pool_BD = unseen_BD;
+                                    pool_KC = unseen_KC;
+                                }
+
+                                // Adım 5: Her havuzdan rastgele 1 soru seç
+                                // (Eğer bir tipte hiç soru yoksa hata vermemesi için kontrol ekle)
+                                const q_CS = pool_CS.length > 0 ? pool_CS[Math.floor(Math.random() * pool_CS.length)] : null;
+                                const q_BD = pool_BD.length > 0 ? pool_BD[Math.floor(Math.random() * pool_BD.length)] : null;
+                                const q_KC = pool_KC.length > 0 ? pool_KC[Math.floor(Math.random() * pool_KC.length)] : null;
+                                
+                                // Seçilen 3 soruyu birleştir (null olanları filtrele)
+                                const selectedQuestions = [q_CS, q_BD, q_KC].filter(q => q !== null);
+                                
+                                if (selectedQuestions.length < 3) {
+                                    alert("Hata: Bu video 1-1-1 kuralı için yeterli soru tipine sahip değil. Lütfen videoyu (veya 'seyret_bul_videos.json' dosyasını) kontrol edin.");
+                                    return;
+                                }
+
+                                // Adım 6: Seçilen soruları "görülmüş" olarak işaretle ve kaydet
+                                const newSeenIDs = selectedQuestions.map(q => q.id);
+                                
+                                if (poolSifirlandi) {
+                                    seenQuestionsForThisVideo = newSeenIDs; // Liste sıfırlandı, sadece yenileri ekle
+                                } else {
+                                    // Liste sıfırlanmadı, mevcut listeye yenileri ekle
+                                    newSeenIDs.forEach(id => {
+                                        if (!seenQuestionsForThisVideo.includes(id)) {
+                                            seenQuestionsForThisVideo.push(id);
+                                        }
+                                    });
+                                }
+                                
+                                seenQuestionsDB[dbKey] = seenQuestionsForThisVideo;
+                                localStorage.setItem('seyretBulSeenDB', JSON.stringify(seenQuestionsDB));
+                                
+                                // --- YENİ SEÇİM SİSTEMİ BİTTİ ---
+
+                                // Adım 7: Seçilen 3 soruyu global `sorular` değişkenine ata ve oyunu başlat
+                                sorular = selectedQuestions; // Bu artık 1-1-1 seti
+                                sorular.sort((a,b) => a.duraklatma_saniyesi - b.duraklatma_saniyesi); // Duraklatma saniyesine göre sırala
+                                currentSoruIndex = 0;
+                                
+                                document.getElementById('videoContainer').classList.remove('hidden');
+                                loadYouTubeAPI();
+                            });
+                    }
+                    
+                    function loadYouTubeAPI() {
+                        if (!window.YT) {
+                            const tag = document.createElement('script');
+                            tag.src = "https://www.youtube.com/iframe_api";
+                            document.head.appendChild(tag);
+                            window.onYouTubeIframeAPIReady = createPlayer;
+                        } else {
+                            createPlayer();
+                        }
+                    }
+                    
+                    function createPlayer() {
+                    const playerDiv = document.getElementById('player');
+                    
+                    // Video tipi kontrolü: YouTube mu, lokal mu?
+                    if (videoData.url.includes('youtube.com') || videoData.url.includes('youtu.be')) {
+                        // YouTube video
+                        const ytId = videoData.url.match(/[?&]v=([^&]+)/)[1];
+                        player = new YT.Player('player', {
+                            height: '480',
+                            width: '100%',
+                            videoId: ytId,
+                            events: { 'onStateChange': onPlayerStateChange }
+                        });
+                    } else {
+                        // Lokal video - HTML5 player
+                        playerDiv.innerHTML = `
+                            <video id="html5-player" controls style="width: 100%; max-width: 100%;">
+                                <source src="${videoData.url}" type="video/mp4">
+                            </video>
+                        `;
+                        player = document.getElementById('html5-player');
+                        player.addEventListener('play', () => {
+                            if (currentSoruIndex < sorular.length) checkTime();
+                        });
+                    }
+                    
+                    // Timeline'ı göster ve marker'ları ekle
+                    const timeline = document.getElementById('timeline');
+                    const markers = document.getElementById('markers');
+                    timeline.classList.remove('hidden');
+                    markers.innerHTML = '';
+                    
+                    sorular.forEach(soru => {
+                        const marker = document.createElement('div');
+                        const pozisyon = (soru.duraklatma_saniyesi / videoData.sure_saniye) * 100;
+                        marker.className = 'absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow'; 
+                        marker.style.left = `${pozisyon}%`;
+                        // Yeni 2px'lik çizgiye ortalamak için (12px daire - 2px çizgi) / 2 = 5px yukarı kaydır
+                        marker.style.top = '-5px'; 
+                        marker.style.transform = 'translateX(-50%)';
+                        marker.title = `Soru: ${soru.duraklatma_saniyesi}s`;
+                        markers.appendChild(marker);
+                        });
+                    }
+
+                    function onPlayerStateChange(event) {
+                        if(event.data == YT.PlayerState.PLAYING && currentSoruIndex < sorular.length) {
+                            checkTime();
+                        }
+                    }
+                    
+                    function checkTime() {
+                        const interval = setInterval(() => {
+                            if(currentSoruIndex >= sorular.length || !player) {
+                                clearInterval(interval);
+                                return;
+                            }
+                            // YouTube veya HTML5 için farklı API
+                            const currentTime = player.getCurrentTime ? player.getCurrentTime() : player.currentTime;
+                            const soruZamani = sorular[currentSoruIndex].duraklatma_saniyesi;
+                            
+                            // --- GÜNCELLEME (Gecikmeyi düzelt) ---
+                            // 0.3 saniye önce durdur komutu gönder
+                            const buffer = 0.3; 
+                            
+                            if(currentTime >= (soruZamani - buffer)) { // <--- DÜZELTME BURADA
+                                
+                                // --- DÜZELTME: YouTube veya HTML5 için farklı duraklatma komutu ---
+                                if (player.pauseVideo) {
+                                    player.pauseVideo(); // YouTube API
+                                } else {
+                                    player.pause(); // HTML5 Video
+                                }
+                                // --- DÜZELTME BİTTİ ---
+
+                                showSoru(sorular[currentSoruIndex]);
+                                clearInterval(interval);
+                            }
+                        }, 100); // <-- 100 olduğundan emin olun
+                    }
+                    
+                    function showSoru(soru) {
+                    if (!soru.tip && soru.cevaplar && Array.isArray(soru.cevaplar)) {
+                        soru.tip = 'CoktanSecmeli'; 
+                        console.log('DEBUG JS: Eksik "tip" alanı algılandı, CoktanSecmeli olarak ayarlandı.');
+                    }
+                    document.getElementById('soruMetni').textContent = soru.soru;
+                    const cevaplarDiv = document.getElementById('cevaplar');
+                    cevaplarDiv.innerHTML = ''; // Modalın içini temizle
+
+                    // Soru tipine göre modal içeriğini oluştur
+                    if (soru.tip === 'CoktanSecmeli') {
+                        // --- Tip 1: Çoktan Seçmeli ---
+                        const harfler = ['A', 'B', 'C', 'D'];
+                        soru.cevaplar.forEach((cevap, i) => {
+                            const btn = document.createElement('button');
+                            btn.className = 'w-full p-3 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-all';
+                            btn.textContent = `${harfler[i]}) ${cevap}`;
+                            // checkCevap fonksiyonuna tüm 'soru' objesini ve 'A' gibi seçimi gönder
+                            btn.onclick = () => checkCevap(soru, harfler[i]);
+                            cevaplarDiv.appendChild(btn);
+                        });
+
+                    } 
+                    else if (soru.tip === 'BoslukDoldurma') {
+                        // --- Tip 2: Boşluk Doldurma ---
+                        
+                        // Input alanı
+                        const input = document.createElement('input');
+                        input.id = 'cevap-input';
+                        input.type = 'text';
+                        input.className = 'w-full px-4 py-2 border border-gray-300 rounded-lg mb-3';
+                        input.placeholder = 'Cevabınızı buraya yazın...';
+                        cevaplarDiv.appendChild(input);
+
+                        // Cevapla butonu
+                        const btn = document.createElement('button');
+                        btn.className = 'w-full p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all';
+                        btn.textContent = 'Cevapla';
+                        btn.onclick = () => {
+                            const kullaniciCevabi = document.getElementById('cevap-input').value;
+                            checkCevap(soru, kullaniciCevabi);
+                        };
+                        cevaplarDiv.appendChild(btn);
+
+                    } 
+                    else if (soru.tip === 'KisaCevap') {
+                        // --- Tip 3: Kısa Cevap (Doğru <textarea> elementi ile) ---
+                        
+                        // Textarea alanı (cümle yazmak için DOĞRU ELEMENT)
+                        const textarea = document.createElement('textarea');
+                        textarea.id = 'cevap-textarea'; // DOĞRU ID
+                        textarea.className = 'w-full p-3 border-2 border-gray-300 rounded-lg mb-3';
+                        textarea.placeholder = '3-4 kelimelik cevabınızı yazın...';
+                        textarea.rows = 3; // 3 satır yüksekliğinde
+                        cevaplarDiv.appendChild(textarea);
+
+                        // Cevapla butonu
+                        const btn = document.createElement('button');
+                        btn.className = 'w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all';
+                        btn.textContent = 'Cevabı Gönder';
+                        btn.onclick = () => {
+                            // Doğru ID'den oku
+                            const kullaniciCevabi = document.getElementById('cevap-textarea').value; 
+                            checkCevap(soru, kullaniciCevabi);
+                        };
+                        cevaplarDiv.appendChild(btn);
+                    }
+
+                    document.getElementById('soruModal').classList.remove('hidden');
+                }
+                    
+                    function checkCevap(soru, kullaniciCevabi) {
+                    let dogruMu = false;
+                    let dogruCevapMetni = '';
+
+                    // Modalı kilitle ve "Değerlendiriliyor" yazısını göster
+                    const cevaplarDiv = document.getElementById('cevaplar');
+                    cevaplarDiv.innerHTML = '<p class="text-center font-semibold text-blue-600">Cevabınız değerlendiriliyor... Lütfen bekleyin.</p>';
+
+                    // --- GÖRSEL GERİ BİLDİRİM İÇİN YARDIMCI FONKSİYON ---
+                    // Bu fonksiyon, alert() yerine sonucu modal'ın içine yazar.
+                    const showVisualFeedback = (baslikHtml, aciklamaHtml) => {
+                        const cevaplarDiv = document.getElementById('cevaplar');
+                        cevaplarDiv.innerHTML = ''; // "Değerlendiriliyor..." yazısını sil
+
+                        // "Devam Et" butonu oluştur
+                        const devamBtn = document.createElement('button');
+                        devamBtn.className = 'w-full p-3 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-all mt-6';
+                        devamBtn.textContent = 'Videoya Devam Et';
+                        devamBtn.onclick = videoyaDevamEt; // Tıklayınca videoya devam et
+
+                        // Modal'ın içini doldur
+                        cevaplarDiv.innerHTML = baslikHtml + aciklamaHtml;
+                        cevaplarDiv.appendChild(devamBtn);
+                    };
+                    // ---------------------------------------------------
+
+                    if (soru.tip === 'CoktanSecmeli') {
+                        dogruCevapMetni = soru.dogru_cevap;
+                        if (kullaniciCevabi === dogruCevapMetni) {
+                            dogruMu = true;
+                        }
+                        
+                        let baslikHtml, aciklamaHtml;
+                        if (dogruMu) {
+                            baslikHtml = '<h3 class="text-2xl font-bold text-green-600 mb-4">DOĞRU!</h3>';
+                            aciklamaHtml = '<p class="text-gray-700 italic bg-gray-50 p-3 rounded-lg">Tebrikler, doğru şıkkı seçtiniz.</p>';
+                        } else {
+                            baslikHtml = '<h3 class="text-2xl font-bold text-red-600 mb-4">YANLIŞ</h3>';
+                            aciklamaHtml = `<p class="text-gray-700 text-lg"><b>Doğru Cevap:</b> ${dogruCevapMetni}</p>`;
+                        }
+                        // Not: Hızlı çalıştığı için "Değerlendiriliyor" yazısı görünmeyebilir, 
+                        // bu yüzden sonucu 100 milisaniye sonra göstermek daha akıcı olur.
+                        setTimeout(() => showVisualFeedback(baslikHtml, aciklamaHtml), 100);
+
+                    } 
+                    else if (soru.tip === 'BoslukDoldurma') {
+                        dogruCevapMetni = soru.dogru_cevap;
+                        // Büyük/küçük harf duyarsız ve boşlukları temizleyerek kontrol et
+                        if (kullaniciCevabi.trim().toLowerCase() === dogruCevapMetni.trim().toLowerCase()) {
+                            dogruMu = true;
+                        }
+
+                        let baslikHtml, aciklamaHtml;
+                        if (dogruMu) {
+                            baslikHtml = '<h3 class="text-2xl font-bold text-green-600 mb-4">DOĞRU!</h3>';
+                            aciklamaHtml = `<p class="text-gray-700 italic bg-gray-50 p-3 rounded-lg">Tebrikler, cevabınız: ${dogruCevapMetni}</p>`;
+                        } else {
+                            baslikHtml = '<h3 class="text-2xl font-bold text-red-600 mb-4">YANLIŞ</h3>';
+                            aciklamaHtml = `<p class="text-gray-700 text-lg"><b>Doğru Cevap:</b> ${dogruCevapMetni}</p>
+                                            <p class="text-gray-500 mt-2">Sizin cevabınız: ${kullaniciCevabi}</p>`;
+                        }
+                        setTimeout(() => showVisualFeedback(baslikHtml, aciklamaHtml), 100);
+                    } 
+                    
+                    else if (soru.tip === 'KisaCevap') {
+                        // Gemini API'yi çağır
+                        fetch('/api/seyret-bul/degerlendir', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                soru_metni: soru.soru,
+                                kullanici_cevabi: kullaniciCevabi
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            let baslikHtml = '';
+                            let aciklamaHtml = '';
+
+                            if (data.success && data.skor !== undefined) {
+                                const baslikRenk = (data.skor == 5) ? 'text-green-600' : 'text-blue-600';
+                                baslikHtml = `<h3 class="text-2xl font-bold ${baslikRenk} mb-4">PUANINIZ: ${data.skor} / 5</h3>`;
+                                aciklamaHtml = `<p class="text-gray-700 text-lg"><b>Gemini Değerlendirmesi:</b></p>
+                                                <p class="text-gray-700 italic bg-gray-50 p-3 rounded-lg">${data.geri_bildirim}</p>`;
+                            } else {
+                                baslikHtml = '<h3 class="text-2xl font-bold text-red-600 mb-4">Değerlendirme Hatası</h3>';
+                                aciklamaHtml = `<p class="text-gray-700">${data.hata || 'Bilinmeyen format'}</p>`;
+                            }
+                            showVisualFeedback(baslikHtml, aciklamaHtml); // Yardımcı fonksiyonu çağır
+                        })
+                        .catch(err => {
+                            const baslikHtml = '<h3 class="text-2xl font-bold text-red-600 mb-4">Sunucu Hatası</h3>';
+                            const aciklamaHtml = `<p class="text-gray-700">${err.message}</p>`;
+                            showVisualFeedback(baslikHtml, aciklamaHtml); // Yardımcı fonksiyonu çağır
+                        });
+                    }
+                }
+
+                // --- YARDIMCI FONKSİYONLAR (Yeni Eklendi) ---
+
+                function videoyaDevamEt() {
+                    // --- Modal'ı kapat ve videoya devam et ---
+                    document.getElementById('soruModal').classList.add('hidden');
+                    currentSoruIndex++;
+                    
+                    // YouTube veya HTML5 için farklı play
+                    if (player.playVideo) {
+                        player.playVideo();  // YouTube
+                    } else {
+                        player.play();  // HTML5
+                    }
+                    
+                    if (currentSoruIndex < sorular.length) {
+                        checkTime();
+                    }
+                }
+                    
+                    document.getElementById('closeVideo').addEventListener('click', () => {
+                    document.getElementById('videoContainer').classList.add('hidden');
+                    if(player) player.destroy();
+                    document.getElementById('player').innerHTML = '';
+                });
+            </script>
+        </body>
+        </html>
+        """
+        
+        # --- 4. JSON Verisini HTML'e Enjekte Etme ---
+        try:
+            surecler_json = json.dumps(surecler_listesi)
+        except Exception as json_err:
+            print(f"JSON Dumps Hatası: {json_err}")
+            surecler_json = "[]" # Hata olursa boş liste gönder
+            
+        # JavaScript'teki 'var sureclerListesi = [];' satırını dolduruyoruz
+        html_content = html_content.replace('var sureclerListesi = [];', f'var sureclerListesi = {surecler_json};')
+
+        # 5. Tamamlanmış HTML'i döndür
+        return html_content
+        
     except Exception as e:
-        print(f"Hata: {e}")
-        return f"Hata: {str(e)}"
-
-
+        print(f"Seyret Bul liste hatası: {e}")
+        return f"Bir hata oluştu: {str(e)}"
+    
+# ########## YENİ EKLENDİ: SEYRET BUL API ROTALARI ##########
 @app.route('/api/seyret-bul/surecler')
 def api_get_surecler():
     """Tüm süreç bileşenlerini döndürür"""
@@ -1305,15 +2021,223 @@ def validate_text_relevance(user_text, model):
 # ==========================================
 @app.route('/podcast_paneli')
 def podcast_paneli():
-    """Podcast Panel - Rol bazlı"""
-    user_role = session.get('role', 'student')
-    return render_template('podcast.html', role=user_role)
+    """Podcast Panel - Soru Üretim HTML Yapısıyla Birebir Aynı."""
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="tr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Podcast Oluşturucu</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+            body {{ 
+                font-family: 'Inter', sans-serif;
+                background-color: #f3f4f6;
+            }}
+            /* Soru Üretim sayfasındaki aynı no-bounce sınıfı */
+            .no-bounce {{ overscroll-behavior: none; }}
+            
+            /* Scrollbar Gizleme (Ekstra) */
+            .no-scrollbar::-webkit-scrollbar {{ display: none; }}
+            .no-scrollbar {{ -ms-overflow-style: none; scrollbar-width: none; }}
+        </style>
+    </head>
+    <body class="flex h-screen">
+
+        <aside class="w-72 bg-white text-gray-800 shadow-lg flex flex-col fixed h-full z-50">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h1 class="text-2xl font-extrabold text-blue-600 text-center tracking-wide mb-4">
+                    Maarif SosyalLab
+                </h1>
+                <div class="mb-4">
+                    <div class="w-full p-2 flex items-center justify-center overflow-hidden">
+                        <img src="/videolar/maarif.png" alt="Maarif Logo" class="w-auto h-auto max-w-full max-h-24 object-contain rounded-lg">
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <div id="user-avatar-initial" class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-lg">K</div>
+                    <div class="ml-3">
+                        <span id="user-name-placeholder" class="block text-sm font-bold text-gray-800">Kullanıcı</span>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-2 space-y-1 no-bounce">
+
+            <a id="link-soru-uretim" href="/soru-uretim"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-600 transition-all">
+                <i class="fa-solid fa-circle-question mr-3 w-6 text-center"></i>
+                <span>Soru Üretim</span>
+            </a>
+            <a id="link-metin-olusturma" href="/metin-olusturma"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-purple-500 hover:bg-purple-600 transition-all">
+                <i class="fa-solid fa-wand-magic-sparkles mr-3 w-6 text-center"></i>
+                <span>Metin Oluşturma</span>
+            </a>
+            <a id="link-podcast" href="/podcast_paneli"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all">
+                <i class="fa-solid fa-microphone-lines mr-3 w-6 text-center"></i>
+                <span>Podcast Yap</span>
+            </a>
+            <a id="link-yarisma" href="/yarisma-secim"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-teal-500 hover:bg-teal-600 transition-all">
+                <i class="fa-solid fa-trophy mr-3 w-6 text-center"></i>
+                <span>Beceri/Değer Avcısı</span>
+            </a>
+            <a id="link-video-istegi" href="/video-istegi"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-pink-500 hover:bg-pink-600 transition-all">
+                <i class="fa-solid fa-video mr-3 w-6 text-center"></i>
+                <span>Video İsteği</span>
+            </a>
+            
+        </nav>
+            <div class="p-4 border-t border-gray-200">
+                <a href="/dashboard" class="flex items-center mx-2 p-2 rounded-lg text-gray-600 font-semibold bg-gray-100 hover:bg-gray-200 transition-all">
+                    <i class="fa-solid fa-arrow-left mr-3 w-6 text-center"></i><span>Panele Geri Dön</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="ml-72 flex-1 p-6 md:p-8 overflow-y-auto no-bounce">
+            
+            <header class="md:hidden flex items-center justify-between mb-6">
+                <h1 class="text-xl font-bold text-blue-600">SosyalLab Podcast</h1>
+                <a href="/dashboard" class="text-gray-500"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+            </header>
+
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Podcast Oluşturucu</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <p class="text-gray-600 mb-4">Lütfen "sohbet podcasti" yapılacak metni (En fazla 600 kelime) aşağıya yapıştırın.</p>
+
+                    <form id="podcast-form">
+                        <textarea id="text-input" 
+                                  name="text_content"
+                                  class="w-full h-48 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none resize-none text-gray-700"
+                                  placeholder="Metninizi buraya yapıştırın..."></textarea>
+
+                        <div id="word-count" class="text-right text-sm text-gray-500 mt-1">0 / 600 kelime</div>
+
+                        <button id="generate-btn" type="submit" class="w-full mt-4 bg-red-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-red-600 transition-all duration-300 flex items-center justify-center">
+                            <i class="fa-solid fa-microphone mr-2"></i> Sohbet Podcasti Oluştur
+                        </button>
+                    </form>
+
+                    <div id="podcast-status" class="mt-4 font-semibold text-gray-700 text-center"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow flex flex-col justify-center items-center text-center min-h-[300px]">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 w-full text-left">Podcast Oynatıcı</h3>
+                    
+                    <div id="podcast-player-container" class="mt-4 p-4 w-full" style="display: none;">
+                        <p class="text-sm text-gray-500 mb-3">Ses dosyası hazır!</p>
+                        <audio id="audio-player" controls class="w-full"></audio>
+                    </div>
+
+                    <div id="player-placeholder" class="p-4">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                             <i class="fa-solid fa-microphone-lines text-3xl"></i>
+                        </div>
+                        <p class="text-gray-400">Podcast oluşturulduktan sonra<br>burada dinleyebilirsiniz.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+      
+        <script>
+            (function() {{
+                // --- Kullanıcı Adı Yükleme (Soru Üretim'deki kodun aynısı) ---
+                try {{
+                    const userFullName = localStorage.getItem('loggedInUserName');
+                    const userRole = localStorage.getItem('loggedInUserRole');
+
+                    if (userFullName) {{
+                        document.getElementById('user-name-placeholder').textContent = userFullName;
+                        document.getElementById('user-avatar-initial').textContent = userFullName[0] ? userFullName[0].toUpperCase() : 'K';
+                    }}
+                }} catch (e) {{ console.error("Kullanıcı bilgisi hatası:", e); }}
+
+                // --- Podcast Mantığı ---
+                const form = document.getElementById('podcast-form');
+                const textArea = document.getElementById('text-input');
+                const wordCountDisplay = document.getElementById('word-count');
+                const button = document.getElementById('generate-btn');
+                const status = document.getElementById('podcast-status');
+                const playerContainer = document.getElementById('podcast-player-container');
+                const placeholder = document.getElementById('player-placeholder');
+                let audioPlayer = document.getElementById('audio-player');
+                
+                const wordLimit = 600;
+
+                textArea.addEventListener('input', function() {{
+                    const text = textArea.value;
+                    const words = text.split(/\\s+/).filter(Boolean);
+                    const wordCount = words.length;
+                    wordCountDisplay.textContent = `${{wordCount}} / ${{wordLimit}} kelime`;
+
+                    if (wordCount > wordLimit || wordCount === 0) {{
+                        wordCountDisplay.classList.add('text-red-500', 'font-bold');
+                        button.disabled = true;
+                        button.classList.add('opacity-50', 'cursor-not-allowed');
+                    }} else {{
+                        wordCountDisplay.classList.remove('text-red-500', 'font-bold');
+                        button.disabled = false;
+                        button.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }}
+                }}); 
+
+                form.addEventListener('submit', async function(event) {{
+                    event.preventDefault();
+                    const userText = textArea.value.trim();
+                    if (!userText) return;
+
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Hazırlanıyor...';
+                    status.textContent = "Lütfen bekleyin...";
+                    
+                    try {{
+                        const response = await fetch('/generate-podcast', {{
+                            method: 'POST',
+                            headers: {{ 'Content-Type': 'application/json' }},
+                            body: JSON.stringify({{ text: userText, student_no: localStorage.getItem('user_no') }}), 
+                        }});
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {{
+                            placeholder.style.display = 'none';
+                            playerContainer.style.display = 'block';
+                            audioPlayer.src = data.audio_url + '?' + new Date().getTime();
+                            audioPlayer.play();
+                            status.innerHTML = '<span class="text-green-600"><i class="fa-solid fa-check-circle"></i> Başarıyla oluşturuldu!</span>';
+                        }} else {{
+                            status.innerHTML = '<span class="text-red-600">Hata: ' + (data.error || "Bilinmeyen hata") + '</span>';
+                        }}
+                    }} catch (error) {{
+                        status.innerHTML = '<span class="text-red-600">Bağlantı Hatası</span>';
+                    }} finally {{
+                        button.disabled = false;
+                        button.innerHTML = '<i class="fa-solid fa-microphone mr-2"></i> Sohbet Podcasti Oluştur';
+                    }}
+                }});
+
+            }})();
+        </script>
+    </body>
+    </html>
+    """
+    # F-String kullandığımız için veri zaten içeriye gömüldü.
+    # Ekstra işlem yapmaya gerek yok, sadece döndür.
+    return render_template_string(html_content)
 
 @app.route('/generate-podcast', methods=['POST'])
 def handle_generation():
     data = request.get_json()
     user_text = data.get('text')
-    student_no = data.get('student_no')  # student_no'yu en başta alalım
     
     if not user_text:
         return jsonify({"success": False, "error": "Metin boş olamaz."}), 400
@@ -1321,7 +2245,7 @@ def handle_generation():
     try:
         # --- 1. Metin Uygunluğunu Kontrol Et ---
         print("🔵 1. Metnin müfredata uygunluğu kontrol ediliyor...")
-        global gemini_model
+        global gemini_model # Modeli globalden al
         validation_result = validate_text_relevance(user_text, gemini_model)
         
         if not validation_result.get("success"):
@@ -1333,7 +2257,7 @@ def handle_generation():
         if uygunluk_yuzdesi < 70:
             print(f"❌ Metin reddedildi. Uygunluk: {uygunluk_yuzdesi}%")
             return jsonify({
-                "success": False,
+                "success": False, 
                 "error": f"Metin Reddedildi (Uygunluk: {uygunluk_yuzdesi}%). \n\nAçıklama: {aciklama}"
             }), 400
         
@@ -1357,15 +2281,16 @@ def handle_generation():
         
         print(f"✅ Ses URL: {audio_url}")
         
-        # YENİ: RAPORLAMAYA EKLE - Podcast başarıyla oluşturulduysa
+        # Kullanım kaydı
+        student_no = data.get("student_no")
         if student_no:
-            db_helper.kaydet_kullanim(student_no, "Podcast Yap", "Podcast oluşturuldu")
-            print(f"🔍 DEBUG: student_no = {student_no} - Raporlamaya eklendi")
+            db_helper.kaydet_kullanim(student_no, "podcast", "Podcast oluşturuldu")
+        print(f"🔍 DEBUG: student_no = {student_no}")
 
         return jsonify({
-            "success": True,
+            "success": True, 
             "audio_url": audio_url,
-            "validation_data": validation_result
+            "validation_data": validation_result 
         })
 
     except Exception as e:
@@ -1471,40 +2396,42 @@ def video_istegi_page():
 
 @app.route('/api/video-istegi-gonder', methods=['POST'])
 def video_istegi_gonder():
-    """Öğretmenden gelen video isteğini PostgreSQL veritabanına kaydeder."""
+    """Öğretmenden gelen video isteğini 'video_istekleri.json' dosyasına kaydeder."""
     try:
         data = request.get_json()
         
+        # --- GÜNCELLENDİ: Tüm veriyi al ---
         istek_metni = data.get('istek_metni')
-        isteyen_kullanici = data.get('isteyen_ogretmen', 'Bilinmiyor')
+        isteyen_kullanici = data.get('isteyen_ogretmen', 'Bilinmiyor') # Bu 'isim' alanı
         kullanici_rol = data.get('kullanici_rol', 'Bilinmiyor')
         kullanici_no = data.get('kullanici_no')
         kullanici_okul = data.get('kullanici_okul')
         kullanici_sinif = data.get('kullanici_sinif')
+        # --- BİTTİ ---
         
         if not istek_metni:
             return jsonify({"success": False, "hata": "İstek metni boş olamaz."})
         
-        # Yeni isteği oluştur (Sözlük yapısı db_helper ile uyumlu)
+        # Yeni isteği oluştur (Genişletilmiş)
         yeni_istek = {
             "id": f"istek_{int(pd.Timestamp.now().timestamp())}",
-            "tarih": pd.Timestamp.now().isoformat(), # db_helper timestamp bekliyorsa str gönderiyoruz, SQL çevirir
-            "ogretmen": isteyen_kullanici,
+            "tarih": pd.Timestamp.now().isoformat(),
+            "ogretmen": isteyen_kullanici, # Bu alanı 'isim' olarak tutuyoruz
             "metin": istek_metni,
             "durum": "Yeni",
+            # --- YENİ ALANLAR ---
             "rol": kullanici_rol,
             "okul": kullanici_okul,
             "sinif": kullanici_sinif,
             "no": kullanici_no
+            # --- BİTTİ ---
         }
         
-        # --- LİSTEYE DEĞİL, DOĞRUDAN DB'YE KAYIT ---
-        basarili = db_helper.save_video_istek(yeni_istek)
+        # Veritabanına ekle ve kaydet
+        video_istekleri.insert(0, yeni_istek) # En yeni isteği en üste ekle
+        save_video_istekleri(video_istekleri)
         
-        if basarili:
-            return jsonify({"success": True, "mesaj": "İstek veritabanına kaydedildi."})
-        else:
-            return jsonify({"success": False, "hata": "Veritabanı kayıt hatası."})
+        return jsonify({"success": True, "mesaj": "İstek kaydedildi."})
         
     except Exception as e:
         print(f"Video isteği API hatası: {e}")
@@ -1514,11 +2441,11 @@ def video_istegi_gonder():
 # --- YENİ EKLENDİ: VİDEO İSTEKLERİNİ ÇEKME ROTASI ---
 @app.route('/api/get-video-istekleri', methods=['GET'])
 def api_get_video_istekleri():
-    """Tüm video isteklerini PostgreSQL veritabanından çeker."""
+    """Tüm video isteklerini (video_istekleri global değişkeninden) JSON olarak döndürür."""
+    global video_istekleri
     try:
-        # --- DEĞİŞİKLİK BURADA: Global liste yerine DB'den çek ---
-        istekler = db_helper.get_all_video_istekleri()
-        return jsonify({"success": True, "istekler": istekler})
+        # 'video_istekleri' listesi zaten dosyanın başında yükleniyor.
+        return jsonify({"success": True, "istekler": video_istekleri})
     except Exception as e:
         print(f"Video istekleri çekme API hatası: {e}")
         return jsonify({"success": False, "hata": str(e)})
@@ -1527,7 +2454,8 @@ def api_get_video_istekleri():
 # --- YENİ EKLENDİ: VİDEO İSTEĞİ SİLME ROTASI (3. İsteğiniz) ---
 @app.route('/api/delete-video-istek', methods=['POST'])
 def api_delete_video_istek():
-    """Bir video isteğini ID'sine göre PostgreSQL veritabanından siler."""
+    """Bir video isteğini ID'sine göre bulur ve 'video_istekleri.json' dosyasından siler."""
+    global video_istekleri
     try:
         data = request.get_json()
         istek_id = data.get('istek_id')
@@ -1535,13 +2463,15 @@ def api_delete_video_istek():
         if not istek_id:
             return jsonify({"success": False, "hata": "İstek ID'si eksik."})
 
-        # --- DEĞİŞİKLİK BURADA: Listeden arama yok, direkt DB'den sil ---
-        basarili = db_helper.delete_video_istek(istek_id)
+        # İsteği ID'ye göre bul
+        istek_to_delete = next((istek for istek in video_istekleri if istek.get('id') == istek_id), None)
         
-        if basarili:
-            return jsonify({"success": True, "mesaj": "İstek veritabanından silindi."})
+        if istek_to_delete:
+            video_istekleri.remove(istek_to_delete) # Listeden kaldır
+            save_video_istekleri(video_istekleri)   # Değişikliği dosyaya kaydet
+            return jsonify({"success": True, "mesaj": "İstek silindi."})
         else:
-            return jsonify({"success": False, "hata": "Silme işlemi başarısız (veya kayıt bulunamadı)."})
+            return jsonify({"success": False, "hata": "Silinecek istek bulunamadı."})
             
     except Exception as e:
         print(f"Video isteği silme API hatası: {e}")
@@ -1880,8 +2810,7 @@ def raporlar_sayfa():
 
 # === EKSİK OLAN RAPORLAMA API'LARI ===
 
-# ESKİ HATALI KOD DEVRE DIŞI
-# @app.route("/api/okul_sinif_listesi")
+@app.route("/api/okul_sinif_listesi")
 def api_okul_sinif_listesi():
     """Okul ve sınıf listelerini PostgreSQL'den döndürür"""
     try:
@@ -1941,7 +2870,11 @@ def api_raporlar_excel():
         return jsonify({"success": False, "error": str(e)})
 
 # --- SUNUCU BAŞLATMA (EN SONDA OLMALI) ---
-
+if __name__ == '__main__':
+    print("UYGULAMA SUNUCUSU http://127.0.0.1:5002 adresinde çalışıyor...")
+    print("Giriş yapmak için: http://127.0.0.1:5002")
+    print("Dashboard'a doğrudan erişim: http://127.0.0.1:5002/dashboard")
+    app.run(debug=False, host='127.0.0.1', port=5002)
 
 @app.route("/api/benim_sonuclarim", methods=["GET"])
 def api_benim_sonuclarim():
@@ -2006,164 +2939,8 @@ def api_get_students():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
-@app.route('/api/seyret-bul/kaydet-izleme', methods=['POST'])
-def api_seyret_bul_kaydet_izleme():
-    try:
-        data = request.get_json()
-        student_no = data.get('student_no')
-        video_baslik = data.get('video_baslik')
-        if not student_no: return jsonify({"success": False})
-        import db_helper
-        # YENİ: RAPORLAMAYA EKLE - Video izlendiyse
-        db_helper.kaydet_kullanim(student_no, 'Seyret Bul', f"Video izlendi: {video_baslik}")
-        return jsonify({"success": True})
-    except: return jsonify({"success": False})
-    
-@app.route('/api/seyret-bul/admin/get-all-videos', methods=['GET'])
-def api_get_all_videos():
-    """Tüm videoları admin paneli için listeler"""
-    try:
-        videos_dict = seyret_bul.videolari_yukle()
-        videolar = []
-        for video_id, video_data in videos_dict.items():
-            videolar.append({
-                'video_id': video_id,
-                'baslik': video_data.get('baslik', ''),
-                'surec_bileseni': video_data.get('surec_bileseni', ''),
-                'video_url': video_data.get('video_url', '')
-            })
-        return jsonify({"success": True, "videolar": videolar})
-    except Exception as e:
-        return jsonify({"success": False, "hata": str(e)})
-
-
-@app.route('/api/seyret-bul/degerlendir', methods=['POST'])
-def api_seyret_bul_degerlendir():
-    try:
-        data = request.get_json()
-        soru = data.get('soru_metni')
-        cevap = data.get('kullanici_cevabi')
-        
-        prompt = f'''Sen bir öğretmensin. Soru: "{soru}", Cevap: "{cevap}". 1-5 arası puanla ve kısa geri bildirim ver. Yanıt SADECE JSON olsun: {{"skor": 3, "geri_bildirim": "..."}}'''
-
-        global gemini_model
-        if not gemini_model: return jsonify({"success": True, "skor": 3, "geri_bildirim": "Yapay zeka yok."})
-
-        response = gemini_model.generate_content(prompt)
-        text = response.text.strip().replace("```json", "").replace("```", "")
-        import json
-        try:
-            res = json.loads(text)
-            return jsonify({"success": True, "skor": res.get('skor', 1), "geri_bildirim": res.get('geri_bildirim', '')})
-        except: return jsonify({"success": True, "skor": 3, "geri_bildirim": "Otomatik puanlandı."})
-    except: return jsonify({"success": True, "skor": 1, "geri_bildirim": "Hata."})
-
-# ==========================================
-# --- 1. DASHBOARD İÇİN KURTARICI KOD (JSON'DAN OKUR) ---
-# ==========================================
-@app.route("/api/okul_sinif_listesi")
-def api_okul_sinif_listesi():
-    """Dashboard'un çökmemesi için verileri users.json'dan okur"""
-    try:
-        global users
-        okullar = set()
-        siniflar = set()
-        
-        if users:
-            for user_data in users.values():
-                s_name = user_data.get('school_name')
-                c_name = user_data.get('class')
-                if s_name: okullar.add(s_name)
-                if c_name: siniflar.add(c_name)
-        
-        return jsonify({
-            "success": True,
-            "okullar": sorted(list(okullar)),
-            "siniflar": sorted(list(siniflar))
-        })
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e), "okullar": [], "siniflar": []})
-
-# ==========================================
-# --- 2. RAPORLAMA İÇİN FİLTRE KODLARI (JSON'DAN OKUR) ---
-# ==========================================
-# ==========================================
-# --- 2. RAPORLAMA İÇİN FİLTRE KODLARI (SQL TABANLI - KESİN ÇÖZÜM) ---
-# ==========================================
-
-@app.route("/api/filter/get_schools")
-def api_get_schools():
-    """Rapor sayfası için okul listesini DOĞRUDAN SQL'den çeker"""
-    try:
-        import db_helper # db_helper'ın import edildiğinden emin olalım
-        conn = db_helper.get_db_connection()
-        cur = conn.cursor()
-        
-        # Sadece okulu dolu olanları getir
-        cur.execute("SELECT DISTINCT school_name FROM users WHERE school_name IS NOT NULL AND school_name != '' ORDER BY school_name")
-        rows = cur.fetchall()
-        
-        # Tuple listesini düz listeye çevir ('Okul A', 'Okul B'...)
-        # rows örneği: [('Okul A',), ('Okul B',)]
-        okullar = [r[0] for r in rows if r[0]]
-        
-        cur.close()
-        conn.close()
-        
-        return jsonify({"success": True, "data": okullar})
-    except Exception as e:
-        print(f"Okul listesi SQL hatası: {e}")
-        return jsonify({"success": False, "error": str(e), "data": []})
-
-
-@app.route("/api/filter/get_classes")
-def api_get_classes():
-    """Sınıf listesini döndürür (Düzeltilmiş)"""
-    try:
-        okul_adi = request.args.get('school_name')
-        print(f"🔍 Sınıf listesi isteniyor - Okul: '{okul_adi}'")
-        
-        if not okul_adi: 
-            return jsonify({"success": False, "data": []})
-
-        import db_helper
-        conn = db_helper.get_db_connection()
-        cur = conn.cursor()
-        
-        # Seçilen okula ait sınıfları getir
-        cur.execute("""
-            SELECT DISTINCT class FROM users 
-            WHERE school_name = %s AND class IS NOT NULL AND class != '' 
-            ORDER BY class
-        """, (okul_adi,))
-        
-        rows = cur.fetchall()
-        siniflar = [r[0] for r in rows if r[0]]
-        
-        print(f"🔍 '{okul_adi}' için bulunan sınıflar: {siniflar}")
-        
-        cur.close()
-        conn.close()
-        
-        # Eğer sınıf yoksa, test sınıfları ekle
-        if not siniflar:
-            print("⚠️ Sınıf bulunamadı, test sınıfları ekleniyor...")
-            siniflar = ['5A', '5B', '5C', '5D', '6A', '6B']
-        
-        return jsonify({"success": True, "data": siniflar})
-    except Exception as e:
-        print(f"❌ Sınıf listesi hatası: {e}")
-        # Hata durumunda manuel liste döndür
-        return jsonify({"success": True, "data": ['5A', '5B', '5C', '5D', '6A', '6B']})
-
-@app.route("/api/filter/get_years")
-def api_get_years():
-    return jsonify({"success": True, "data": ["2024", "2025", "2026"]})
-
-# ==========================================
-# --- SUNUCU BAŞLATMA ---
-# ==========================================
 if __name__ == '__main__':
     print("UYGULAMA SUNUCUSU http://127.0.0.1:5002 adresinde çalışıyor...")
     print("Giriş yapmak için: http://127.0.0.1:5002")
+    print("Dashboard'a doğrudan erişim: http://127.0.0.1:5002/dashboard")
     app.run(debug=False, host='127.0.0.1', port=5002)

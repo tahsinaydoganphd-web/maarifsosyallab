@@ -40,109 +40,106 @@ harita_bul.register_harita_bul_routes(app, GOOGLE_MAPS_API_KEY)
 
 
 # --- Lokal Videoları (ve Arka Planı) Serve Et ---
-# --- Lokal Videoları (ve Arka Planı) Serve Et ---
 @app.route('/videolar/<path:filename>')
 def serve_video(filename):
-    """Videolar klasöründeki dosyaları serve eder"""
+    """Videolar klasöründeki dosyaları serve eder (maarif.png<div id="card-metin" class="card" style="background-image: url('https://source.unsplash.com/800x1000?student,writing,notebook');"> dahil)"""
+    """Videolar klasöründeki dosyaları serve eder (maarif.png dahil)"""
     return send_from_directory('videolar', filename)
 # --- BİTTİ ---
 
 # --- Kalıcı Veritabanı Ayarları ---
-DB_FILE = 'users.json'
+DB_FILE = 'users.json' # Öğrenci kayıtları için
 
-# (SİLİNDİ) VIDEO_ISTEKLERI_DB_FILE satırı artık yok.
-# (SİLİNDİ) video_istekleri = load_video_istekleri() satırı artık yok.
+VIDEO_ISTEKLERI_DB_FILE = 'video_istekleri.json'
+
+def load_video_istekleri():
+    """ Sunucu başladığında JSON dosyasından video isteklerini yükler. """
+    if os.path.exists(VIDEO_ISTEKLERI_DB_FILE):
+        try:
+            with open(VIDEO_ISTEKLERI_DB_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            return [] # Liste olarak başlat
+    return []
+
+def save_video_istekleri(data):
+    """ Video isteklerini JSON dosyasına kaydeder. """
+    try:
+        with open(VIDEO_ISTEKLERI_DB_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        print(f"Video istekleri '{VIDEO_ISTEKLERI_DB_FILE}' dosyasına başarıyla kaydedildi.")
+    except Exception as e:
+        print(f"Video istekleri kaydetme hatası: {e}")
+
+# Video isteklerini yükle
+video_istekleri = load_video_istekleri()
+# --- Video İstekleri Bitişi ---
 
 def check_and_update_soru_limit(student_no):
     from datetime import datetime, timedelta
-    
-    # load_soru_limits fonksiyonunu güvenli çağırma
-    try:
-        # Bu fonksiyon app.py'nin aşağılarında tanımlı olmalı veya db_helper'dan gelmeli
-        # Eğer yoksa hata vermemesi için boş sözlükle devam ediyoruz
-        if 'load_soru_limits' in globals():
-            limits = load_soru_limits()
-        else:
-            limits = {}
-    except:
-        limits = {}
-
+    limits = load_soru_limits()
     today = datetime.now().date()
     user_data = limits.get(student_no, {"count": 0, "reset_date": str(today)})
-    
-    try:
-        reset_date = datetime.strptime(user_data["reset_date"], "%Y-%m-%d").date()
-    except:
-        reset_date = today
-
+    reset_date = datetime.strptime(user_data["reset_date"], "%Y-%m-%d").date()
     if today >= reset_date:
         user_data["count"] = 0
         user_data["reset_date"] = str(today + timedelta(days=7))
-    
-    HAFTALIK_LIMIT = 20
-    
     if user_data["count"] >= HAFTALIK_LIMIT:
         kalan_gun = (reset_date - today).days
         return {
-            "success": False,
+            "success": False, 
             "hata": f"Haftalık soru üretim limitiniz ({HAFTALIK_LIMIT}) dolmuştur. Lütfen {kalan_gun} gün sonra tekrar deneyin."
         }
-    
     user_data["count"] += 1
     limits[student_no] = user_data
-    
-    # save_soru_limits fonksiyonunu güvenli çağırma
-    try:
-        if hasattr(db_helper, 'save_soru_limits'):
-            db_helper.save_soru_limits(limits)
-        elif 'save_soru_limits' in globals():
-            save_soru_limits(limits)
-    except:
-        pass # Kayıt fonksiyonu bulunamazsa çökmesin
-            
+    db_helper.save_soru_limits(limits)
     return {"success": True}
 # --- Soru Üretim Limiti Bitişi ---
 
-# --- KRİTİK EKLEME: Tabloları Başlat ---
-# Kullanıcıları yüklemeden önce tabloların varlığından emin oluyoruz
-try:
-    db_helper.init_db()
-    print("✅ Veritabanı tabloları başlatıldı.")
-except Exception as e:
-    print(f"⚠️ Veritabanı başlatma uyarısı: {e}")
-
-# Öğrenci veritabanını (PostgreSQL'den) yükle
+# Öğrenci veritabanını (users.json) yükle
 users = db_helper.load_users()
 
+# --- YENİ EKLENECEK TAMİR KODU BAŞLANGICI ---
+def veritabani_tamir_et():
+    global users
+    if users is None: return
+    """Eksik öğrenci numaralarını anahtardan (key) alıp içeri kopyalar."""
+    duzeltilen_sayisi = 0
+    degisiklik_var = False
+    
+    for user_id, data in users.items():
+        # Sadece öğrenciler için işlem yap
+        if data.get('role') == 'student':
+            # Eğer 'student_no' alanı yoksa veya boşsa
+            if 'student_no' not in data or not data['student_no']:
+                data['student_no'] = user_id  # Anahtarı (user_id) içeri kopyala
+                duzeltilen_sayisi += 1
+                degisiklik_var = True
+    
+    if degisiklik_var:
+        print(f"✅ OTOMATİK DÜZELTME: {duzeltilen_sayisi} öğrenci kaydı onarıldı ve kaydedildi.")
+    else:
+        print("✅ Veritabanı kontrol edildi, eksik kayıt yok.")
+
+# Fonksiyonu hemen çalıştır
+veritabani_tamir_et()
+# --- YENİ EKLENECEK TAMİR KODU BİTİŞİ ---
+
 # --- Gemini Modelini Yükle ---
-gemini_model = None
+gemini_model = None 
 try:
     if GEMINI_API_KEY and GEMINI_API_KEY != "":
         genai.configure(api_key=GEMINI_API_KEY)
         gemini_model = genai.GenerativeModel('models/gemini-pro-latest')
         print("Gemini API modeli başarıyla yüklendi.")
     else:
-        print("UYARI: Gemini API Anahtarı girilmemiş.")
+        print("UYARI: Gemini API Anahtarı girilmemiş. Metin üretme, Analiz ve Bireysel Yarışma özellikleri çalışmayacak.")
 except Exception as e:
     print(f"Gemini API yüklenirken HATA oluştu: {e}")
 # --- BİTTİ ---
 
 # Aktif Takım Yarışmaları
 active_team_games = {}
-
-# Video İstekleri
-video_istekleri = []
-# Video isteklerini PostgreSQL'den yükle
-def load_video_istekleri():
-    try:
-        return db_helper.get_all_video_istekleri()
-    except Exception as e:
-        print(f"Video istekleri yükleme hatası: {e}")
-        return []
-
-# Uygulama başlarken video isteklerini yükle
-video_istekleri = load_video_istekleri()
-
 # Otomatik Yönlendirme Kaydı
 game_redirects = {}
 # --- YENİ EKLENDİ: Çevrimiçi Kullanıcı Takibi ---
@@ -150,6 +147,60 @@ online_users = {} # Format: {'ogrenci_no': timestamp}
 
 # --- GİRİŞ/KAYIT SAYFASI HTML KODU (AŞAMA 5 - HATALAR DÜZELTİLDİ) ---
 
+# (Base64 fonksiyonları kaldırıldı)
+
+# HATA DÜZELTMESİ: f-string kaldırıldı, normal string (f"" -> """) kullanıldı.
+# Bu, JavaScript'teki { } karakterlerinin SyntaxError vermesini engeller.
+# HTML_CONTENT -> templates/login.html konumuna taşındı.
+# --- GİRİŞ/KAYIT HTML KODU BİTTİ ---
+
+# ###############################################################
+# --- PANEL (DASHBOARD) SAYFASI ---
+# ###############################################################
+# DASHBOARD_HTML_CONTENT -> templates/dashboard.html konumuna taşındı.
+# --- PANEL HTML KODU BİTTİ ---
+
+# ########## YENİ EKLENDİ (Daha önce silinmişti): METİN ÜRETİM SAYFASI HTML ##########
+# METIN_URETIM_PAGE_HTML -> templates/metin_uretim.html konumuna taşındı.
+
+# ########## METİN ANALİZ HTML KODU BİTTİ ##########
+
+# --- METİN ÜRETİM HTML KODU BİTTİ ---
+# ########## YENİ EKLENDİ: METİN ANALİZ SAYFASI HTML ##########
+# METIN_ANALIZ_PAGE_HTML -> templates/metin_analiz.html konumuna taşındı.
+# ########## METİN ANALİZ HTML KODU BİTTİ ##########
+
+
+# ########## YENİ EKLENDİ: SORU ÜRETİM SAYFASI HTML ##########
+# SORU_URETIM_PAGE_HTML -> templates/soru_uretim.html konumuna taşındı.
+
+# --- YARIŞMA SEÇİM SAYFASI HTML ---
+# YARISMA_SECIM_PAGE_HTML -> templates/yarisma_secim.html konumuna taşındı.
+# --- YARIŞMA SEÇİM HTML KODU BİTTİ ---
+
+
+# --- Bireysel Yarışma Sayfası (Dinamik) ---
+# BIREYSEL_YARISMA_HTML -> templates/bireysel_yarisma.html konumuna taşındı.
+# --- BİREYSEL YARIŞMA HTML KODU BİTTİ ---
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI HTML (GELİŞMİŞ KURULUM) ##########
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI HTML (GELİŞMİŞ KURULUM - DÜZELTİLDİ) ##########
+# TAKIM_YARISMA_HTML -> templates/takim_kurulum.html konumuna taşındı.
+
+# --- TAKIM YARIŞMA HTML KODU BİTTİ ---
+
+
+# --- Liderlik Tablosu Sayfası HTML ---
+# LEADERBOARD_PAGE_HTML -> templates/leaderboard.html konumuna taşındı.
+# --- LİDERLİK TABLOSU HTML KODU BİTTİ ---
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI OYUN EKRANI ##########
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI OYUN EKRANI (GÜNCELLENDİ V3) ##########
+# TAKIM_OYUN_EKRANI_HTML -> templates/takim_oyun.html konumuna taşındı.
+
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI LİDERLİK TABLOSU ##########
+# TAKIM_LIDERLIK_TABLOSU_HTML -> templates/takim_leaderboard.html konumuna taşındı.
+
+# ########## YENİ EKLENDİ: TAKIM YARIŞMASI LİDERLİK TABLOSU ##########
+# TAKIM_LIDERLIK_TABLOSU_HTML -> templates/takim_leaderboard.html konumuna taşındı.
 
 # --- YENİ LİDERLİLK HTML BİTTİ
 
@@ -618,8 +669,7 @@ def api_generate_text():
         
         # Parametreleri al
         bilesen_kodu = data.get('bilesen_kodu')
-        metin_tipi_adi = data.get('metin_tipi_adi')
-        student_no = data.get('student_no')  # YENİ: student_no'yu al
+        metin_tipi_adi = data.get('metin_tipi_adi') 
         
         print(f"Metin üretme isteği: {bilesen_kodu}, {metin_tipi_adi}")
         
@@ -629,10 +679,6 @@ def api_generate_text():
         
         # metin_uretim.py'daki fonksiyonu çağır
         result = metin_uretim.metin_uret(bilesen_kodu, metin_tipi_adi, gemini_model)
-
-        # YENİ: RAPORLAMAYA EKLE - Metin başarıyla üretildiyse
-        if result.get('success') and student_no:
-            db_helper.kaydet_kullanim(student_no, "Metin Oluşturma", "Metin oluşturuldu")
         
         return jsonify(result)
         
@@ -668,10 +714,6 @@ def api_analyze_text():
         # metin_analiz.py'deki ana fonksiyonu çağırıyoruz
         result = metin_analiz.metin_analiz_et(metin, student_no, gemini_model)
 
-        # YENİ: RAPORLAMAYA EKLE - Metin analiz başarılıysa
-        if result.get('success'):
-            db_helper.kaydet_kullanim(student_no, "Metin Analiz", "Metin analiz edildi")
-
         return jsonify(result)
 
     except Exception as e:
@@ -694,49 +736,63 @@ def soru_uretim_page():
 
 @app.route('/api/generate-question', methods=['POST'])
 def api_generate_question():
+    """AJAX isteği ile soru üretir. (Haftalık Limit Kontrollü)"""
     try:
-        data = request.get_json()
-        student_no = data.get('student_no')
-        
-        # KESİN TEST - Her durumda kayıt yap
-        print(f"🎯 KESİN TEST - student_no: {student_no}")
-        
-        # TEST: Her durumda kayıt yap (başarılı/başarısız fark etmez)
-        if student_no:
-            print(f"✅ KESİN KAYIT - {student_no} için kayıt yapılıyor")
-            db_helper.kaydet_kullanim(student_no, "Soru Üretim", "Soru üretildi")
-        else:
-            print(f"❌ student_no YOK - data: {data}")
-        
-        # Mevcut kodun devamı...
         global gemini_model
         if not gemini_model:
             return jsonify({"success": False, "metin": "Sunucuda Gemini API Anahtarı yapılandırılmamış!"})
 
+        data = request.get_json()
         bilesen_kodu = data.get('bilesen_kodu')
         soru_tipi_adi = data.get('soru_tipi_adi')
+        student_no = data.get('student_no') # YENİ
 
         if not bilesen_kodu or not soru_tipi_adi:
              return jsonify({"success": False, "metin": "Eksik parametre: Süreç Bileşeni veya Soru Tipi."})
+        
+        if not student_no:
+             return jsonify({"success": False, "metin": "Hata: Kullanıcı ID'si alınamadı. Lütfen tekrar giriş yapın."})
 
-        # Limit kontrolü
+        # --- YENİ ADIM: LİMİT KONTROLÜ ---
         limit_result = check_and_update_soru_limit(student_no)
         if not limit_result["success"]:
+            # Limit aşıldıysa, hata mesajını Gemini'den gelmiş gibi döndür
             return jsonify({"success": False, "metin": limit_result["hata"]})
+        # --- LİMİT KONTROLÜ BİTTİ ---
 
+        # soru_uretim.py'deki ana fonksiyonu çağırıyoruz
         result = soru_uretim.soru_uret(bilesen_kodu, soru_tipi_adi, gemini_model)
 
+        # JSON olarak tüm detayları gönder
         return jsonify({
             "success": result.get("success", False),
             "metin": result.get("metin", "Hata oluştu."),
-            "rubrik_cevap": result.get("rubrik_cevap"),
-            "is_mcq": result.get("is_mcq", False),
+            "rubrik_cevap": result.get("rubrik_cevap"), # YENİ
+            "is_mcq": result.get("is_mcq", False),     # YENİ
             "kelime_sayisi": result.get("kelime_sayisi", 0)
         })
 
     except Exception as e:
-        print(f"❌ SORU ÜRETİM HATASI: {e}")
+        print(f"Soru üretme API hatası: {e}")
+        if "API_KEY_INVALID" in str(e):
+             return jsonify({"success": False, "metin": "Geçersiz Gemini API Anahtarı!"})
         return jsonify({"success": False, "metin": f"Sunucu hatası: {str(e)}"})
+        
+# ########## SORU ÜRETİM ROTALARI BİTTİ ##########
+@app.route('/api/seyret_bul/get_surecler', methods=['GET'])
+def api_get_seyret_bul_surecler():
+    """
+    Yönetici panelindeki 'Seyret Bul' formunun açılır menüsünü
+    doldurmak için süreç bileşenlerini LİSTE olarak döndürür.
+    """
+    try:
+        # seyret_bul.py'den SÖZLÜK olarak al
+        surecler_dict = seyret_bul.tum_surecleri_getir() 
+        # JavaScript için LİSTE'ye çevir
+        surecler_listesi = [{"kod": kod, "aciklama": aciklama} for kod, aciklama in surecler_dict.items()]
+        return jsonify({"success": True, "surecler": surecler_listesi})
+    except Exception as e:
+        return jsonify({"success": False, "hata": str(e)})
 # ########## YARIŞMA ROTALARI (GÜNCELLENDİ) ##########
 @app.route('/api/takim/get_sinif_listesi', methods=['POST'])
 def get_sinif_listesi():
@@ -963,144 +1019,120 @@ def delete_user():
 @app.route('/delete_student_bulk', methods=['POST'])
 def delete_student_bulk():
     try:
-        import db_helper
-        conn = db_helper.get_db_connection()
-        cur = conn.cursor()
-        
         data = request.get_json()
         student_ids = data.get('student_ids', [])
         
-        if not student_ids:
-            return jsonify({'success': False, 'message': 'Silinecek öğrenci seçilmedi.'})
-            
-        # SQL'den sil
-        # student_ids listesini tuple'a çevirip SQL'e veriyoruz
-        cur.execute("DELETE FROM users WHERE user_id = ANY(%s)", (student_ids,))
-        deleted_count = cur.rowcount
+        deleted_count = 0
+        for student_no in student_ids:
+            if student_no in users:
+                del users[student_no]
+                deleted_count += 1
         
-        conn.commit()
-        cur.close()
-        conn.close()
+        if deleted_count > 0:
+            print(f"{deleted_count} öğrenci toplu olarak silindi.")
         
-        # RAM'den de temizle
-        for sid in student_ids:
-            if sid in users:
-                del users[sid]
-        
-        return jsonify({'success': True, 'message': f'{deleted_count} öğrenci veritabanından silindi!'})
+        return jsonify({'success': True, 'message': f'{deleted_count} öğrenci silindi!'})
     except Exception as e:
-        print(f"Toplu silme hatası: {e}")
+        print(f"Toplu öğrenci silme hatası: {e}")
         return jsonify({'success': False, 'message': str(e)})
 
 @app.route('/update_student_bulk', methods=['POST'])
 def update_student_bulk():
     try:
-        import db_helper # Veritabanı bağlantısı
-        
         data = request.get_json()
         student_ids = data.get('student_ids', [])
         actions = data.get('actions', {})
         
         updated_count = 0
-        
-        # Seçili öğrencileri güncelle
         for student_no in student_ids:
-            # RAM'de var mı kontrol et (veya doğrudan DB'ye de bakılabilir)
             if student_no in users:
-                user_data = users[student_no] # Mevcut veriyi al
                 updated = False
                 
-                # Okul Güncelle
                 if actions.get('school'):
-                    user_data['school_name'] = actions['school']
+                    users[student_no]['school_name'] = actions['school']
                     updated = True
                 
-                # Sınıf Güncelle
                 if actions.get('class'):
-                    user_data['class'] = actions['class']
+                    users[student_no]['class'] = actions['class']
                     updated = True
                 
-                # Şifre Sıfırla
                 if actions.get('set_password_to_lastname'):
-                    last_name = user_data.get('last_name', '')
-                    if last_name:
-                        user_data['password'] = last_name
+                    last_name = users[student_no].get('last_name')
+                    if last_name: 
+                        users[student_no]['password'] = last_name
                         updated = True
                         
-                # Rol Değişimi (Güvenlikli)
-                if actions.get('role') == 'student':
-                    if user_data.get('role') not in ['teacher', 'admin']:
-                        user_data['role'] = 'student'
+                # --- YENİ EKLENDİ: Rol Atama Güvenlik Kilidi ---
+                if actions.get('role') == 'student': # Eğer istek "student" rolü atamaksa...
+                    # Mevcut rolün ne olduğunu KONTROL ET
+                    current_role = users[student_no].get('role')
+                    
+                    # Sadece 'teacher' veya 'admin' DEĞİLSE bu değişikliği yap.
+                    if current_role not in ['teacher', 'admin']:
+                        users[student_no]['role'] = 'student'
                         updated = True
+                    # (Eğer 'teacher' veya 'admin' ise, hiçbir şey yapma, koru)
+                        
+                elif actions.get('role'):
+                    # Gelecekte 'admin' yapmak gibi başka bir rol eklerseniz burası çalışır
+                    users[student_no]['role'] = actions.get('role')
+                    updated = True
+                # --- Güvenlik Kilidi Bitişi ---
                 
-                # Eğer değişiklik varsa VERİTABANINA YAZ
                 if updated:
-                    # RAM'i güncelle
-                    users[student_no] = user_data
-                    # SQL'i güncelle
-                    db_helper.save_user(student_no, user_data)
                     updated_count += 1
         
-        return jsonify({'success': True, 'message': f'{updated_count} öğrenci veritabanında güncellendi!'})
+        if updated_count > 0:
+            print(f"{updated_count} öğrenci toplu olarak güncellendi.")
+        
+        return jsonify({'success': True, 'message': f'{updated_count} öğrenci güncellendi!'})
     except Exception as e:
-        print(f"Toplu güncelleme hatası: {e}")
+        print(f"Toplu öğrenci güncelleme hatası: {e}")
         return jsonify({'success': False, 'message': str(e)})
 
 @app.route('/upload_excel', methods=['POST'])
 def upload_excel():
-    global users # <--- BU SATIRI EN BAŞA ALDIK (Düzeltme Burada)
     try:
-        import db_helper
-        
         if 'excelFile' not in request.files:
             return jsonify({'success': False, 'message': 'Dosya bulunamadı'})
             
         file = request.files['excelFile']
+        
         if file.filename == '':
             return jsonify({'success': False, 'message': 'Dosya seçilmedi'})
 
-        # Dosyayı oku
         if file.filename.endswith('.csv'):
             df = pd.read_csv(io.StringIO(file.read().decode('utf-8-sig')), dtype=str)
-            df.rename(columns={'NO': 'Öğrenci No', 'ADI': 'Adı', 'SOYADI': 'Soyadı', 'SINIF': 'Sınıf', 'OKUL': 'Okul'}, inplace=True)
+            df.rename(columns={'NO': 'Öğrenci No', 'ADI': 'Adı', 'SOYADI': 'Soyadı'}, inplace=True)
         else:
-            df = pd.read_excel(file, dtype=str)
-            df.rename(columns={'NO': 'Öğrenci No', 'ADI': 'Adı', 'SOYADI': 'Soyadı', 'SINIF': 'Sınıf', 'OKUL': 'Okul'}, inplace=True)
+            df = pd.read_excel(file, dtype=str) 
 
         required_columns = ['Öğrenci No', 'Adı', 'Soyadı']
         if not all(col in df.columns for col in required_columns):
-            return jsonify({'success': False, 'message': 'Excel dosyasında "Öğrenci No", "Adı", "Soyadı" sütunları mutlaka olmalı.'})
+            return jsonify({'success': False, 'message': 'Excel/CSV dosyasında "Öğrenci No", "Adı", "Soyadı" sütunları bulunmalı!'})
 
-        count = 0
         for index, row in df.iterrows():
-            student_no = str(row['Öğrenci No']).strip()
-            
-            user_data = {
-                'role': 'student',
-                'student_no': student_no,
-                'first_name': str(row['Adı']).strip(),
-                'last_name': str(row['Soyadı']).strip(),
-                'password': '',
-                'class': str(row['Sınıf']).strip() if 'Sınıf' in df.columns and pd.notna(row['Sınıf']) else '',
-                'school_name': str(row['Okul']).strip() if 'Okul' in df.columns and pd.notna(row['Okul']) else ''
-            }
-
-            # 1. RAM'i güncelle
-            users[student_no] = user_data
-            
-            # 2. VERİTABANINI GÜNCELLE
-            db_helper.save_user(student_no, user_data)
-            count += 1
+            student_no = str(row['Öğrenci No'])
+            if student_no not in users:
+                    users[student_no] = {
+                        'role': 'student',
+                        'student_no': student_no, # <--- BU SATIRI MUTLAKA EKLEYİN
+                        'first_name': str(row['Adı']),
+                        'last_name': str(row['Soyadı']),
+                        'class': '',       
+                        'password': '',    
+                        'school_name': ''  
+                    }
         
-        # Hafızayı veritabanından tazele (Reassign yapıldığı için global şarttı)
-        users = db_helper.load_users()
-        
-        print(f"✅ {count} öğrenci veritabanına başarıyla kaydedildi.")
-        return jsonify({'success': True, 'message': f'{count} öğrenci veritabanına yüklendi!'})
+        print(f"{len(df)} öğrenci Excel/CSV'den yüklendi/güncellendi.")
+        return jsonify({'success': True, 'message': f'{len(df)} öğrenci başarıyla yüklendi!'})
 
     except Exception as e:
         print(f"Excel yükleme hatası: {e}")
-        return jsonify({'success': False, 'message': f"Hata: {str(e)}"})
+        if "Missing optional dependency" in str(e):
+             return jsonify({'success': False, 'message': f'Hata: {e}. Gerekli kütüphaneyi kurun (örn: pip install openpyxl)'})
+        return jsonify({'success': False, 'message': str(e)})
+
 # ########## BİTTİ ##########
 # (Burası sosyallab.py dosyanızın sonu olmalı)
 # ... (Mevcut en son kodunuz, muhtemelen /upload_excel rotası) ...
@@ -1313,7 +1345,6 @@ def podcast_paneli():
 def handle_generation():
     data = request.get_json()
     user_text = data.get('text')
-    student_no = data.get('student_no')  # student_no'yu en başta alalım
     
     if not user_text:
         return jsonify({"success": False, "error": "Metin boş olamaz."}), 400
@@ -1321,7 +1352,7 @@ def handle_generation():
     try:
         # --- 1. Metin Uygunluğunu Kontrol Et ---
         print("🔵 1. Metnin müfredata uygunluğu kontrol ediliyor...")
-        global gemini_model
+        global gemini_model # Modeli globalden al
         validation_result = validate_text_relevance(user_text, gemini_model)
         
         if not validation_result.get("success"):
@@ -1333,7 +1364,7 @@ def handle_generation():
         if uygunluk_yuzdesi < 70:
             print(f"❌ Metin reddedildi. Uygunluk: {uygunluk_yuzdesi}%")
             return jsonify({
-                "success": False,
+                "success": False, 
                 "error": f"Metin Reddedildi (Uygunluk: {uygunluk_yuzdesi}%). \n\nAçıklama: {aciklama}"
             }), 400
         
@@ -1357,15 +1388,16 @@ def handle_generation():
         
         print(f"✅ Ses URL: {audio_url}")
         
-        # YENİ: RAPORLAMAYA EKLE - Podcast başarıyla oluşturulduysa
+        # Kullanım kaydı
+        student_no = data.get("student_no")
         if student_no:
-            db_helper.kaydet_kullanim(student_no, "Podcast Yap", "Podcast oluşturuldu")
-            print(f"🔍 DEBUG: student_no = {student_no} - Raporlamaya eklendi")
+            db_helper.kaydet_kullanim(student_no, "podcast", "Podcast oluşturuldu")
+        print(f"🔍 DEBUG: student_no = {student_no}")
 
         return jsonify({
-            "success": True,
+            "success": True, 
             "audio_url": audio_url,
-            "validation_data": validation_result
+            "validation_data": validation_result 
         })
 
     except Exception as e:
@@ -1471,40 +1503,42 @@ def video_istegi_page():
 
 @app.route('/api/video-istegi-gonder', methods=['POST'])
 def video_istegi_gonder():
-    """Öğretmenden gelen video isteğini PostgreSQL veritabanına kaydeder."""
+    """Öğretmenden gelen video isteğini 'video_istekleri.json' dosyasına kaydeder."""
     try:
         data = request.get_json()
         
+        # --- GÜNCELLENDİ: Tüm veriyi al ---
         istek_metni = data.get('istek_metni')
-        isteyen_kullanici = data.get('isteyen_ogretmen', 'Bilinmiyor')
+        isteyen_kullanici = data.get('isteyen_ogretmen', 'Bilinmiyor') # Bu 'isim' alanı
         kullanici_rol = data.get('kullanici_rol', 'Bilinmiyor')
         kullanici_no = data.get('kullanici_no')
         kullanici_okul = data.get('kullanici_okul')
         kullanici_sinif = data.get('kullanici_sinif')
+        # --- BİTTİ ---
         
         if not istek_metni:
             return jsonify({"success": False, "hata": "İstek metni boş olamaz."})
         
-        # Yeni isteği oluştur (Sözlük yapısı db_helper ile uyumlu)
+        # Yeni isteği oluştur (Genişletilmiş)
         yeni_istek = {
             "id": f"istek_{int(pd.Timestamp.now().timestamp())}",
-            "tarih": pd.Timestamp.now().isoformat(), # db_helper timestamp bekliyorsa str gönderiyoruz, SQL çevirir
-            "ogretmen": isteyen_kullanici,
+            "tarih": pd.Timestamp.now().isoformat(),
+            "ogretmen": isteyen_kullanici, # Bu alanı 'isim' olarak tutuyoruz
             "metin": istek_metni,
             "durum": "Yeni",
+            # --- YENİ ALANLAR ---
             "rol": kullanici_rol,
             "okul": kullanici_okul,
             "sinif": kullanici_sinif,
             "no": kullanici_no
+            # --- BİTTİ ---
         }
         
-        # --- LİSTEYE DEĞİL, DOĞRUDAN DB'YE KAYIT ---
-        basarili = db_helper.save_video_istek(yeni_istek)
+        # Veritabanına ekle ve kaydet
+        video_istekleri.insert(0, yeni_istek) # En yeni isteği en üste ekle
+        save_video_istekleri(video_istekleri)
         
-        if basarili:
-            return jsonify({"success": True, "mesaj": "İstek veritabanına kaydedildi."})
-        else:
-            return jsonify({"success": False, "hata": "Veritabanı kayıt hatası."})
+        return jsonify({"success": True, "mesaj": "İstek kaydedildi."})
         
     except Exception as e:
         print(f"Video isteği API hatası: {e}")
@@ -1514,11 +1548,11 @@ def video_istegi_gonder():
 # --- YENİ EKLENDİ: VİDEO İSTEKLERİNİ ÇEKME ROTASI ---
 @app.route('/api/get-video-istekleri', methods=['GET'])
 def api_get_video_istekleri():
-    """Tüm video isteklerini PostgreSQL veritabanından çeker."""
+    """Tüm video isteklerini (video_istekleri global değişkeninden) JSON olarak döndürür."""
+    global video_istekleri
     try:
-        # --- DEĞİŞİKLİK BURADA: Global liste yerine DB'den çek ---
-        istekler = db_helper.get_all_video_istekleri()
-        return jsonify({"success": True, "istekler": istekler})
+        # 'video_istekleri' listesi zaten dosyanın başında yükleniyor.
+        return jsonify({"success": True, "istekler": video_istekleri})
     except Exception as e:
         print(f"Video istekleri çekme API hatası: {e}")
         return jsonify({"success": False, "hata": str(e)})
@@ -1527,7 +1561,8 @@ def api_get_video_istekleri():
 # --- YENİ EKLENDİ: VİDEO İSTEĞİ SİLME ROTASI (3. İsteğiniz) ---
 @app.route('/api/delete-video-istek', methods=['POST'])
 def api_delete_video_istek():
-    """Bir video isteğini ID'sine göre PostgreSQL veritabanından siler."""
+    """Bir video isteğini ID'sine göre bulur ve 'video_istekleri.json' dosyasından siler."""
+    global video_istekleri
     try:
         data = request.get_json()
         istek_id = data.get('istek_id')
@@ -1535,13 +1570,15 @@ def api_delete_video_istek():
         if not istek_id:
             return jsonify({"success": False, "hata": "İstek ID'si eksik."})
 
-        # --- DEĞİŞİKLİK BURADA: Listeden arama yok, direkt DB'den sil ---
-        basarili = db_helper.delete_video_istek(istek_id)
+        # İsteği ID'ye göre bul
+        istek_to_delete = next((istek for istek in video_istekleri if istek.get('id') == istek_id), None)
         
-        if basarili:
-            return jsonify({"success": True, "mesaj": "İstek veritabanından silindi."})
+        if istek_to_delete:
+            video_istekleri.remove(istek_to_delete) # Listeden kaldır
+            save_video_istekleri(video_istekleri)   # Değişikliği dosyaya kaydet
+            return jsonify({"success": True, "mesaj": "İstek silindi."})
         else:
-            return jsonify({"success": False, "hata": "Silme işlemi başarısız (veya kayıt bulunamadı)."})
+            return jsonify({"success": False, "hata": "Silinecek istek bulunamadı."})
             
     except Exception as e:
         print(f"Video isteği silme API hatası: {e}")
@@ -1880,8 +1917,7 @@ def raporlar_sayfa():
 
 # === EKSİK OLAN RAPORLAMA API'LARI ===
 
-# ESKİ HATALI KOD DEVRE DIŞI
-# @app.route("/api/okul_sinif_listesi")
+@app.route("/api/okul_sinif_listesi")
 def api_okul_sinif_listesi():
     """Okul ve sınıf listelerini PostgreSQL'den döndürür"""
     try:
@@ -2006,6 +2042,10 @@ def api_get_students():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
+
+
+
+
 @app.route('/api/seyret-bul/kaydet-izleme', methods=['POST'])
 def api_seyret_bul_kaydet_izleme():
     try:
@@ -2014,28 +2054,9 @@ def api_seyret_bul_kaydet_izleme():
         video_baslik = data.get('video_baslik')
         if not student_no: return jsonify({"success": False})
         import db_helper
-        # YENİ: RAPORLAMAYA EKLE - Video izlendiyse
-        db_helper.kaydet_kullanim(student_no, 'Seyret Bul', f"Video izlendi: {video_baslik}")
+        db_helper.kaydet_kullanim(student_no, 'Seyret Bul', f"İzlendi: {video_baslik}")
         return jsonify({"success": True})
     except: return jsonify({"success": False})
-    
-@app.route('/api/seyret-bul/admin/get-all-videos', methods=['GET'])
-def api_get_all_videos():
-    """Tüm videoları admin paneli için listeler"""
-    try:
-        videos_dict = seyret_bul.videolari_yukle()
-        videolar = []
-        for video_id, video_data in videos_dict.items():
-            videolar.append({
-                'video_id': video_id,
-                'baslik': video_data.get('baslik', ''),
-                'surec_bileseni': video_data.get('surec_bileseni', ''),
-                'video_url': video_data.get('video_url', '')
-            })
-        return jsonify({"success": True, "videolar": videolar})
-    except Exception as e:
-        return jsonify({"success": False, "hata": str(e)})
-
 
 @app.route('/api/seyret-bul/degerlendir', methods=['POST'])
 def api_seyret_bul_degerlendir():
@@ -2058,112 +2079,9 @@ def api_seyret_bul_degerlendir():
         except: return jsonify({"success": True, "skor": 3, "geri_bildirim": "Otomatik puanlandı."})
     except: return jsonify({"success": True, "skor": 1, "geri_bildirim": "Hata."})
 
-# ==========================================
-# --- 1. DASHBOARD İÇİN KURTARICI KOD (JSON'DAN OKUR) ---
-# ==========================================
-@app.route("/api/okul_sinif_listesi")
-def api_okul_sinif_listesi():
-    """Dashboard'un çökmemesi için verileri users.json'dan okur"""
-    try:
-        global users
-        okullar = set()
-        siniflar = set()
-        
-        if users:
-            for user_data in users.values():
-                s_name = user_data.get('school_name')
-                c_name = user_data.get('class')
-                if s_name: okullar.add(s_name)
-                if c_name: siniflar.add(c_name)
-        
-        return jsonify({
-            "success": True,
-            "okullar": sorted(list(okullar)),
-            "siniflar": sorted(list(siniflar))
-        })
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e), "okullar": [], "siniflar": []})
 
-# ==========================================
-# --- 2. RAPORLAMA İÇİN FİLTRE KODLARI (JSON'DAN OKUR) ---
-# ==========================================
-# ==========================================
-# --- 2. RAPORLAMA İÇİN FİLTRE KODLARI (SQL TABANLI - KESİN ÇÖZÜM) ---
-# ==========================================
-
-@app.route("/api/filter/get_schools")
-def api_get_schools():
-    """Rapor sayfası için okul listesini DOĞRUDAN SQL'den çeker"""
-    try:
-        import db_helper # db_helper'ın import edildiğinden emin olalım
-        conn = db_helper.get_db_connection()
-        cur = conn.cursor()
-        
-        # Sadece okulu dolu olanları getir
-        cur.execute("SELECT DISTINCT school_name FROM users WHERE school_name IS NOT NULL AND school_name != '' ORDER BY school_name")
-        rows = cur.fetchall()
-        
-        # Tuple listesini düz listeye çevir ('Okul A', 'Okul B'...)
-        # rows örneği: [('Okul A',), ('Okul B',)]
-        okullar = [r[0] for r in rows if r[0]]
-        
-        cur.close()
-        conn.close()
-        
-        return jsonify({"success": True, "data": okullar})
-    except Exception as e:
-        print(f"Okul listesi SQL hatası: {e}")
-        return jsonify({"success": False, "error": str(e), "data": []})
-
-
-@app.route("/api/filter/get_classes")
-def api_get_classes():
-    """Sınıf listesini döndürür (Düzeltilmiş)"""
-    try:
-        okul_adi = request.args.get('school_name')
-        print(f"🔍 Sınıf listesi isteniyor - Okul: '{okul_adi}'")
-        
-        if not okul_adi: 
-            return jsonify({"success": False, "data": []})
-
-        import db_helper
-        conn = db_helper.get_db_connection()
-        cur = conn.cursor()
-        
-        # Seçilen okula ait sınıfları getir
-        cur.execute("""
-            SELECT DISTINCT class FROM users 
-            WHERE school_name = %s AND class IS NOT NULL AND class != '' 
-            ORDER BY class
-        """, (okul_adi,))
-        
-        rows = cur.fetchall()
-        siniflar = [r[0] for r in rows if r[0]]
-        
-        print(f"🔍 '{okul_adi}' için bulunan sınıflar: {siniflar}")
-        
-        cur.close()
-        conn.close()
-        
-        # Eğer sınıf yoksa, test sınıfları ekle
-        if not siniflar:
-            print("⚠️ Sınıf bulunamadı, test sınıfları ekleniyor...")
-            siniflar = ['5A', '5B', '5C', '5D', '6A', '6B']
-        
-        return jsonify({"success": True, "data": siniflar})
-    except Exception as e:
-        print(f"❌ Sınıf listesi hatası: {e}")
-        # Hata durumunda manuel liste döndür
-        return jsonify({"success": True, "data": ['5A', '5B', '5C', '5D', '6A', '6B']})
-
-@app.route("/api/filter/get_years")
-def api_get_years():
-    return jsonify({"success": True, "data": ["2024", "2025", "2026"]})
-
-# ==========================================
-# --- SUNUCU BAŞLATMA ---
-# ==========================================
 if __name__ == '__main__':
     print("UYGULAMA SUNUCUSU http://127.0.0.1:5002 adresinde çalışıyor...")
     print("Giriş yapmak için: http://127.0.0.1:5002")
+    print("Dashboard'a doğrudan erişim: http://127.0.0.1:5002/dashboard")
     app.run(debug=False, host='127.0.0.1', port=5002)
