@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maarif SosyalLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; }
+        #bg-video {
+            position: fixed; bottom: 0; left: 50%; width: 75%; height: 75%;
+            transform: translateX(-50%); object-fit: contain; object-position: center bottom; z-index: -10;
+        }
+        .hidden-screen { display: none; }
+        .nav-button {
+            padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 600; transition: all 0.2s ease-in-out;
+            border: 2px solid transparent; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .nav-button-student { background-color: #E2FA2A; color: #374151; }
+        .nav-button-student:hover { background-color: #cddf24; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .nav-button-teacher { background-color: #F56AA8; color: white; }
+        .nav-button-teacher:hover { background-color: #d95890; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        
+        /* Modal Stilleri */
+        .modal-screen {
+            display: none; position: fixed; inset: 0; z-index: 50;
+            align-items: center; justify-content: center;
+            background-color: rgba(13, 32, 63, 0.6); backdrop-filter: blur(5px); padding: 1rem;
+        }
+        .modal-box {
+            background-color: white; color: #1f2937; border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 100%; max-width: 640px; position: relative; overflow: hidden; display: flex;
+        }
+        .modal-close-btn { position: absolute; top: 0.75rem; right: 0.75rem; color: #9ca3af; cursor: pointer; z-index: 20; }
+        .modal-close-btn:hover { color: #374151; }
+        .modal-left-panel {
+            width: 40%; background-color: #0d203f; color: white; padding: 2rem;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .modal-right-panel { width: 60%; padding: 2rem; }
+        
+        .form-label { display: block; margin-bottom: 0.25rem; font-size: 0.875rem; font-weight: 500; color: #4b5563; }
+        .form-input {
+            width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; color: #1f2937;
+        }
+        .form-button { width: 100%; padding: 0.75rem; border-radius: 0.375rem; font-weight: 600; color: white; }
+        .form-link { margin-top: 1rem; font-size: 0.875rem; color: #4b5563; text-align: center; }
+        .form-link a { color: #007bff; cursor: pointer; }
+        
+        /* Admin Panel Sekmeleri */
+        .admin-tab { padding: 0.5rem 1rem; font-weight: 600; color: #4b5563; border-bottom: 3px solid transparent; cursor: pointer; }
+        .admin-tab:hover { color: #0e7490; }
+        .admin-tab.active { color: #0891b2; border-bottom-color: #0891b2; }
+        .admin-tab-content { display: none; }
+        .admin-tab-content.active { display: block; }
+    </style>
+</head>
+<body class="min-h-screen text-gray-800">
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="/videolar/maarif.mp4" type="video/mp4">
+    </video>
+        
+    <div class="container mx-auto pt-20">
+        <div class="flex justify-center items-center">
+            <div class="flex items-center mx-auto w-fit p-4 rounded-xl shadow-lg" style="background-color: #34ACD9;">
+                <h1 class="text-3xl font-extrabold text-white mr-64" style="font-family: 'Inter', sans-serif;">Maarif SosyalLab'la Her Yerde Eğitim</h1>
+                <nav class="flex space-x-3">
+                    <button id="show-student-login" class="nav-button nav-button-student"><i class="fa-solid fa-user mr-1"></i> Öğrenci Girişi</button>
+                    <button id="show-teacher-login" class="nav-button nav-button-teacher"><i class="fa-solid fa-user-tie mr-1"></i> Öğretmen Girişi</button>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-screen-student" class="modal-screen">
+        <div class="modal-box">
+            <div class="modal-left-panel">
+                <img src="/videolar/maarif.png" alt="Logo" class="w-32 h-auto rounded-lg mb-4">
+                <h3 class="text-2xl font-bold text-center">Maarif SosyalLab</h3>
+                <p class="text-center text-gray-300 mt-2">Öğrenci Girişi</p>
+            </div>
+            <div class="modal-right-panel">
+                <button class="modal-close-btn" data-modal-id="login-screen-student"><i class="fa-solid fa-times fa-xl"></i></button>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Hoş Geldiniz!</h2>
+                <div id="login-message-student" class="mb-4 text-sm text-red-500"></div>
+                <form id="login-form-student">
+                    <div class="mb-4"><label class="form-label">Öğrenci No</label><input type="text" id="login-student-no" class="form-input" required></div>
+                    <div class="mb-6"><label class="form-label">Şifre</label><input type="password" id="login-student-password" class="form-input" required></div>
+                    <button type="submit" class="form-button nav-button-student">Giriş Yap</button>
+                </form>
+                <div class="form-link"><div style="display: none;">Hesabın yok mu? <a id="show-student-register" data-modal-id="register-screen-student">Kayıt Ol</a></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-screen-teacher" class="modal-screen">
+        <div class="modal-box">
+            <div class="modal-left-panel">
+                <img src="/videolar/maarif.png" alt="Logo" class="w-32 h-auto rounded-lg mb-4">
+                <h3 class="text-2xl font-bold text-center">Maarif SosyalLab</h3>
+                <p class="text-center text-gray-300 mt-2">Öğretmen Girişi</p>
+            </div>
+            <div class="modal-right-panel">
+                <button class="modal-close-btn" data-modal-id="login-screen-teacher"><i class="fa-solid fa-times fa-xl"></i></button>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Öğretmen Girişi</h2>
+                <div id="login-message-teacher" class="mb-4 text-sm text-red-500"></div>
+                <form id="login-form-teacher">
+                    <div class="mb-4"><label class="form-label">Soyadınız</label><input type="text" id="login-teacher-lastname" class="form-input" required></div>
+                    <div class="mb-6"><label class="form-label">Şifre</label><input type="password" id="login-teacher-password" class="form-input" required></div>
+                    <button type="submit" class="form-button nav-button-teacher">Giriş Yap</button>
+                </form>
+                <div class="form-link"><div style="display: none;">Hesabın yok mu? <a id="show-teacher-register" data-modal-id="register-screen-teacher">Kayıt Ol</a></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-screen-admin" class="modal-screen">
+        <div class="modal-box">
+            <div class="modal-left-panel">
+                <img src="/videolar/maarif.png" alt="Logo" class="w-32 h-auto rounded-lg mb-4">
+                <h3 class="text-2xl font-bold text-center">Maarif SosyalLab</h3>
+                <p class="text-center text-gray-300 mt-2">Yönetici Girişi</p>
+            </div>
+            <div class="modal-right-panel">
+                <button class="modal-close-btn" data-modal-id="login-screen-admin"><i class="fa-solid fa-times fa-xl"></i></button>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Yönetici Paneli</h2>
+                <div id="login-message-admin" class="mb-4 text-sm text-red-500"></div>
+                <form id="login-form-admin">
+                    <div class="mb-4"><label class="form-label">Yönetici Adı</label><input type="text" id="login-admin-username" class="form-input" required></div>
+                    <div class="mb-6"><label class="form-label">Şifre</label><input type="password" id="login-admin-password" class="form-input" required></div>
+                    <button type="submit" class="form-button" style="background-color: #dc3545;">Giriş Yap</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="register-screen-student" class="modal-screen"><div class="modal-box"><div class="p-8">Kayıt özelliği kapalı.</div><button class="modal-close-btn" data-modal-id="register-screen-student">X</button></div></div>
+    <div id="register-screen-teacher" class="modal-screen"><div class="modal-box"><div class="p-8">Kayıt özelliği kapalı.</div><button class="modal-close-btn" data-modal-id="register-screen-teacher">X</button></div></div>
+    <div id="register-screen-admin" class="modal-screen"><div class="modal-box"><div class="p-8">Kayıt özelliği kapalı.</div><button class="modal-close-btn" data-modal-id="register-screen-admin">X</button></div></div>
+
+    <div id="admin-panel-screen" class="modal-screen" style="z-index: 9999;">
+        <div class="bg-white text-gray-800 p-6 rounded-2xl shadow-xl relative overflow-y-auto" style="width: 96vw; max-width: 1800px; max-height: 92vh;">
+            <button class="modal-close-btn" data-modal-id="admin-panel-screen"><i class="fa-solid fa-times fa-xl"></i></button>
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h2 class="text-3xl font-bold text-cyan-600">Süper Yönetici Paneli</h2>
+            </div>
+            
+            <div class="border-b border-gray-200 mb-4">
+                <nav class="flex space-x-4">
+                    <button id="tab-student-list" class="admin-tab active" onclick="showAdminTab('student-list')">Öğrenci Listesi</button>
+                    <button id="tab-bulk-upload" class="admin-tab" onclick="showAdminTab('bulk-upload')">Toplu Yükle</button>
+                    <button id="tab-seyret-bul" class="admin-tab" onclick="showAdminTab('seyret-bul')">YouTube Video</button>
+                    <button id="tab-seyret-bul-lokal" class="admin-tab" onclick="showAdminTab('seyret-bul-lokal')">Lokal Video</button>
+                    <button id="tab-video-sil" class="admin-tab" onclick="showAdminTab('video-sil')">Video Listesi</button>
+                    <button id="tab-raporlama" class="admin-tab" onclick="showAdminTab('raporlama')">Raporlama</button>
+                    <button id="tab-video-istekleri" class="admin-tab" onclick="showAdminTab('video-istekleri')">Video İstekleri</button>
+                </nav>
+            </div>
+
+            <div id="content-student-list" class="admin-tab-content active">
+                <div class="flex items-center gap-4 mb-4 p-4 bg-gray-50 rounded-lg border">
+                    <label class="text-sm font-semibold">Okul:</label>
+                    <select id="filter-school" class="form-input py-1 text-sm w-auto"><option value="">Tüm Okullar</option><option value="Sezi Eratik Ortaokulu">Sezi Eratik Ortaokulu</option><option value="TOKİ Demokrasi Ortaokulu">TOKİ Demokrasi Ortaokulu</option></select>
+                    <label class="text-sm font-semibold">Sınıf:</label>
+                    <select id="filter-class" class="form-input py-1 text-sm w-auto"><option value="">Tüm Sınıflar</option><option value="atanmadi">--- Sınıfı Atanmamışlar ---</option><option value="5A">5A</option><option value="5B">5B</option><option value="5C">5C</option><option value="5D">5D</option></select>
+                </div>
+                <!-- YENİ EKLENEN OKUL VE SINIF ATA BUTONU -->
+                                <div class="flex items-center gap-4 mb-4 p-4 bg-gray-50 rounded-lg border">
+                                    <label class="text-sm font-semibold">Okul ve Sınıf Ata:</label>
+                                    <select id="assign-school" class="form-input py-1 text-sm w-auto">
+                                        <option value="">Okul Seçin</option>
+                                        <option value="Sezi Eratik Ortaokulu">Sezi Eratik Ortaokulu</option>
+                                        <option value="TOKİ Demokrasi Ortaokulu">TOKİ Demokrasi Ortaokulu</option>
+                                    </select>
+                                    <select id="assign-class" class="form-input py-1 text-sm w-auto">
+                                        <option value="">Sınıf Seçin</option>
+                                        <option value="5A">5A</option>
+                                        <option value="5B">5B</option>
+                                        <option value="5C">5C</option>
+                                        <option value="5D">5D</option>
+                                        <option value="5E">5E</option>
+                                        <option value="5F">5F</option>
+                                        <option value="5G">5G</option>
+                                        <option value="5H">5H</option>
+                                    </select>
+                                    <button id="assign-btn" class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">Ata</button><button id="set-password-btn" class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 ml-2">Soyadını Şifre Yap</button>
+                                </div>
+
+                <div class="overflow-x-auto max-h-96">
+                    <table class="w-full min-w-max text-sm text-left"><thead class="bg-gray-100 sticky top-0"><tr><th class="p-2 w-10"><input type="checkbox" id="select-all-students"></th><th class="p-2">No / ID</th><th class="p-2">Ad</th><th class="p-2">Soyad</th><th class="p-2">Rol</th><th class="p-2">Okul</th><th class="p-2">Sınıf</th><th class="p-2">İşlem</th></tr></thead><tbody id="student-list-tbody" class="divide-y"></tbody></table>
+                </div>
+            </div>
+
+            <div id="content-bulk-upload" class="admin-tab-content p-4">
+                <h3 class="text-lg font-semibold mb-2">Toplu Öğrenci Yükle</h3>
+                <input type="file" id="excelFile" accept=".xlsx, .csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-50 file:text-blue-700"/>
+                <button id="uploadExcelBtn" class="mt-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600">Yükle</button>
+                <div id="uploadExcelMessage" class="mt-2 text-sm"></div>
+            </div>
+
+            <div id="content-seyret-bul" class="admin-tab-content p-4">
+                <form id="seyret-bul-form-admin" class="space-y-4">
+                    <input type="text" id="sb-admin-baslik" placeholder="Başlık" class="form-input" required>
+                    <input type="url" id="sb-admin-url" placeholder="YouTube URL" class="form-input" required>
+                    <select id="sb-admin-surec" class="form-input" required><option value="">Kazanım Seç...</option></select>
+                    <textarea id="sb-admin-metin" placeholder="Metin" class="form-input"></textarea>
+                    <input type="password" id="sb-admin-sifre" placeholder="Admin Şifresi" class="form-input w-auto" required>
+                    <button type="submit" id="sb-admin-gonder-btn" class="bg-green-500 text-white px-4 py-2 rounded">Ekle</button>
+                    <div id="sb-admin-mesaj" class="mt-2 text-sm"></div>
+                </form>
+            </div>
+            <div id="content-seyret-bul-lokal" class="admin-tab-content p-4">
+                <form id="seyret-bul-form-lokal" class="space-y-4">
+                    <input type="text" id="sb-lokal-baslik" placeholder="Başlık" class="form-input" required>
+                    <input type="file" id="sb-lokal-dosya" accept=".mp4" class="form-input" required>
+                    <select id="sb-lokal-surec" class="form-input" required><option value="">Kazanım Seç...</option></select>
+                    <textarea id="sb-lokal-metin" placeholder="Metin" class="form-input"></textarea>
+                    <input type="password" id="sb-lokal-sifre" placeholder="Admin Şifresi" class="form-input w-auto" required>
+                    <button type="submit" id="sb-lokal-gonder-btn" class="bg-purple-500 text-white px-4 py-2 rounded">Yükle</button>
+                    <div id="sb-lokal-mesaj" class="mt-2 text-sm"></div>
+                </form>
+            </div>
+            <div id="content-video-sil" class="admin-tab-content p-4">
+                <button id="refreshVideoListBtn" class="bg-gray-500 text-white px-4 py-2 rounded mb-4">Yenile</button>
+                <div id="videoSilMesaj" class="text-sm mb-2"></div>
+                <div class="overflow-x-auto max-h-96"><table class="w-full text-sm text-left"><thead class="bg-gray-100"><tr><th class="p-2">Başlık</th><th class="p-2">Kazanım</th><th class="p-2">ID</th><th class="p-2">İşlem</th></tr></thead><tbody id="video-list-tbody"></tbody></table></div>
+            </div>
+
+            <div id="content-raporlama" class="admin-tab-content p-4">
+                <h3 class="text-xl font-bold mb-4">Kullanım Raporları</h3>
+                <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                    <div class="grid grid-cols-4 gap-4">
+                        <div><label class="block text-sm font-medium mb-2">Okul</label><select id="rapor-okul" class="form-input"><option value="">Seçiniz</option></select></div>
+                        <div><label class="block text-sm font-medium mb-2">Sınıf</label><select id="rapor-sinif" class="form-input" disabled><option value="">Önce Okul Seçin</option></select></div>
+                        <div><label class="block text-sm font-medium mb-2">Yıl</label><select id="rapor-yil" class="form-input" disabled><option value="">Önce Sınıf Seçin</option></select></div>
+                        <div><label class="block text-sm font-medium mb-2">Ay</label><select id="rapor-ay" class="form-input" disabled><option value="">Önce Yıl Seçin</option></select></div>
+                    </div>
+                    <button id="btn-excel-indir" class="mt-4 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">Excel İndir</button>
+                </div>
+                <div id="ozet-istatistikler" class="grid grid-cols-2 gap-4 mb-4" style="display:none;">
+                    <div class="bg-blue-50 p-4 rounded-lg"><h4 class="font-bold text-lg mb-2">En Fazla Kullanılan 3 Modül</h4><div id="en-fazla-moduller" class="text-sm"></div></div>
+                    <div class="bg-green-50 p-4 rounded-lg"><h4 class="font-bold text-lg mb-2">En Aktif Öğrenciler</h4><div id="en-aktif-ogrenciler" class="text-sm"></div></div>
+                </div>
+                <table class="w-full border"><thead class="bg-gray-100"><tr><th class="p-3">Hafta</th><th class="p-3">No</th><th class="p-3">Ad Soyad</th><th class="p-3">Modül</th><th class="p-3">Kullanım</th></tr></thead><tbody id="rapor-tbody"><tr><td colspan="5" class="p-4 text-center text-gray-500">Filtreleri seçin</td></tr></tbody></table>
+            </div>
+
+            <div id="content-video-istekleri" class="admin-tab-content p-4">
+                <h3 class="text-lg font-semibold mb-4">Video İstekleri</h3>
+                <table class="w-full bg-white shadow-md rounded-lg text-sm"><thead class="bg-gray-100"><tr><th class="p-3">Tarih</th><th class="p-3">Gönderen</th><th class="p-3">Rol</th><th class="p-3">Okul</th><th class="p-3">Sınıf/No</th><th class="p-3">İstek</th><th class="p-3">Durum</th><th class="p-3">İşlem</th></tr></thead><tbody id="video-istekleri-tbody"></tbody></table>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-video-modal" class="modal-screen" style="z-index:10000;">
+        <div class="bg-white p-6 rounded-lg w-full max-w-lg">
+            <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-lg">Video Düzenle</h3><button class="modal-close-btn text-2xl">&times;</button></div>
+            <form id="edit-video-form">
+                <input type="hidden" id="edit-video-id">
+                <div class="mb-4"><label class="block font-semibold mb-2">Başlık</label><input type="text" id="edit-video-baslik" class="form-input" required></div>
+                <div class="mb-4"><label class="block font-semibold mb-2">Mevcut Kazanım</label><input type="text" id="edit-video-surec-mevcut" class="form-input bg-gray-100" readonly></div>
+                <div class="mb-4"><label class="block font-semibold mb-2">Yeni Kazanım (Opsiyonel)</label><select id="edit-video-surec-yeni" class="form-input"><option value="">Değiştirme</option></select></div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full">Kaydet</button>
+                <div id="edit-video-mesaj" class="mt-2 text-sm text-center"></div>
+            </form>
+        </div>
+    </div>
+
+<script>
+    // --- GLOBAL DEĞİŞKENLER ---
+    let g_surecListesi = [];
+    let g_videoListesi = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- BAŞLATMA ---
+        setupRaporFilters(); // Yeni Raporlama Mantığını Başlat
+        setupAdminPanel();   // Admin Paneli İşlevlerini Başlat
+        setupLoginSystem();  // Giriş Sistemini Başlat
+    });
+
+    // ============================================================
+    // 1. RAPORLAMA VE FİLTRELEME SİSTEMİ (DÜZELTİLMİŞ)
+    // ============================================================
+    async function setupRaporFilters() {
+        const okulSel = document.getElementById("rapor-okul");
+        const sinifSel = document.getElementById("rapor-sinif");
+        const yilSel = document.getElementById("rapor-yil");
+        const aySel = document.getElementById("rapor-ay");
+        const btnExcel = document.getElementById("btn-excel-indir");
+
+        if (!okulSel) return; // Admin panelinde değilsek çık
+
+        // Okulları Doldur
+        try {
+            const res = await fetch("/api/filter/get_schools");
+            const data = await res.json();
+            if (data.success) data.data.forEach(o => okulSel.innerHTML += `<option value="${o}">${o}</option>`);
+        } catch (e) { console.error("Okul listesi hatası", e); }
+
+        // Zincirleme Mantık
+        okulSel.addEventListener("change", async function() {
+            sinifSel.innerHTML = '<option value="">Yükleniyor...</option>'; sinifSel.disabled = true;
+            yilSel.innerHTML = '<option value="">Önce Sınıf Seçin</option>'; yilSel.disabled = true;
+            aySel.innerHTML = '<option value="">Önce Yıl Seçin</option>'; aySel.disabled = true;
+            document.getElementById("rapor-tbody").innerHTML = '<tr><td colspan="5" class="p-4 text-center">Okul, sınıf ve ay seçin</td></tr>';
+
+            if (this.value) {
+                const res = await fetch(`/api/filter/get_classes?school_name=${encodeURIComponent(this.value)}`);
+                const data = await res.json();
+                sinifSel.innerHTML = '<option value="">Sınıf Seçiniz</option>';
+                if (data.success && data.data.length > 0) {
+                    data.data.forEach(s => sinifSel.innerHTML += `<option value="${s}">${s}</option>`);
+                    sinifSel.disabled = false;
+                } else sinifSel.innerHTML = '<option value="">Sınıf Bulunamadı</option>';
+            }
+        });
+
+        sinifSel.addEventListener("change", function() {
+            if (this.value) {
+                yilSel.innerHTML = '<option value="">Yıl Seçiniz</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>';
+                yilSel.disabled = false;
+            } else { yilSel.disabled = true; aySel.disabled = true; }
+        });
+
+        yilSel.addEventListener("change", function() {
+            if (this.value) {
+                aySel.innerHTML = '<option value="">Ay Seçiniz</option>';
+                ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"].forEach((ay, i) => {
+                    aySel.innerHTML += `<option value="${this.value}-${String(i+1).padStart(2,'0')}">${ay} ${this.value}</option>`;
+                });
+                aySel.disabled = false;
+            } else aySel.disabled = true;
+        });
+
+        aySel.addEventListener("change", () => otomatikRaporGetir(okulSel.value, sinifSel.value, aySel.value));
+
+        if (btnExcel) {
+            btnExcel.onclick = () => {
+                if (!okulSel.value || !sinifSel.value || !aySel.value) return alert("Lütfen tüm seçimleri yapın.");
+                window.location.href = `/api/raporlar/excel?okul=${encodeURIComponent(okulSel.value)}&sinif=${encodeURIComponent(sinifSel.value)}&ay=${aySel.value}`;
+            };
+        }
+    }
+
+    function otomatikRaporGetir(okul, sinif, ay) {
+            if (!okul || !sinif || !ay) return;
+            const tbody = document.getElementById("rapor-tbody");
+            tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-blue-500">Yükleniyor...</td></tr>';
+            
+            fetch(`/api/raporlar/haftalik?okul=${encodeURIComponent(okul)}&sinif=${encodeURIComponent(sinif)}&ay=${ay}`)
+                .then(r => r.json())
+                .then(res => {
+                    tbody.innerHTML = "";
+                    if (res.success && res.data.length > 0) {
+                        res.data.forEach(row => {
+                            // --- İSİM DÜZELTMESİ ---
+                            const ad = row.ad_soyad || (row.ad + " " + row.soyad) || (row.first_name + " " + row.last_name) || "İsimsiz";
+                            
+                            // --- NUMARA DÜZELTMESİ ---
+                            // Veritabanı 'no' gönderiyor, kod 'student_no' arıyordu. İkisini de kontrol ediyoruz.
+                            const ogrenciNo = row.no || row.student_no || '-';
+
+                            tbody.innerHTML += `<tr>
+                                <td class="p-3">${row.hafta}</td>
+                                <td class="p-3 font-bold">${ogrenciNo}</td> <td class="p-3">${ad}</td>
+                                <td class="p-3"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">${row.modul_adi}</span></td>
+                                <td class="p-3">${row.kullanim}</td>
+                            </tr>`;
+                        });
+                        calculateStats(res.data);
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">Kayıt yok.</td></tr>';
+                        document.getElementById("ozet-istatistikler").style.display = "none";
+                    }
+                })
+                .catch((e) => {
+                    console.error(e);
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-red-500">Hata oluştu.</td></tr>';
+                });
+        }
+
+    function calculateStats(data) {
+        const modSay = {}, ogrSay = {};
+        data.forEach(r => {
+            modSay[r.modul_adi] = (modSay[r.modul_adi]||0) + r.kullanim;
+            const ad = (r.first_name||"")+" "+(r.last_name||"");
+            ogrSay[ad] = (ogrSay[ad]||0) + r.kullanim;
+        });
+        
+        const topMod = Object.entries(modSay).sort((a,b)=>b[1]-a[1]).slice(0,3);
+        document.getElementById("en-fazla-moduller").innerHTML = topMod.map((m,i)=>`<div>${i+1}. ${m[0]} (${m[1]})</div>`).join("");
+        
+        const topOgr = Object.entries(ogrSay).sort((a,b)=>b[1]-a[1]).slice(0,3);
+        document.getElementById("en-aktif-ogrenciler").innerHTML = topOgr.map((o,i)=>`<div>${i+1}. ${o[0]} (${o[1]})</div>`).join("");
+        
+        document.getElementById("ozet-istatistikler").style.display = "grid";
+    }
+
+    // ============================================================
+    // 2. ADMİN PANELİ VE LİSTELEME
+    // ============================================================
+    function setupAdminPanel() {
+        // Tab Geçişleri
+        window.showAdminTab = function(name) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
+            document.getElementById('tab-'+name).classList.add('active');
+            document.getElementById('content-'+name).style.display = 'block';
+            if(['seyret-bul','seyret-bul-lokal','video-sil'].includes(name)) loadSurecler();
+            if(name === 'video-sil') loadVideos();
+            if(name === 'video-istekleri') loadVideoRequests();
+            if(name === 'student-list') loadStudents();
+        };
+
+        // Öğrenci Listesi
+        window.loadStudents = async function() {
+            const tbody = document.getElementById('student-list-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center p-4">Yükleniyor...</td></tr>';
+            try {
+                const res = await fetch('/get_all_users');
+                const data = await res.json();
+                if(data.success) {
+                    tbody.innerHTML = '';
+                    const schoolFilter = document.getElementById('filter-school').value;
+                    const classFilter = document.getElementById('filter-class').value;
+                    
+                    for(const uid in data.users) {
+                        const u = data.users[uid];
+                        if(schoolFilter && u.school_name !== schoolFilter) continue;
+                        if(classFilter && classFilter !== 'atanmadi' && u.class !== classFilter) continue;
+                        
+                        let rol = u.role === 'student' ? 'Öğrenci' : (u.role === 'teacher' ? 'Öğretmen' : 'Admin');
+                        let displayId = u.role === 'student' ? u.student_no : uid;
+                        
+                        tbody.innerHTML += `<tr class="border-b hover:bg-gray-50">
+                            <td class="p-2"><input type="checkbox" class="student-checkbox" data-id="${uid}"></td>
+                            <td class="p-2">${displayId}</td>
+                            <td class="p-2">${u.first_name||''}</td>
+                            <td class="p-2">${u.last_name||''}</td>
+                            <td class="p-2">${rol}</td>
+                            <td class="p-2">${u.school_name||'-'}</td>
+                            <td class="p-2">${u.class||'-'}</td>
+                            <td class="p-2"><button onclick="deleteUser('${uid}')" class="text-red-500 text-xs hover:underline">Sil</button></td>
+                        </tr>`;
+                    }
+                }
+            } catch(e) { tbody.innerHTML = '<tr><td colspan="8" class="text-center text-red-500">Hata</td></tr>'; }
+        };
+
+        // Filtre Dinleyicileri
+        const fSchool = document.getElementById('filter-school');
+        const fClass = document.getElementById('filter-class');
+        if(fSchool) fSchool.addEventListener('change', loadStudents);
+        if(fClass) fClass.addEventListener('change', loadStudents);
+        
+        // Tümünü seç checkbox'ı
+        document.getElementById('select-all-students').addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('.student-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+        // Okul ve Sınıf Ata butonu için event listener
+        document.getElementById('assign-btn').addEventListener('click', async function() {
+            const selectedSchool = document.getElementById('assign-school').value;
+            const selectedClass = document.getElementById('assign-class').value;
+            const selectedStudents = Array.from(document.querySelectorAll('.student-checkbox:checked')).map(cb => cb.dataset.id);
+
+            if (!selectedSchool || !selectedClass) {
+                alert('Lütfen hem okul hem de sınıf seçin.');
+                return;
+            }
+
+            if (selectedStudents.length === 0) {
+                alert('Lütfen öğrenci seçin.');
+                return;
+            }
+
+            if (!confirm(`${selectedStudents.length} öğrenciye ${selectedSchool} - ${selectedClass} atanacak. Onaylıyor musunuz?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/update_student_bulk', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        student_ids: selectedStudents,
+                        actions: {
+                            school: selectedSchool,
+                            class: selectedClass
+                        }
+                    })
+                });
+
+                const result = await response.json();
+                alert(result.message);
+                if (result.success) {
+                    loadStudents(); // Listeyi yenile
+                }
+            } catch (error) {
+                alert('Hata oluştu: ' + error);
+            }
+        });
+
+        // Kullanıcı Silme
+        window.deleteUser = async function(id) {
+            if(!confirm('Silmek istediğinize emin misiniz?')) return;
+            await fetch('/delete_user', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({user_id:id})});
+            loadStudents();
+        };
+
+        // Video Listesi
+        window.loadVideos = async function() {
+            const tbody = document.getElementById('video-list-tbody');
+            try {
+                const res = await fetch('/api/seyret-bul/admin/get-all-videos');
+                const data = await res.json();
+                tbody.innerHTML = "";
+                g_videoListesi = data.videolar || [];
+                g_videoListesi.forEach(v => {
+                    tbody.innerHTML += `<tr class="border-b"><td class="p-2 font-semibold">${v.baslik}</td><td class="p-2">${v.surec_bileseni}</td><td class="p-2 text-xs">${v.video_id}</td><td class="p-2"><button onclick="editVideo('${v.video_id}')" class="text-blue-500 text-xs mr-2">Düzenle</button><button onclick="deleteVideo('${v.video_id}')" class="text-red-500 text-xs">Sil</button></td></tr>`;
+                });
+            } catch(e) { console.error(e); }
+        };
+
+        window.deleteVideo = async function(id) {
+            if(!confirm('Videoyu sil?')) return;
+            const pass = prompt('Admin Şifresi:');
+            if(!pass) return;
+            const res = await fetch('/api/seyret-bul/admin/sil-video', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({video_id:id, admin_sifre:pass})});
+            const d = await res.json();
+            if(d.success) loadVideos(); else alert(d.hata);
+        };
+
+        window.editVideo = function(id) {
+            const v = g_videoListesi.find(x => x.video_id === id);
+            if(!v) return;
+            document.getElementById('edit-video-id').value = id;
+            document.getElementById('edit-video-baslik').value = v.baslik;
+            document.getElementById('edit-video-surec-mevcut').value = v.surec_bileseni;
+            loadSurecler(); // Seçenekleri doldur
+            document.getElementById('edit-video-modal').style.display = 'flex';
+        };
+
+        // Video İstekleri
+        window.loadVideoRequests = async function() {
+            const tbody = document.getElementById('video-istekleri-tbody');
+            const res = await fetch('/api/get-video-istekleri');
+            const data = await res.json();
+            tbody.innerHTML = "";
+            if(data.success && data.istekler) {
+                data.istekler.forEach(r => {
+                    let rol = r.rol === 'student' ? 'Öğrenci' : 'Öğretmen';
+                    let detay = r.rol === 'student' ? `${r.sinif} / ${r.no}` : r.sinif;
+                    tbody.innerHTML += `<tr class="border-b"><td class="p-3">${new Date(r.tarih).toLocaleString('tr-TR')}</td><td class="p-3">${r.ogretmen}</td><td class="p-3">${rol}</td><td class="p-3">${r.okul||'-'}</td><td class="p-3">${detay}</td><td class="p-3">${r.metin}</td><td class="p-3">${r.durum}</td><td class="p-3"><button onclick="delReq('${r.id}')" class="text-red-500 text-xs">Sil</button></td></tr>`;
+                });
+            }
+        };
+
+        window.delReq = async function(id) {
+            if(!confirm('Silinsin mi?')) return;
+            await fetch('/api/delete-video-istek', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({istek_id:id})});
+            loadVideoRequests();
+        };
+
+        // Süreçleri Yükle
+        async function loadSurecler() {
+            if(g_surecListesi.length > 0) return fillSurecSelects();
+            const res = await fetch('/api/seyret_bul/get_surecler');
+            const data = await res.json();
+            if(data.success) {
+                g_surecListesi = data.surecler;
+                fillSurecSelects();
+            }
+        }
+
+        function fillSurecSelects() {
+            const ids = ['sb-admin-surec', 'sb-lokal-surec', 'edit-video-surec-yeni'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    // Sadece düzenleme modalı için varsayılanı koru
+                    const def = id === 'edit-video-surec-yeni' ? '<option value="">Değiştirme</option>' : '<option value="">Seçiniz...</option>';
+                    el.innerHTML = def;
+                    g_surecListesi.forEach(s => el.innerHTML += `<option value="${s.kod}">${s.kod} - ${s.aciklama.substring(0,50)}...</option>`);
+                }
+            });
+        }
+        
+        // Modal Kapatma
+        document.querySelectorAll('.modal-close-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.target.closest('.modal-screen').style.display = 'none';
+            });
+        });
+        
+        // Video Düzenleme Kaydet
+        const editForm = document.getElementById('edit-video-form');
+        if(editForm) {
+            editForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const body = {
+                    video_id: document.getElementById('edit-video-id').value,
+                    yeni_baslik: document.getElementById('edit-video-baslik').value,
+                    yeni_surec: document.getElementById('edit-video-surec-yeni').value
+                };
+                const res = await fetch('/api/seyret-bul/admin/edit-video', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+                const d = await res.json();
+                if(d.success) {
+                    document.getElementById('edit-video-modal').style.display = 'none';
+                    loadVideos();
+                } else alert(d.hata);
+            });
+        }
+        
+        // Excel Yükleme
+        const upBtn = document.getElementById('uploadExcelBtn');
+        if(upBtn) {
+            upBtn.addEventListener('click', async () => {
+                const file = document.getElementById('excelFile').files[0];
+                if(!file) return alert("Dosya seçin");
+                const fd = new FormData(); fd.append('excelFile', file);
+                const res = await fetch('/upload_excel', {method:'POST', body:fd});
+                const d = await res.json();
+                alert(d.message);
+                if(d.success) loadStudents();
+            });
+        }
+        // Soyadını Şifre Yap butonu için event listener
+        document.getElementById('set-password-btn').addEventListener('click', async function() {
+            const selectedStudents = Array.from(document.querySelectorAll('.student-checkbox:checked')).map(cb => cb.dataset.id);
+
+            if (selectedStudents.length === 0) {
+                alert('Lütfen öğrenci seçin.');
+                return;
+            }
+
+            if (!confirm(`${selectedStudents.length} öğrencinin şifresi soyisimleri yapılacak. Onaylıyor musunuz?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/update_student_bulk', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        student_ids: selectedStudents,
+                        actions: {
+                            set_password_to_lastname: true
+                        }
+                    })
+                });
+
+                const result = await response.json();
+                alert(result.message);
+                if (result.success) {
+                    loadStudents();
+                }
+            } catch (error) {
+                alert('Hata oluştu: ' + error);
+            }
+        });
+        // Form Gönderimleri (Video Ekleme)
+        const vidForms = ['seyret-bul-form-admin', 'seyret-bul-form-lokal'];
+        vidForms.forEach(id => {
+            const f = document.getElementById(id);
+            if(f) {
+                f.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const btn = f.querySelector('button'); btn.disabled = true; btn.textContent = "İşleniyor...";
+                    
+                    let url, body, headers = {};
+                    if(id === 'seyret-bul-form-admin') {
+                        url = '/api/seyret-bul/admin/soru-uret';
+                        headers = {'Content-Type':'application/json'};
+                        body = JSON.stringify({
+                            baslik: document.getElementById('sb-admin-baslik').value,
+                            video_url: document.getElementById('sb-admin-url').value,
+                            surec_bileseni: document.getElementById('sb-admin-surec').value,
+                            video_metni: document.getElementById('sb-admin-metin').value,
+                            admin_sifre: document.getElementById('sb-admin-sifre').value
+                        });
+                    } else {
+                        url = '/api/seyret-bul/admin/lokal-video-yukle';
+                        body = new FormData();
+                        body.append('baslik', document.getElementById('sb-lokal-baslik').value);
+                        body.append('video_dosya', document.getElementById('sb-lokal-dosya').files[0]);
+                        body.append('surec_bileseni', document.getElementById('sb-lokal-surec').value);
+                        body.append('video_metni', document.getElementById('sb-lokal-metin').value);
+                        body.append('admin_sifre', document.getElementById('sb-lokal-sifre').value);
+                    }
+                    
+                    try {
+                        const res = await fetch(url, {method:'POST', headers:headers, body:body});
+                        const d = await res.json();
+                        alert(d.success ? "Başarılı: " + d.video_id : "Hata: " + (d.mesaj || d.hata));
+                        if(d.success) f.reset();
+                    } catch(err) { alert("Hata: " + err); }
+                    btn.disabled = false; btn.textContent = "Gönder";
+                });
+            }
+        });
+    }
+
+    // ============================================================
+    // 3. GİRİŞ SİSTEMİ
+    // ============================================================
+    function setupLoginSystem() {
+        const screens = {
+            student: document.getElementById('login-screen-student'),
+            teacher: document.getElementById('login-screen-teacher'),
+            admin: document.getElementById('login-screen-admin')
+        };
+
+        // Modal Açma
+        document.getElementById('show-student-login').onclick = () => showM('student');
+        document.getElementById('show-teacher-login').onclick = () => showM('teacher');
+        
+        // Gizli Admin (Ctrl+Alt+M)
+        document.addEventListener('keydown', e => {
+            if((e.ctrlKey && e.altKey && (e.key==='m'||e.code==='KeyM')) || (e.altKey && e.getModifierState('AltGraph') && (e.key==='m'))) {
+                e.preventDefault(); showM('admin');
+            }
+        });
+
+        function showM(type) {
+            Object.values(screens).forEach(s => s.style.display = 'none');
+            if(screens[type]) screens[type].style.display = 'flex';
+        }
+
+        // Giriş İşlemleri
+        handleLogin('login-form-student', '/login-student', (res) => {
+            localStorage.setItem('loggedInUserNo', res.user_no); // ÖNEMLİ: no kaydı
+            localStorage.setItem('loggedInUserRole', 'student');
+            localStorage.setItem('loggedInUserName', res.name);
+            localStorage.setItem('loggedInUserSchool', res.school_name);
+            localStorage.setItem('loggedInUserClass', res.class);
+            window.location.href = '/dashboard';
+        });
+
+        handleLogin('login-form-teacher', '/login-teacher', (res) => {
+            localStorage.setItem('loggedInUserRole', 'teacher');
+            localStorage.setItem('loggedInUserName', res.name);
+            localStorage.setItem('loggedInUserSchool', res.school_name);
+            localStorage.setItem('loggedInUserClass', res.class);
+            window.location.href = '/dashboard';
+        });
+
+        handleLogin('login-form-admin', '/login-admin', (res) => {
+            localStorage.setItem('loggedInUserRole', 'admin');
+            screens.admin.style.display = 'none';
+            document.getElementById('admin-panel-screen').style.display = 'flex';
+            loadStudents(); // Admin paneli açılınca listeyi yükle
+        });
+
+        function handleLogin(formId, url, onSuccess) {
+            const form = document.getElementById(formId);
+            if(!form) return;
+            form.addEventListener('submit', async e => {
+                e.preventDefault();
+                const data = {};
+                new FormData(form).forEach((v, k) => data[k] = v);
+                
+                // Manuel ID eşleştirmeleri (HTML ID'leri ile JSON keyleri farklıysa)
+                if(formId.includes('student')) {
+                    data.student_no = document.getElementById('login-student-no').value;
+                    data.password = document.getElementById('login-student-password').value;
+                } else if(formId.includes('teacher')) {
+                    data.lastname = document.getElementById('login-teacher-lastname').value;
+                    data.password = document.getElementById('login-teacher-password').value;
+                } else {
+                    data.username = document.getElementById('login-admin-username').value;
+                    data.password = document.getElementById('login-admin-password').value;
+                }
+
+                try {
+                    const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+                    const json = await res.json();
+                    if(json.success) onSuccess(json);
+                    else alert(json.message || "Giriş başarısız");
+                } catch(err) { alert("Sunucu hatası"); }
+            });
+        }
+    }
+</script>
+</body>
+</html>

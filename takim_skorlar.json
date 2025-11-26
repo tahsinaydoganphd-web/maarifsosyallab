@@ -1,0 +1,16 @@
+{
+    "Takım 1": {
+        "kazanma_sayisi": 2,
+        "uyeler": [
+            "HASAN ALİ ÇELİK",
+            "EMRE ÖZKÖŞKOĞLU"
+        ]
+    },
+    "Takım 3": {
+        "kazanma_sayisi": 2,
+        "uyeler": [
+            "AYAZ GÜNGÖR",
+            "ŞEMSİ EFE TOPRAK"
+        ]
+    }
+}

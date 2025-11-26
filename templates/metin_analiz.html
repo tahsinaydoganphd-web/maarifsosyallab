@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metin Analiz Aracı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, .1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Analiz sonucu etiketleri */
+        .tag {
+            display: inline-block;
+            background-color: #e0f2fe;
+            /* light-blue-100 */
+            color: #0369a1;
+            /* light-blue-700 */
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 2px;
+        }
+
+        .tag.deger {
+            background-color: #dcfce7;
+            /* green-100 */
+            color: #166534;
+            /* green-700 */
+        }
+
+        .tag.beceri-kavramsal {
+            background-color: #fef3c7;
+            /* yellow-100 */
+            color: #92400e;
+            /* yellow-700 */
+        }
+
+        .tag.beceri-sosyal {
+            background-color: #fce7f3;
+            /* pink-100 */
+            color: #9d174d;
+            /* pink-700 */
+        }
+    </style>
+</head>
+
+<body class="flex h-screen">
+
+    <aside class="w-72 bg-white text-gray-800 shadow-lg flex flex-col fixed h-full">
+        <div class="px-6 py-4 border-b border-gray-200">
+
+            <h1 class="text-2xl font-extrabold text-blue-600 text-center tracking-wide mb-4">
+                Maarif SosyalLab
+            </h1>
+
+            <div class="mb-4">
+                <div class="w-full p-2 flex items-center justify-center overflow-hidden">
+                    <img src="/videolar/maarif.png" alt="Maarif Logo"
+                        class="w-auto h-auto max-w-full max-h-24 object-contain rounded-lg">
+                </div>
+            </div>
+
+            <div class="flex items-center">
+                <div id="user-avatar-initial"
+                    class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-lg">
+                    K</div>
+                <div class="ml-3">
+                    <span id="user-name-placeholder" class="block text-sm font-bold text-gray-800">Kullanıcı</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto p-2 space-y-1 no-bounce">
+
+            <a id="link-metin-analiz" href="/metin-analiz"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-blue-600 ring-2 ring-blue-300 transition-all">
+                <i class="fa-solid fa-file-pen mr-3 w-6 text-center"></i>
+                <span>Metin Analiz</span>
+            </a>
+            <a id="link-soru-uretim" href="/soru-uretim"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-600 transition-all">
+                <i class="fa-solid fa-circle-question mr-3 w-6 text-center"></i>
+                <span>Soru Üretim</span>
+            </a>
+            <a id="link-metin-olusturma" href="/metin-olusturma"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-purple-500 hover:bg-purple-600 transition-all">
+                <i class="fa-solid fa-wand-magic-sparkles mr-3 w-6 text-center"></i>
+                <span>Metin Oluşturma</span>
+            </a>
+            <a id="link-haritada-bul" href="/haritada-bul"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-orange-500 hover:bg-orange-600 transition-all">
+                <i class="fa-solid fa-map-location-dot mr-3 w-6 text-center"></i>
+                <span>Haritada Bul</span>
+            </a>
+            <a id="link-podcast" href="/podcast_paneli"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all">
+                <i class="fa-solid fa-microphone-lines mr-3 w-6 text-center"></i>
+                <span>Podcast Yap</span>
+            </a>
+            <a id="link-seyret-bul" href="/seyret-bul-liste"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-indigo-500 hover:bg-indigo-600 transition-all">
+                <i class="fa-solid fa-magnifying-glass-plus mr-3 w-6 text-center"></i>
+                <span>Seyret Bul</span>
+            </a>
+            <a id="link-yarisma" href="/yarisma-secim"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-teal-500 hover:bg-teal-600 transition-all">
+                <i class="fa-solid fa-trophy mr-3 w-6 text-center"></i>
+                <span>Beceri/Değer Avcısı</span>
+            </a>
+            <a id="link-video-istegi" href="/video-istegi"
+                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-pink-500 hover:bg-pink-600 transition-all">
+                <i class="fa-solid fa-video mr-3 w-6 text-center"></i>
+                <span>Video İsteği</span>
+            </a>
+
+        </nav>
+
+        <div class="p-4 border-t border-gray-200">
+            <a href="/dashboard"
+                class="flex items-center mx-2 p-2 rounded-lg text-gray-600 font-semibold bg-gray-100 hover:bg-gray-200 transition-all">
+                <i class="fa-solid fa-arrow-left mr-3 w-6 text-center"></i>
+                <span>Panele Geri Dön</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="ml-72 flex-1 p-6 md:p-8 overflow-y-auto no-bounce">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Metin Analiz Aracı</h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow">
+                <form id="analiz-form">
+                    <label for="text-input" class="block text-sm font-medium text-gray-700 mb-1">Analiz Edilecek Metin
+                        (Maksimum 250 kelime)</label>
+                    <textarea id="text-input" rows="15"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Lütfen 5. sınıf seviyesine uygun bir metni buraya yapıştırın..."></textarea>
+
+                    <div id="word-count" class="text-sm text-gray-600 text-right mt-1">0 / 250 kelime</div>
+
+                    <button type="submit" id="analyze-btn"
+                        class="w-full mt-4 bg-blue-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-blue-600 transition-all duration-300 flex items-center justify-center">
+                        <i class="fa-solid fa-file-pen mr-2"></i>
+                        <span>Analiz Et</span>
+                    </button>
+                    <div id="loading-spinner"
+                        class="hidden flex items-center justify-center w-full mt-4 bg-blue-300 text-blue-800 font-bold py-3 px-6 rounded-lg text-lg">
+                        <div class="spinner mr-3"></div>
+                        <span>Analiz ediliyor...</span>
+                    </div>
+                </form>
+            </div>
+
+            <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Analiz Sonuçları</h3>
+
+                <div id="result-message" class="mb-4"></div>
+
+                <div id="result-container" class="hidden space-y-4">
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Seviye Uygunluğu:</h4>
+                        <div id="seviye-badge" class="tag"></div>
+                        <p id="seviye-aciklama" class="text-sm text-gray-600 italic mt-1"></p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Önerilen Süreç Bileşenleri:</h4>
+                        <div id="surec-listesi"></div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Önerilen Metin Tipi:</h4>
+                        <div id="metin-tipi" class="tag"></div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Tespit Edilen Değerler:</h4>
+                        <div id="degerler-listesi" class="flex flex-wrap gap-1"></div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Tespit Edilen Beceriler:</h4>
+                        <div id="beceriler-alan" class="flex flex-wrap gap-1"></div>
+                        <div id="beceriler-kavramsal" class="flex flex-wrap gap-1 mt-1"></div>
+                        <div id="beceriler-sosyal" class="flex flex-wrap gap-1 mt-1"></div>
+                    </div>
+
+                </div>
+
+                <div id="result-placeholder" class="text-center text-gray-500 p-8">
+                    <i class="fa-solid fa-flask text-4xl mb-3"></i>
+                    <p>Analiz sonuçları burada görünecektir.</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Kullanıcı Adı Yükleme ---
+            const userFullName = localStorage.getItem('loggedInUserName');
+            const studentNo = localStorage.getItem('loggedInUserNo'); // Limit sistemi için
+            const userRole = localStorage.getItem('loggedInUserRole'); // Rolü al
+
+            if (userFullName) {
+                document.getElementById('user-name-placeholder').textContent = userFullName;
+                document.getElementById('user-avatar-initial').textContent = userFullName[0] ? userFullName[0].toUpperCase() : 'K';
+            }
+
+            // --- YAN MENÜ ROL KONTROLÜ (Düzeltilmiş Versiyon) ---
+            // (Bu kod, Adım 4'teki HTML değişikliğini yaptığınızı varsayar,
+            // ama yapmadıysanız bile şimdilik bu JS'i ekleyin)
+
+            const linkMetinAnaliz = document.getElementById('link-metin-analiz');
+            const linkSoruUretim = document.getElementById('link-soru-uretim');
+            const linkMetinOlusturma = document.getElementById('link-metin-olusturma');
+            const linkHaritadaBul = document.getElementById('link-haritada-bul');
+            const linkPodcast = document.getElementById('link-podcast');
+            const linkSeyretBul = document.getElementById('link-seyret-bul');
+            const linkYarisma = document.getElementById('link-yarisma');
+            const linkVideoIstegi = document.getElementById('link-video-istegi');
+
+            if (userRole === 'teacher') {
+                // --- ÖĞRETMEN GÖRÜNÜMÜ ---
+                // (Öğretmen zaten Metin Analiz'i görmemeli, ama ID'ler 
+                // eski kodda (btn-metin-analiz) farklı olabilir, 
+                // bu yüzden şimdilik sadece öğrenci tarafını düzeltiyoruz)
+                if (linkMetinAnaliz) linkMetinAnaliz.style.display = 'none';
+                if (linkSeyretBul) linkSeyretBul.style.display = 'none';
+                if (linkHaritadaBul) linkHaritadaBul.style.display = 'none';
+            } else {
+                // --- ÖĞRENCİ GÖRÜNÜMÜ ---
+                // Sadece öğretmene özel olan "Metin Oluşturma"yı gizle
+
+                // Eski kodda ID 'btn-metin-olusturma' idi, yenisinde 'link-metin-olusturma'
+                // Her ikisini de kontrol edelim:
+                const btnMetinOlusturma = document.getElementById('btn-metin-olusturma');
+                if (linkMetinOlusturma) linkMetinOlusturma.style.display = 'none';
+                if (btnMetinOlusturma) btnMetinOlusturma.style.display = 'none';
+
+                // ÖNEMLİ: Video İsteği butonu artık gizlenmiyor.
+            }
+            // --- ROL KONTROLÜ BİTTİ ---
+
+
+            // --- DOM Elementleri ---
+            const analizForm = document.getElementById('analiz-form');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const textInput = document.getElementById('text-input');
+            const wordCountDisplay = document.getElementById('word-count');
+
+            const resultMessage = document.getElementById('result-message');
+            const resultContainer = document.getElementById('result-container');
+            const resultPlaceholder = document.getElementById('result-placeholder');
+
+            // ########## YENİ EKLENEN SATIRLAR ##########
+            const seviyeBadge = document.getElementById('seviye-badge');
+            const seviyeAciklama = document.getElementById('seviye-aciklama');
+            const surecListesi = document.getElementById('surec-listesi');
+            const metinTipi = document.getElementById('metin-tipi');
+            const degerlerListesi = document.getElementById('degerler-listesi');
+            const becerilerAlan = document.getElementById('beceriler-alan');
+            const becerilerKavramsal = document.getElementById('beceriler-kavramsal');
+            const becerilerSosyal = document.getElementById('beceriler-sosyal');
+
+            // Kelime Sayacı
+            textInput.addEventListener('input', () => {
+                const text = textInput.value;
+                const words = text.split(/\\s+/).filter(Boolean).length;
+                wordCountDisplay.textContent = `${words} / 250 kelime`;
+
+                if (words > 250) {
+                    wordCountDisplay.classList.add('text-red-600', 'font-bold');
+                    analyzeBtn.disabled = true;
+                    analyzeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    wordCountDisplay.classList.remove('text-red-600', 'font-bold');
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            });
+
+            // Form Gönderme
+            analizForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const metin = textInput.value.trim();
+                if (!metin) {
+                    alert("Lütfen bir metin girin.");
+                    return;
+                }
+                if (!studentNo) {
+                    alert("Hata: Öğrenci no bulunamadı. Lütfen tekrar giriş yapın.");
+                    return;
+                }
+
+                analyzeBtn.style.display = 'none';
+                loadingSpinner.style.display = 'flex';
+                resultMessage.innerHTML = '';
+                resultContainer.style.display = 'none';
+                resultPlaceholder.style.display = 'block';
+
+                try {
+                    const response = await fetch('/api/analyze-text', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            metin: metin,
+                            student_no: studentNo
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        renderSuccess(result);
+                    } else {
+                        renderError(result.hata || "Bilinmeyen bir hata oluştu.");
+                    }
+
+                } catch (error) {
+                    console.error("Metin analiz hatası:", error);
+                    renderError("Sunucuyla iletişim kurulamadı: Failed to fetch. API anahtarınızı kontrol edin.");
+                } finally {
+                    analyzeBtn.style.display = 'flex';
+                    loadingSpinner.style.display = 'none';
+                }
+            });
+
+            function renderError(message) {
+                resultPlaceholder.style.display = 'none';
+                resultContainer.style.display = 'none';
+                resultMessage.innerHTML = `<div class="p-3 rounded-lg bg-red-100 text-red-800 text-sm">${message}</div>`;
+            }
+
+            function renderSuccess(data) {
+                resultPlaceholder.style.display = 'none';
+
+                // Kalan hak uyarısı...
+
+                // 1. Seviye
+                if (data.seviye_uygunluk.durum) {
+                    // ARTIK HATA VERMEYECEK ÇÜNKÜ DEĞİŞKENLER TANIMLI
+                    seviyeBadge.textContent = `Seviye: ${data.seviye_uygunluk.durum}`;
+                    seviyeAciklama.textContent = `Açıklama: ${data.seviye_uygunluk.aciklama || 'Yok'}`;
+                    if (data.seviye_uygunluk.durum === 'zor') {
+                        seviyeBadge.className = 'tag deger'; // Yeşil yerine kırmızı yapalım
+                    } else {
+                        seviyeBadge.className = 'tag';
+                    }
+                }
+                // ... (Diğer tüm elemanlar da artık tanımlı olduğu için sorunsuzca çalışacaktır) ...
+
+                resultContainer.style.display = 'block';
+
+
+                // 2. Süreç Bileşenleri
+                surecListesi.innerHTML = '';
+                if (data.surec_bilesenleri && data.surec_bilesenleri.length > 0) {
+                    data.surec_bilesenleri.forEach(s => {
+                        surecListesi.innerHTML += `<div class="tag">${s.kod} (%${s.uygunluk_yuzdesi}) - ${s.aciklama}</div>`;
+                    });
+                } else {
+                    surecListesi.innerHTML = '<span class="text-sm text-gray-500">Uygun bileşen bulunamadı.</span>';
+                }
+
+                // 3. Metin Tipi
+                metinTipi.textContent = data.metin_tipi || 'Belirlenemedi';
+
+                // 4. Değerler
+                degerlerListesi.innerHTML = '';
+                if (data.degerler && data.degerler.length > 0) {
+                    data.degerler.forEach(d => {
+                        degerlerListesi.innerHTML += `<span class="tag deger">${d}</span>`;
+                    });
+                } else {
+                    degerlerListesi.innerHTML = '<span class="text-sm text-gray-500">Tespit edilen değer yok.</span>';
+                }
+
+                // 5. Beceriler
+                becerilerAlan.innerHTML = '';
+                becerilerKavramsal.innerHTML = '';
+                becerilerSosyal.innerHTML = '';
+
+                if (data.beceriler.alan && data.beceriler.alan.length > 0) {
+                    data.beceriler.alan.forEach(b => {
+                        becerilerAlan.innerHTML += `<span class="tag">${b}</span>`;
+                    });
+                }
+                if (data.beceriler.kavramsal && data.beceriler.kavramsal.length > 0) {
+                    data.beceriler.kavramsal.forEach(b => {
+                        becerilerKavramsal.innerHTML += `<span class="tag beceri-kavramsal">${b}</span>`;
+                    });
+                }
+                if (data.beceriler.sosyal_duygusal && data.beceriler.sosyal_duygusal.length > 0) {
+                    data.beceriler.sosyal_duygusal.forEach(b => {
+                        becerilerSosyal.innerHTML += `<span class="tag beceri-sosyal">${b}</span>`;
+                    });
+                }
+
+                resultContainer.style.display = 'block';
+            }
+
+        });
+    </script>
+</body>
+
+</html>

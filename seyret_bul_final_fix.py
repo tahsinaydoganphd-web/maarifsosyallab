@@ -1,0 +1,419 @@
+import os
+import re
+
+print("🛠️ Seyret Bul Modülü Tamir Ediliyor...")
+
+# ---------------------------------------------------------
+# 1. APP.PY GÜNCELLEMESİ (Eksik Rotaları Ekle/Düzelt)
+# ---------------------------------------------------------
+app_path = 'app.py'
+if os.path.exists(app_path):
+    with open(app_path, 'r', encoding='utf-8') as f:
+        app_content = f.read()
+
+    # A. İZLEME KAYDI ROTASI (Raporlama İçin)
+    rota_izleme = """
+@app.route('/api/seyret-bul/kaydet-izleme', methods=['POST'])
+def api_seyret_bul_kaydet_izleme():
+    try:
+        data = request.get_json()
+        student_no = data.get('student_no')
+        video_baslik = data.get('video_baslik')
+        
+        if not student_no:
+            return jsonify({"success": False})
+
+        # db_helper modülünü kullan
+        import db_helper
+        db_helper.kaydet_kullanim(student_no, 'Seyret Bul', f"İzlendi: {video_baslik}")
+        
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"Log Hatası: {e}")
+        return jsonify({"success": False})
+"""
+
+    # B. DEĞERLENDİRME ROTASI (Puanlama İçin)
+    rota_degerlendirme = """
+@app.route('/api/seyret-bul/degerlendir', methods=['POST'])
+def api_seyret_bul_degerlendir():
+    try:
+        data = request.get_json()
+        soru = data.get('soru_metni')
+        cevap = data.get('kullanici_cevabi')
+        
+        # Gemini Promptu
+        prompt = f'''Sen bir öğretmensin. Soru: "{soru}", Cevap: "{cevap}".
+        1-5 arası puanla ve kısa geri bildirim ver.
+        Yanıt SADECE JSON olsun: {{"skor": 3, "geri_bildirim": "..."}}'''
+
+        global gemini_model
+        if not gemini_model:
+            return jsonify({"success": True, "skor": 3, "geri_bildirim": "Yapay zeka yok, puanlandı."})
+
+        response = gemini_model.generate_content(prompt)
+        text = response.text.strip().replace("```json", "").replace("```", "")
+        
+        import json
+        try:
+            res = json.loads(text)
+            return jsonify({"success": True, "skor": res.get('skor', 1), "geri_bildirim": res.get('geri_bildirim', '')})
+        except:
+            return jsonify({"success": True, "skor": 3, "geri_bildirim": "Otomatik puanlandı."})
+
+    except Exception as e:
+        return jsonify({"success": True, "skor": 1, "geri_bildirim": "Hata oluştu."})
+"""
+
+    # Rotaları temizleyip yeniden ekle (Çakışmayı önlemek için)
+    # Önce eski olası tanımları Regex ile siliyoruz
+    app_content = re.sub(r"@app\.route\('/api/seyret-bul/kaydet-izleme'.*?def api_seyret_bul_kaydet_izleme\(\):[\s\S]*?(?=@app\.route|if __name__)", "", app_content)
+    app_content = re.sub(r"@app\.route\('/api/seyret-bul/degerlendir'.*?def api_seyret_bul_degerlendir\(\):[\s\S]*?(?=@app\.route|if __name__)", "", app_content)
+
+    # Şimdi temizlenmiş dosyanın sonuna (main bloğundan önce) ekliyoruz
+    if "if __name__ == '__main__':" in app_content:
+        app_content = app_content.replace("if __name__ == '__main__':", rota_izleme + "\n" + rota_degerlendirme + "\n\nif __name__ == '__main__':")
+    else:
+        app_content += "\n" + rota_izleme + "\n" + rota_degerlendirme
+
+    with open(app_path, 'w', encoding='utf-8') as f:
+        f.write(app_content)
+    print("✅ app.py: Raporlama ve Değerlendirme rotaları eklendi.")
+
+
+# ---------------------------------------------------------
+# 2. HTML GÜNCELLEMESİ (Tüm Özellikler Dahil)
+# ---------------------------------------------------------
+# Bu HTML; Küçük noktalar, Senkronize zamanlama ve Otomatik Raporlamayı içerir.
+html_path = 'templates/seyret_bul.html'
+html_content = """<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seyret Bul</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; } 
+        select:disabled { background-color: #f3f4f6; cursor: not-allowed; color: #9ca3af; }
+        .no-bounce { overscroll-behavior: none; }
+    </style>
+</head>
+<body class="flex h-screen">
+    
+    <aside class="w-72 bg-white text-gray-800 shadow-lg flex flex-col fixed h-full">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h1 class="text-2xl font-extrabold text-blue-600 text-center tracking-wide mb-4">Maarif SosyalLab</h1>
+            <div class="mb-4"><div class="w-full p-2 flex items-center justify-center overflow-hidden"><img src="/videolar/maarif.png" class="w-auto h-auto max-w-full max-h-24 object-contain rounded-lg"></div></div>
+            <div class="flex items-center"><div id="user-avatar-initial" class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-lg">K</div><div class="ml-3"><span id="user-name-placeholder" class="block text-sm font-bold text-gray-800">Kullanıcı</span></div></div>
+        </div>
+        <nav class="flex-1 overflow-y-auto p-2 space-y-1 no-bounce">
+            <a href="/metin-analiz" id="link-metin-analiz" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-blue-500 hover:bg-blue-600 transition-all"><i class="fa-solid fa-file-pen mr-3 w-6 text-center"></i><span>Metin Analiz</span></a>
+            <a href="/soru-uretim" id="link-soru-uretim" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-600 transition-all"><i class="fa-solid fa-circle-question mr-3 w-6 text-center"></i><span>Soru Üretim</span></a>
+            <a href="/metin-olusturma" id="link-metin-olusturma" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-purple-500 hover:bg-purple-600 transition-all"><i class="fa-solid fa-wand-magic-sparkles mr-3 w-6 text-center"></i><span>Metin Oluşturma</span></a>
+            <a href="/haritada-bul" id="link-haritada-bul" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-orange-500 hover:bg-orange-600 transition-all"><i class="fa-solid fa-map-location-dot mr-3 w-6 text-center"></i><span>Haritada Bul</span></a>
+            <a href="/podcast_paneli" id="link-podcast" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all"><i class="fa-solid fa-microphone-lines mr-3 w-6 text-center"></i><span>Podcast Yap</span></a>
+            <a href="/seyret-bul-liste" id="link-seyret-bul" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-indigo-600 ring-2 ring-indigo-300 transition-all"><i class="fa-solid fa-magnifying-glass-plus mr-3 w-6 text-center"></i><span>Seyret Bul</span></a>
+            <a href="/yarisma-secim" id="link-yarisma" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-teal-500 hover:bg-teal-600 transition-all"><i class="fa-solid fa-trophy mr-3 w-6 text-center"></i><span>Beceri/Değer Avcısı</span></a>
+            <a href="/video-istegi" id="link-video-istegi" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-pink-500 hover:bg-pink-600 transition-all"><i class="fa-solid fa-video mr-3 w-6 text-center"></i><span>Video İsteği</span></a>
+        </nav>
+        <div class="p-4 border-t border-gray-200"><a href="/dashboard" class="flex items-center mx-2 p-2 rounded-lg text-gray-600 font-semibold bg-gray-100 hover:bg-gray-200 transition-all"><i class="fa-solid fa-arrow-left mr-3 w-6 text-center"></i><span>Panele Geri Dön</span></a></div>
+    </aside>
+
+    <main class="ml-72 flex-1 p-6 md:p-8 overflow-y-auto no-bounce">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 select-none">Seyret Bul</h2>
+        <div class="bg-white p-6 rounded-lg shadow max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="w-full"> 
+                    <label class="block text-sm font-medium text-gray-700 mb-1">1. Konu Başlığı (Ünite)</label>
+                    <select id="konu-basligi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"><option value="">Seçiniz...</option></select>
+                </div>
+                <div class="w-full"> 
+                    <label class="block text-sm font-medium text-gray-700 mb-1">2. Süreç Bileşeni</label>
+                    <select id="bilesen-kodu" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" disabled><option value="">Önce Konu Seçin...</option></select>
+                </div>
+                <div class="w-full">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">3. Video Seçimi</label>
+                    <select id="video-listesi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" disabled><option value="">Önce Kazanım Seçin...</option></select>
+                </div>
+            </div>
+            <div class="mt-4 flex justify-center"> 
+                <button id="izle-btn" class="w-1/2 bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-indigo-600 transition-all duration-300 disabled:opacity-50 cursor-pointer" disabled><i class="fa-solid fa-play mr-2"></i> Videoyu İzle</button>
+            </div>
+        </div>
+
+        <div id="videoContainer" class="hidden mt-6 bg-gray-50 p-6 rounded-lg shadow-inner max-w-5xl mx-auto relative">
+            <button id="closeVideo" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-2xl z-50"><i class="fa-solid fa-circle-xmark"></i></button>
+            <div id="player-wrapper" class="w-full aspect-video bg-black rounded-lg overflow-hidden relative">
+                <div id="player"></div>
+            </div>
+            <div id="timeline" class="w-full mx-auto bg-gray-200 rounded-full relative hidden mt-1">
+                <div id="progress" class="bg-indigo-500 rounded-full absolute left-0 top-0" style="width: 0%; height: 2px;"></div>
+                <div id="markers"></div>
+            </div>
+        </div>
+        
+        <div id="soruModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-2xl w-full p-8 shadow-2xl"><h4 id="soruMetni" class="text-2xl font-bold mb-6 text-gray-800 border-b pb-4"></h4><div id="cevaplar" class="space-y-4"></div></div>
+        </div>
+    </main>
+
+    <script>
+        const uniteYapisi = {{ unite_yapisi | tojson }};
+        const sureclerSozlugu = {{ surecler_sozlugu | tojson }};
+        let player, sorular = [], currentSoruIndex = 0, videoData = null;
+        let isYouTubeApiReady = false;
+
+        window.onYouTubeIframeAPIReady = function() { isYouTubeApiReady = true; };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userRole = localStorage.getItem('loggedInUserRole');
+            const userFullName = localStorage.getItem('loggedInUserName');
+            if (userFullName) document.getElementById('user-name-placeholder').textContent = userFullName;
+            if (userFullName) document.getElementById('user-avatar-initial').textContent = userFullName[0].toUpperCase();
+
+            if (userRole === 'teacher') {
+                ['link-metin-analiz', 'link-seyret-bul', 'link-haritada-bul'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
+            } else {
+                const el=document.getElementById('link-metin-olusturma'); if(el) el.style.display='none';
+            }
+
+            const konuSelect = document.getElementById('konu-basligi');
+            const bilesenSelect = document.getElementById('bilesen-kodu');
+            const videoSelect = document.getElementById('video-listesi');
+            const izleBtn = document.getElementById('izle-btn');
+
+            if(uniteYapisi) {
+                for(const konu in uniteYapisi) { const opt = document.createElement('option'); opt.value = konu; opt.textContent = konu; konuSelect.appendChild(opt); }
+            }
+
+            konuSelect.addEventListener('change', () => {
+                bilesenSelect.innerHTML = '<option value="">Seçiniz...</option>'; bilesenSelect.disabled = true;
+                videoSelect.innerHTML = '<option value="">Önce Kazanım Seçin...</option>'; videoSelect.disabled = true; izleBtn.disabled = true;
+                if(konuSelect.value && uniteYapisi[konuSelect.value]) {
+                    uniteYapisi[konuSelect.value].forEach(kod => {
+                        let text = sureclerSozlugu[kod] || sureclerSozlugu[kod.replace(/\\.$/, "")] || kod;
+                        const opt = document.createElement('option'); opt.value = kod; opt.textContent = text; bilesenSelect.appendChild(opt);
+                    });
+                    bilesenSelect.disabled = false;
+                }
+            });
+
+            bilesenSelect.addEventListener('change', async () => {
+                videoSelect.innerHTML = '<option value="">Yükleniyor...</option>'; videoSelect.disabled = true; izleBtn.disabled = true;
+                if(!bilesenSelect.value) return;
+                try {
+                    const res = await fetch(`/api/seyret-bul/videolar?kod=${encodeURIComponent(bilesenSelect.value)}`);
+                    const data = await res.json();
+                    if(data.success && data.videolar.length > 0) {
+                        videoSelect.innerHTML = '<option value="">Seçiniz...</option>';
+                        data.videolar.forEach(v => { const opt = document.createElement('option'); opt.value = v.video_id; opt.textContent = v.baslik; videoSelect.appendChild(opt); });
+                        videoSelect.disabled = false;
+                    } else { videoSelect.innerHTML = '<option value="">Video Bulunamadı</option>'; }
+                } catch(e) { videoSelect.innerHTML = '<option value="">Hata</option>'; }
+            });
+
+            videoSelect.addEventListener('change', () => izleBtn.disabled = !videoSelect.value);
+            izleBtn.addEventListener('click', () => { if(videoSelect.value) openVideoModal(videoSelect.value); });
+            
+            document.getElementById('closeVideo').addEventListener('click', () => { 
+                document.getElementById('videoContainer').classList.add('hidden');
+                if(player) { if(typeof player.destroy === 'function') player.destroy(); else if(typeof player.pause === 'function') player.pause(); }
+                document.getElementById('player-wrapper').innerHTML = '<div id="player"></div>';
+                player = null; 
+            });
+        });
+
+        function openVideoModal(videoId) {
+            const studentNo = localStorage.getItem('loggedInUserNo');
+            fetch(`/api/seyret-bul/video-detay/${videoId}`).then(r=>r.json()).then(data => {
+                if(!data.success) { alert("Video yüklenemedi."); return; }
+                videoData = data.video;
+                
+                // RAPORLAMA KAYDI: İşte burası izleme bilgisini sunucuya gönderir
+                fetch('/api/seyret-bul/kaydet-izleme', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ student_no: studentNo, video_baslik: videoData.baslik })
+                }).catch(e => console.log("Log hatası"));
+
+                const allQuestions = videoData.sorular || [];
+                if(allQuestions.length > 0) {
+                    let seenDB = JSON.parse(localStorage.getItem('seyretBulSeenDB')) || {};
+                    const dbKey = `${studentNo}_${videoId}`;
+                    let seenList = seenDB[dbKey] || [];
+                    const unseen = allQuestions.filter(q => !seenList.includes(q.id));
+                    let pool_CS = unseen.filter(q => q.tip === 'CoktanSecmeli'), pool_BD = unseen.filter(q => q.tip === 'BoslukDoldurma'), pool_KC = unseen.filter(q => q.tip === 'KisaCevap');
+                    if(pool_CS.length === 0 || pool_BD.length === 0 || pool_KC.length === 0) {
+                        seenList = []; pool_CS = allQuestions.filter(q => q.tip === 'CoktanSecmeli'); pool_BD = allQuestions.filter(q => q.tip === 'BoslukDoldurma'); pool_KC = allQuestions.filter(q => q.tip === 'KisaCevap');
+                    }
+                    const q1 = pool_CS.length ? pool_CS[Math.floor(Math.random()*pool_CS.length)] : null;
+                    const q2 = pool_BD.length ? pool_BD[Math.floor(Math.random()*pool_BD.length)] : null;
+                    const q3 = pool_KC.length ? pool_KC[Math.floor(Math.random()*pool_KC.length)] : null;
+                    sorular = [q1, q2, q3].filter(q => q !== null);
+                    if(sorular.length < 3 && allQuestions.length >= 3) sorular = allQuestions.slice(0,3);
+                    const newIds = sorular.map(q => q.id);
+                    newIds.forEach(id => { if(!seenList.includes(id)) seenList.push(id); });
+                    seenDB[dbKey] = seenList;
+                    localStorage.setItem('seyretBulSeenDB', JSON.stringify(seenDB));
+                    sorular.sort((a,b) => a.duraklatma_saniyesi - b.duraklatma_saniyesi);
+                } else { sorular = []; }
+                currentSoruIndex = 0;
+                document.getElementById('videoContainer').classList.remove('hidden');
+                loadPlayerSafe();
+            });
+        }
+
+        function loadPlayerSafe() {
+            if (!videoData.url.includes('youtube') && !videoData.url.includes('youtu.be')) { createHTML5Player(); return; }
+            if (window.YT && window.YT.Player) { createYTPlayer(); } 
+            else {
+                if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) { const tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api"; document.head.appendChild(tag); }
+                const checkInterval = setInterval(() => { if (window.YT && window.YT.Player) { clearInterval(checkInterval); createYTPlayer(); } }, 100);
+            }
+        }
+
+        function createYTPlayer() {
+            const ytId = videoData.url.match(/[?&]v=([^&]+)/)[1];
+            try {
+                player = new YT.Player('player', {
+                    height: '100%', width: '100%', videoId: ytId,
+                    host: 'https://www.youtube-nocookie.com', 
+                    playerVars: { 'playsinline': 1, 'rel': 0 },
+                    events: { 'onStateChange': onPlayerStateChange }
+                });
+                setupMarkers();
+            } catch (e) { alert("YouTube hatası."); }
+        }
+
+        function createHTML5Player() {
+            const wrapper = document.getElementById('player-wrapper');
+            wrapper.innerHTML = `<video id="html5-player" controls style="width:100%;height:100%"><source src="${videoData.url}" type="video/mp4"></video>`;
+            player = document.getElementById('html5-player');
+            player.addEventListener('timeupdate', checkTimeHTML5);
+            setupMarkers();
+        }
+
+        function setupMarkers() {
+            const timeline = document.getElementById('timeline'); timeline.classList.remove('hidden');
+            const markers = document.getElementById('markers'); markers.innerHTML = '';
+            
+            // GERÇEK SÜRE HESABI (Zamanlama Hatası Giderildi)
+            let duration = videoData.sure_saniye;
+            if(player) {
+                let d = 0;
+                if(typeof player.getDuration === 'function') d = player.getDuration();
+                else if(player.duration) d = player.duration;
+                if(d > 0) duration = d;
+            }
+
+            sorular.forEach(s => {
+                const m = document.createElement('div');
+                const pos = (s.duraklatma_saniyesi / duration) * 100;
+                // KÜÇÜK NOKTA (6px)
+                m.className = 'absolute w-1.5 h-1.5 bg-red-600 rounded-full border border-white shadow z-10';
+                m.style.left = `${pos}%`; m.style.top = '-2px'; m.style.transform = 'translateX(-50%)';
+                markers.appendChild(m);
+            });
+        }
+
+        function onPlayerStateChange(e) { if(e.data == YT.PlayerState.PLAYING) { setupMarkers(); checkTimeYT(); } }
+
+        function checkTimeYT() {
+            const intv = setInterval(() => {
+                if(currentSoruIndex >= sorular.length || !player || !player.getCurrentTime) { clearInterval(intv); return; }
+                try {
+                    const t = player.getCurrentTime();
+                    const target = sorular[currentSoruIndex].duraklatma_saniyesi;
+                    // TAM ZAMANINDA DURMA
+                    if(t >= target && t < target + 1.5) { player.pauseVideo(); showSoru(sorular[currentSoruIndex]); clearInterval(intv); }
+                } catch(e) { clearInterval(intv); }
+            }, 200);
+        }
+
+        function checkTimeHTML5() {
+            if(currentSoruIndex >= sorular.length) return;
+            const t = player.currentTime;
+            const target = sorular[currentSoruIndex].duraklatma_saniyesi;
+            if(t >= target && t < target + 1.5) { player.pause(); showSoru(sorular[currentSoruIndex]); }
+        }
+
+        function showSoru(soru) {
+            document.getElementById('soruMetni').textContent = soru.soru;
+            const div = document.getElementById('cevaplar'); div.innerHTML = '';
+            
+            if(soru.tip === 'CoktanSecmeli') {
+                const harfler = ['A','B','C','D'];
+                soru.cevaplar.forEach((c, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'w-full p-4 text-left bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-all mb-2';
+                    btn.textContent = `${harfler[i]}) ${c}`;
+                    btn.onclick = () => checkCevap(soru, harfler[i]);
+                    div.appendChild(btn);
+                });
+            } else if (soru.tip === 'BoslukDoldurma') {
+                const inp = document.createElement('input'); inp.id='cevap-input'; inp.className = 'w-full px-4 py-3 border rounded-lg mb-3'; inp.placeholder = 'Cevap...';
+                const btn = document.createElement('button'); btn.className = 'w-full p-3 bg-green-500 text-white rounded-lg'; btn.textContent = 'Yanıtla';
+                btn.onclick = () => checkCevap(soru, document.getElementById('cevap-input').value);
+                div.appendChild(inp); div.appendChild(btn);
+            } else { 
+                const txt = document.createElement('textarea'); txt.id='cevap-area'; txt.className = 'w-full p-3 border rounded-lg mb-3'; txt.rows=3; txt.placeholder='Cevabınız...';
+                const btn = document.createElement('button'); btn.className = 'w-full p-3 bg-blue-500 text-white rounded-lg'; btn.textContent = 'Gönder';
+                btn.onclick = () => checkCevap(soru, document.getElementById('cevap-area').value);
+                div.appendChild(txt); div.appendChild(btn);
+            }
+            document.getElementById('soruModal').classList.remove('hidden');
+        }
+
+        function checkCevap(soru, cvp) {
+            const div = document.getElementById('cevaplar');
+            div.innerHTML = '<p class="text-center text-blue-600 font-bold">Değerlendiriliyor...</p>';
+            
+            let dogru = false; let msg = "";
+            
+            if(soru.tip === 'CoktanSecmeli') {
+                dogru = (cvp === soru.dogru_cevap);
+                msg = dogru ? "Tebrikler, doğru cevap!" : `Yanlış. Doğru cevap: ${soru.dogru_cevap}`;
+                finishFeedback(dogru, msg);
+            } else if(soru.tip === 'BoslukDoldurma') {
+                dogru = (cvp.trim().toLowerCase() === soru.dogru_cevap.trim().toLowerCase());
+                msg = dogru ? "Harika, doğru!" : `Yanlış. Cevap: ${soru.dogru_cevap}`;
+                finishFeedback(dogru, msg);
+            } else {
+                fetch('/api/seyret-bul/degerlendir', {
+                    method:'POST', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({soru_metni: soru.soru, kullanici_cevabi: cvp})
+                }).then(r=>r.json()).then(d => {
+                    let puan = d.skor; if(puan === undefined) puan = 0;
+                    finishFeedback(puan >= 3, `Puan: ${puan}/5. ${d.geri_bildirim}`);
+                }).catch(e => finishFeedback(true, "Kaydedildi (Bağlantı sorunu)."));
+            }
+        }
+
+        function finishFeedback(success, text) {
+            const div = document.getElementById('cevaplar');
+            const color = success ? 'text-green-600' : 'text-red-600';
+            div.innerHTML = `<h3 class="text-xl font-bold ${color} mb-4 text-center">${success ? 'DOĞRU / OLUMLU' : 'YANLIŞ / GELİŞTİRİLMELİ'}</h3>
+                             <p class="bg-gray-50 p-3 rounded mb-4">${text}</p>
+                             <button onclick="resumeVideo()" class="w-full p-3 bg-indigo-600 text-white rounded-lg">Devam Et</button>`;
+        }
+
+        function resumeVideo() {
+            document.getElementById('soruModal').classList.add('hidden');
+            currentSoruIndex++;
+            if(player && player.playVideo) player.playVideo(); 
+            else if(player && player.play) player.play();
+            
+            if(currentSoruIndex < sorular.length) {
+               if(player && player.playVideo) checkTimeYT();
+            }
+        }
+    </script>
+</body>
+</html>"""
+
+with open(html_path, 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("✅ SEYRET BUL MODÜLÜ TAMAMEN DÜZELTİLDİ (Raporlama + Puanlama + Görsel)")

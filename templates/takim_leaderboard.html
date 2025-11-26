@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Takım Yarışması - Liderlik Tablosu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style> 
+        /* GÜNCELLENDİ (İstek 4): Artık 'flex' kullanıyor */
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; } 
+    </style>
+</head>
+<body class="flex h-screen"> <aside class="w-72 bg-white text-gray-800 shadow-lg flex flex-col fixed h-full">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h1 class="text-2xl font-extrabold text-blue-600 text-center tracking-wide mb-4">Maarif SosyalLab</h1>
+            <div class="mb-4">
+                <div class="w-full p-2 flex items-center justify-center overflow-hidden">
+                    <img src="/videolar/maarif.png" alt="Maarif Logo" class="w-auto h-auto max-w-full max-h-24 object-contain rounded-lg">
+                </div>
+            </div>
+            <div class="flex items-center">
+                <div id="user-avatar-initial" class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-lg">K</div>
+                <div class="ml-3"><span id="user-name-placeholder" class="block text-sm font-bold text-gray-800">Kullanıcı</span></div>
+            </div>
+        </div>
+        <nav class="flex-1 overflow-y-auto p-2 space-y-1 no-bounce">
+            <a id="link-metin-analiz" href="/metin-analiz" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-blue-500 hover:bg-blue-600 transition-all">
+                <i class="fa-solid fa-file-pen mr-3 w-6 text-center"></i><span>Metin Analiz</span></a>
+            <a href="/soru-uretim" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-600 transition-all">
+                <i class="fa-solid fa-circle-question mr-3 w-6 text-center"></i><span>Soru Üretim</span></a>
+            <a href="/haritada-bul" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-orange-500 hover:bg-orange-600 transition-all">
+                <i class="fa-solid fa-map-location-dot mr-3 w-6 text-center"></i><span>Haritada Bul</span></a>
+            <a href="/podcast_paneli" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all">
+                <i class="fa-solid fa-microphone-lines mr-3 w-6 text-center"></i><span>Podcast Yap</span></a>
+            <a id="link-seyret-bul" href="/seyret-bul-liste" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-indigo-500 hover:bg-indigo-600 transition-all">
+                <i class="fa-solid fa-magnifying-glass-plus mr-3 w-6 text-center"></i><span>Seyret Bul</span></a>
+            <a href="/yarisma-secim" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-teal-600 ring-2 ring-teal-300 transition-all">
+                <i class="fa-solid fa-trophy mr-3 w-6 text-center"></i><span>Beceri/Değer Avcısı</span></a>
+            <a id="link-video-istegi" href="/video-istegi" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-pink-500 hover:bg-pink-600 transition-all">
+                <i class="fa-solid fa-video mr-3 w-6 text-center"></i><span>Video İsteği</span></a>
+        </nav>
+        <div class="p-4 border-t border-gray-200">
+            <a href="/dashboard" class="flex items-center mx-2 p-2 rounded-lg text-gray-600 font-semibold bg-gray-100 hover:bg-gray-200 transition-all">
+                <i class="fa-solid fa-arrow-left mr-3 w-6 text-center"></i><span>Panele Geri Dön</span></a>
+        </div>
+    </aside>
+
+    <main class="ml-72 flex-1 p-6 md:p-8 overflow-y-auto no-bounce">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Takım Yarışması Liderlik Tablosu (İlk 10)</h1>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-100 border-b">
+                        <tr>
+                            <th class="p-3 font-semibold text-sm text-gray-600">Sıra</th>
+                            <th class="p-3 font-semibold text-sm text-gray-600">Takım Adı</th>
+                            <th class="p-3 font-semibold text-sm text-gray-600">Okul / Sınıf</th>
+                            <th class="p-3 font-semibold text-sm text-gray-600">Rozet</th>
+                            <th class="p-3 font-semibold text-sm text-gray-600">Soru</th>
+                            <th class="p-3 font-semibold text-sm text-gray-600">Süre (sn)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body" class="divide-y">
+                        <tr><td colspan="6" class="p-4 text-center text-gray-500">Yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 text-center">
+                <a href="/yarisma-secim" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-all">
+                    Ana Menüye Dön
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // GÜNCELLENDİ (İstek 4): Sol Menü için Kullanıcı Adı Yükleme
+            const userFullName = localStorage.getItem('loggedInUserName');
+            const userRole = localStorage.getItem('loggedInUserRole'); 
+
+            if (userFullName) {
+                document.getElementById('user-name-placeholder').textContent = userFullName;
+                document.getElementById('user-avatar-initial').textContent = userFullName[0] ? userFullName[0].toUpperCase() : 'K';
+            }
+            // GÜNCELLENDİ (İstek 4): Sol Menü Rol Kontrolü
+            const linkMetinAnaliz = document.getElementById('link-metin-analiz');
+            const linkSoruUretim = document.getElementById('link-soru-uretim');
+            const linkMetinOlusturma = document.getElementById('link-metin-olusturma');
+            const linkHaritadaBul = document.getElementById('link-haritada-bul');
+            const linkPodcast = document.getElementById('link-podcast');
+            const linkSeyretBul = document.getElementById('link-seyret-bul');
+            const linkYarisma = document.getElementById('link-yarisma');
+            const linkVideoIstegi = document.getElementById('link-video-istegi');
+
+            if (userRole === 'teacher') {
+                if (linkMetinAnaliz) linkMetinAnaliz.style.display = 'none';
+                if (linkSeyretBul) linkSeyretBul.style.display = 'none';
+                if (linkHaritadaBul) linkHaritadaBul.style.display = 'none'; 
+            } else {
+                if (linkMetinOlusturma) linkMetinOlusturma.style.display = 'none';
+            }
+            // --- BİTTİ ---
+
+            // Liderlik tablosu içeriğini yükle
+            const tbody = document.getElementById('leaderboard-body');
+            try {
+                const response = await fetch('/api/takim/get_leaderboard');
+                const tablo = await response.json();
+                
+                if (tablo.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Henüz kayıtlı bir skor yok.</td></tr>`;
+                    return;
+                }
+                
+                tbody.innerHTML = ""; // Temizle
+                
+                const rozetIkonlari = {
+                    'altin': '<i class="fa-solid fa-medal text-yellow-400" title="Altın"></i>',
+                    'gümüş': '<i class="fa-solid fa-medal text-gray-400" title="Gümüş"></i>',
+                    'bronz': '<i class="fa-solid fa-medal text-yellow-600" title="Bronz"></i>',
+                    'yok': '-'
+                };
+                
+                tablo.forEach((entry, index) => {
+                    const row = `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold">${index + 1}</td>
+                            <td class="p-3 font-semibold text-blue-600">${entry.takim_adi}</td>
+                            <td class="p-3 text-sm text-gray-600">${entry.okul_sinif}</td>
+                            <td class="p-3 text-lg">${rozetIkonlari[entry.rozet] || '-'}</td>
+                            <td class="p-3 font-semibold">${entry.soru_sayisi} / 10</td>
+                            <td class="p-3">${entry.toplam_sure_saniye} sn</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+                
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">Liderlik tablosu yüklenemedi: ${e.message}</td></tr>`;
+            }
+        });
+    </script>
+</body>
+</html>
