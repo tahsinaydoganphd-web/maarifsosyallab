@@ -24,15 +24,21 @@ import metin_analiz
 import soru_uretim
 import db_helper
 
-# ÖNCE API anahtarını tanımla
+# 1. API Anahtarını Çek
 GEMINI_API_KEY = os.getenv('GOOGLE_API_KEY')
 
-# SONRA Flask app'i oluştur
+# 2. ÖNEMLİ: Gemini'yi bu anahtarla başlat (BU SATIR EKSİKTİ)
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+else:
+    print("UYARI: GOOGLE_API_KEY bulunamadı! Render ayarlarını kontrol et.")
+
+# 3. Flask app'i oluştur
 app = Flask(__name__)
 
-# EN SON config'e kaydet
+# 4. Config'e kaydet
 app.config['GEMINI_API_KEY'] = GEMINI_API_KEY
-app.config['SECRET_KEY'] = '9d561fff7453e6d49348297774e6c1a21c8f4b9907880a5aebccce7861a8324c'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'varsayilan_gizli_anahtar') # Güvenlik için secret key de env'den alınabilir
 
 # --- Haritada Bul Modülünü Kaydet ---
 GOOGLE_MAPS_API_KEY = ""
