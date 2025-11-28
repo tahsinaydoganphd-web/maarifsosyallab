@@ -190,6 +190,9 @@ def kaydet_soru_sonucu(student_no, soru_suresi_saniye):
     3. Eğer 10. soruysa, oyunu hafızadan siler.
     """
     global aktif_bireysel_oyunlar
+    # --- KRİTİK DÜZELTME: Gelen numarayı mutlaka yazıya çevir ---
+    student_no = str(student_no)
+    # ------------------------------------------------------------
     db = load_bireysel_db()
     durum = db.get(student_no, {
         "dogru_soru_sayisi": 0,
