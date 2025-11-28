@@ -47,8 +47,11 @@ SB.5.6.2. Teknolojik ürünlerin bilinçli kullanımının önemine ilişkin ür
 
 def api_yapilandir(api_key):
     """Gemini API'yi yapılandırır"""
-    if api_key and api_key != "":
-        genai.configure(api_key=api_key)
+    # Şifreyi dışarıdan gelen yerine direkt Render'dan (Environment) alıyoruz:
+    guvenli_anahtar = os.getenv('GOOGLE_API_KEY')
+    
+    if guvenli_anahtar:
+        genai.configure(api_key=guvenli_anahtar)
         return genai.GenerativeModel('models/gemini-pro')
     return None
 
