@@ -9,10 +9,12 @@ import re
 
 def api_yapilandir(api_key):
     """Gemini API'yi yapılandırır"""
-    if api_key and api_key != "":
-        genai.configure(api_key=api_key)
-        # Gelişmiş talimatları anlama kapasitesi yüksek bir model önerilir.
-        return genai.GenerativeModel('models/gemini-pro-latest') 
+    # Şifreyi dışarıdan gelen yerine direkt Render'dan (Environment) alıyoruz:
+    guvenli_anahtar = os.getenv('GOOGLE_API_KEY')
+    
+    if guvenli_anahtar:
+        genai.configure(api_key=guvenli_anahtar)
+        return genai.GenerativeModel('models/gemini-pro')
     return None
 
 # --- YENİ VERİ YAPISI ---
@@ -322,4 +324,5 @@ if __name__ == "__main__":
     
     print("\nÖrnek Prompt Oluşturma Testi (SB.5.5.2. - Örnek Olay):")
     test_prompt = prompt_olustur("SB.5.5.2.", "Örnek Olay (Bütçe Planlaması)")
+
     print(test_prompt)
