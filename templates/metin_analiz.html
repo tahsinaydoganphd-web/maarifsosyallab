@@ -289,10 +289,13 @@
             const becerilerKavramsal = document.getElementById('beceriler-kavramsal');
             const becerilerSosyal = document.getElementById('beceriler-sosyal');
 
-            // Kelime Sayacı
+            // Kelime Sayacı 
             textInput.addEventListener('input', () => {
                 const text = textInput.value;
-                const words = text.split(/\\s+/).filter(Boolean).length;
+                
+                // YENİ KOD: Boşlukları doğru sayar ve kopyala-yapıştırı algılar
+                const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).filter(Boolean).length;
+                
                 wordCountDisplay.textContent = `${words} / 250 kelime`;
 
                 if (words > 250) {
@@ -430,5 +433,6 @@
         });
     </script>
 </body>
+
 
 </html>
