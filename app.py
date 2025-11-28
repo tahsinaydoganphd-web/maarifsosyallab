@@ -25,7 +25,7 @@ import soru_uretim
 import db_helper
 
 # ÖNCE API anahtarını tanımla
-GEMINI_API_KEY = "AIzaSyAi5gR1RQaWihbfRstFP381glOYKbMerIU"  # <-- Gerçek anahtarınız
+GEMINI_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 # SONRA Flask app'i oluştur
 app = Flask(__name__)
