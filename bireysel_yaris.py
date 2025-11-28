@@ -132,47 +132,55 @@ def get_ogrenci_durumu(student_no, model=None): # model artık kullanılmıyor
         }
     }
 
-def get_yeni_soru_from_gemini(model, student_no): # Adını koruyoruz, 'model' artık kullanılmıyor
+def get_yeni_soru_from_gemini(model, student_no):
     """
     /yeni_soru tarafından çağrılır.
-    Artık Gemini'yi ÇAĞIRMAZ.
-    Hafızadan (RAM) sıradaki soruyu anında (0.1sn) çeker.
-    Eğer hafızada paket yoksa, bankadan yeni 10'luk paket oluşturur.
+    Sıradaki soruyu hafızadan veya VERİTABANI SKORUNA GÖRE çeker.
     """
     global aktif_bireysel_oyunlar
+    student_no = str(student_no) # Hata önleyici
     
-    # 1. Öğrencinin aktif oyunu hafızada yoksa, YENİ PAKET OLUŞTUR
+    # 1. Hafızada oyun yoksa oluştur
     if student_no not in aktif_bireysel_oyunlar:
-        print(f"[{student_no}] için Soru Bankasından yeni 10'luk paket oluşturuluyor...")
+        print(f"[{student_no}] İçin oyun başlatılıyor/yükleniyor...")
+        
+        # --- DÜZELTME: Kaldığı yeri veritabanından öğren ---
+        db = load_bireysel_db()
+        data = db.get(student_no, {})
+        mevcut_skor = data.get("dogru_soru_sayisi", 0)
+        
+        # Eğer oyun bitmişse (10) sıfırdan başla, değilse kaldığı yerden devam et
+        baslangic_index = mevcut_skor if mevcut_skor < 10 else 0
+        # ---------------------------------------------------
+        
         yeni_paket = _create_10_question_pack()
-        
         if not yeni_paket:
-            return {"success": False, "data": {"metin": "Hata: Soru Bankası boş veya okunamıyor. Lütfen 'bireysel_soru_bankasi.json' dosyasını kontrol edin."}}
-        
+            return {"success": False, "data": {"metin": "Soru Bankası hatası."}}
+            
         aktif_bireysel_oyunlar[student_no] = {
             "sorular": yeni_paket,
-            "mevcut_soru_index": 0
+            "mevcut_soru_index": baslangic_index # <-- SKORA GÖRE BAŞLAT
         }
+        print(f"[{student_no}] Oyun yüklendi. Başlangıç İndeksi: {baslangic_index}")
+
+    # 2. Soruyu getir
+    oyun = aktif_bireysel_oyunlar[student_no]
+    idx = oyun["mevcut_soru_index"]
     
-    # 2. Öğrencinin oyununu ve sıradaki sorusunu al
-    oyun = aktif_bireysel_oyunlar.get(student_no)
-    soru_index = oyun["mevcut_soru_index"]
+    # Paket bittiyse veya indeks taştıysa
+    if idx >= len(oyun["sorular"]):
+        return {"success": False, "data": {"metin": "Tüm sorular tamamlandı."}}
+
+    soru = oyun["sorular"][idx]
     
-    if soru_index >= len(oyun["sorular"]):
-        return {"success": False, "data": {"metin": "Tüm sorular bitti."}}
-        
-    siradaki_soru = oyun["sorular"][soru_index]
-    
-    # 3. Sadece gerekli 5 parçayı döndür
-    soru_datasi = {
-        "metin": siradaki_soru.get("metin"),
-        "beceri_adi": siradaki_soru.get("beceri_adi"),
-        "deger_adi": siradaki_soru.get("deger_adi"),
-        "beceri_cumlesi": siradaki_soru.get("beceri_cumlesi"),
-        "deger_cumlesi": siradaki_soru.get("deger_cumlesi")
-    }
-    
-    return {"success": True, "data": soru_datasi}
+    # 3. Frontend'e gönder
+    return {"success": True, "data": {
+        "metin": soru.get("metin"),
+        "beceri_adi": soru.get("beceri_adi"),
+        "deger_adi": soru.get("deger_adi"),
+        "beceri_cumlesi": soru.get("beceri_cumlesi"),
+        "deger_cumlesi": soru.get("deger_cumlesi")
+    }}
 
 def kaydet_soru_sonucu(student_no, soru_suresi_saniye):
     """
