@@ -10,6 +10,7 @@ import json
 import os
 from datetime import datetime, timedelta
 import random
+import db_helper
 
 # Aktif bireysel oyunları hafızada tutar
 # Yapısı: { "student_no": {"sorular": [10 soruluk paket], "mevcut_soru_index": 0} }
@@ -70,38 +71,41 @@ def _create_10_question_pack():
 
 # --- Skor Veritabanı Yönetimi ---
 
-def load_bireysel_db():
-    """Bireysel yarışma skorlarını PostgreSQL'den yükler."""
-    import db_helper
-    conn = db_helper.get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT student_no, dogru_soru_sayisi, toplam_sure_saniye, altin_rozet_tarihi, gunluk_elenme_sayisi, son_elenme_tarihi FROM bireysel_skorlar")
-    rows = cur.fetchall()
-    skorlar = {}
-    for row in rows:
-        student_no = row[0]
-        cur.execute("SELECT rozet FROM ogrenci_rozetler WHERE student_no = %s", (student_no,))
-        rozetler = [r[0] for r in cur.fetchall()]
-        skorlar[student_no] = {
-            "dogru_soru_sayisi": row[1],
-            "toplam_sure_saniye": row[2],
-            "rozetler": rozetler,
-            "altin_rozet_tarihi": str(row[3]) if row[3] else None,
-            "gunluk_elenme_sayisi": row[4] or 0,
-            "son_elenme_tarihi": str(row[5]) if row[5] else None
-        }
-    cur.close()
-    conn.close()
-    return skorlar
-
-
-def save_bireysel_db(data):
-    """Bireysel yarışma skorlarını (JSON) kaydeder."""
+# --- JSON YERİNE VERİTABANINDAN BİLGİ ÇEKEN YENİ FONKSİYON ---
+def get_student_db_status(student_no):
+    """Öğrencinin puanını ve rozetlerini Veritabanından (SQL) çeker."""
     try:
-        with open(DB_BIREYSEL_FILE, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+        conn = db_helper.get_db_connection()
+        cur = conn.cursor()
+        
+        # Puan ve Rozet bilgilerini al
+        cur.execute("""
+            SELECT dogru_soru_sayisi, toplam_sure_saniye, altin_rozet_tarihi, 
+                   gunluk_elenme_sayisi, son_elenme_tarihi 
+            FROM bireysel_skorlar WHERE student_no = %s
+        """, (str(student_no),))
+        row = cur.fetchone()
+        
+        cur.execute("SELECT rozet FROM ogrenci_rozetler WHERE student_no = %s", (str(student_no),))
+        rozetler = [r[0] for r in cur.fetchall()]
+        
+        cur.close()
+        conn.close()
+        
+        if row:
+            return {
+                "dogru_soru_sayisi": row[0] or 0,
+                "toplam_sure_saniye": row[1] or 0,
+                "altin_rozet_tarihi": str(row[2]) if row[2] else None,
+                "gunluk_elenme_sayisi": row[3] or 0,
+                "son_elenme_tarihi": str(row[4]) if row[4] else None,
+                "rozetler": rozetler
+            }
+        else:
+            return {"dogru_soru_sayisi": 0, "rozetler": [], "toplam_sure_saniye": 0}
     except Exception as e:
-        print(f"Bireysel DB kaydetme hatası: {e}")
+        print(f"DB Hatası: {e}")
+        return {"dogru_soru_sayisi": 0, "rozetler": []}
 
 # --- Ana API Fonksiyonları (sosyallab.py tarafından çağrılır) ---
 
@@ -134,20 +138,18 @@ def get_ogrenci_durumu(student_no, model=None): # model artık kullanılmıyor
 
 def get_yeni_soru_from_gemini(model, student_no):
     """
-    /yeni_soru tarafından çağrılır.
     Sıradaki soruyu hafızadan veya VERİTABANI SKORUNA GÖRE çeker.
     """
     global aktif_bireysel_oyunlar
-    student_no = str(student_no) # Hata önleyici
+    student_no = str(student_no) 
     
     # 1. Hafızada oyun yoksa oluştur
     if student_no not in aktif_bireysel_oyunlar:
-        print(f"[{student_no}] İçin oyun başlatılıyor/yükleniyor...")
+        print(f"[{student_no}] İçin oyun başlatılıyor...")
         
-        # --- DÜZELTME: Kaldığı yeri veritabanından öğren ---
-        db = load_bireysel_db()
-        data = db.get(student_no, {})
-        mevcut_skor = data.get("dogru_soru_sayisi", 0)
+        # --- BURASI DEĞİŞTİ: Veritabanından puanı öğren ---
+        durum = get_student_db_status(student_no) # Yeni fonksiyonu kullanıyoruz
+        mevcut_skor = durum.get("dogru_soru_sayisi", 0)
         
         # Eğer oyun bitmişse (10) sıfırdan başla, değilse kaldığı yerden devam et
         baslangic_index = mevcut_skor if mevcut_skor < 10 else 0
@@ -167,11 +169,19 @@ def get_yeni_soru_from_gemini(model, student_no):
     oyun = aktif_bireysel_oyunlar[student_no]
     idx = oyun["mevcut_soru_index"]
     
-    # Paket bittiyse veya indeks taştıysa
+    # Paket bittiyse
     if idx >= len(oyun["sorular"]):
         return {"success": False, "data": {"metin": "Tüm sorular tamamlandı."}}
 
     soru = oyun["sorular"][idx]
+    
+    return {"success": True, "data": {
+        "metin": soru.get("metin"),
+        "beceri_adi": soru.get("beceri_adi"),
+        "deger_adi": soru.get("deger_adi"),
+        "beceri_cumlesi": soru.get("beceri_cumlesi"),
+        "deger_cumlesi": soru.get("deger_cumlesi")
+    }}
     
     # 3. Frontend'e gönder
     return {"success": True, "data": {
