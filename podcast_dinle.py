@@ -6,10 +6,15 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# Gemini API Key (SENİN KEY'İNİ BURAYA KOY!)
-GEMINI_API_KEY = "BURAYA_KENDİ_GEMİNİ_API_ANAHTARINI_YAZ"
-genai.configure(api_key=GEMINI_API_KEY)
-gemini_model = genai.GenerativeModel('gemini-2.0-flash-exp')
+def api_yapilandir(api_key):
+    """Gemini API'yi yapılandırır"""
+    # Şifreyi dışarıdan gelen yerine direkt Render'dan (Environment) alıyoruz:
+    guvenli_anahtar = os.getenv('GOOGLE_API_KEY')
+    
+    if guvenli_anahtar:
+        genai.configure(api_key=guvenli_anahtar)
+        return genai.GenerativeModel('models/gemini-pro')
+    return None
 
 # Static klasörü oluştur
 if not os.path.exists('static'):
@@ -221,4 +226,5 @@ Bu, en yaygın Piper hatasıdır. Python, Piper yürütülebilir dosyasını ça
 
 * Linux veya macOS kullanıyorsanız, Piper yürütülebilir dosyasına çalıştırma izni verin:
     ```bash
+
     chmod +x piper/piper
