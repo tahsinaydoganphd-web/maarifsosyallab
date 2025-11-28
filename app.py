@@ -784,17 +784,47 @@ def bireysel_yarisma_page():
 @app.route('/api/bireysel/basla', methods=['POST'])
 def bireysel_basla():
     """ 
-    (SÜRÜM 8) Öğrenci durumunu ve yasakları kontrol eder.
-    Artık Gemini'yi çağırmaz.
+    Öğrenci durumunu kontrol eder. 
+    EĞER ÖNCEKİ OYUN BİTMİŞSE (Skor >= 10) OTOMATİK SIFIRLAR.
     """
     try:
         data = request.get_json()
         student_no = data.get('student_no')
         if not student_no:
             return jsonify({'success': False, 'mesaj': 'Öğrenci numarası eksik.'})
-            
-        # --- GÜNCELLENDİ: 'gemini_model' parametresi kaldırıldı ---
+
+        # 1. Mevcut durumu çek
         durum_response = by_v6.get_ogrenci_durumu(student_no)
+        
+        # --- DÜZELTME BAŞLANGICI: Otomatik Sıfırlama ---
+        # Eğer durum başarılıysa ve öğrenci 10 soruyu tamamlamışsa, yeni oyun için sıfırla
+        if durum_response.get('success') and durum_response.get('durum'):
+            mevcut_dogru = durum_response['durum'].get('dogru_soru_sayisi', 0)
+            
+            if mevcut_dogru >= 10:
+                print(f"🔄 KULLANICI {student_no} OYUNU BİTİRMİŞ. VERİLER SIFIRLANIYOR...")
+                
+                # Veritabanında puanı ve süreyi sıfırla
+                conn = db_helper.get_db_connection()
+                cur = conn.cursor()
+                
+                # Puanı sıfırla
+                cur.execute("""
+                    UPDATE bireysel_skorlar 
+                    SET dogru_soru_sayisi = 0, toplam_sure_saniye = 0, updated_at = CURRENT_TIMESTAMP 
+                    WHERE student_no = %s
+                """, (student_no,))
+                
+                # Rozetleri sil (Yeni oyun için)
+                cur.execute("DELETE FROM ogrenci_rozetler WHERE student_no = %s", (student_no,))
+                
+                conn.commit()
+                cur.close()
+                conn.close()
+                
+                # Sıfırlama sonrası durumu tekrar taze çek
+                durum_response = by_v6.get_ogrenci_durumu(student_no)
+        # --- DÜZELTME BİTİŞİ ---
         return jsonify(durum_response)
         
     except Exception as e:
