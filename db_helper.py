@@ -233,21 +233,19 @@ def get_haftalik_rapor(okul, sinif, ay):
         cur.execute("""
             SELECT 
             EXTRACT(WEEK FROM kr.tarih) as hafta,
-            kr.student_no as student_no,  <--- 'no' yerine 'student_no' yaptık
+            kr.student_no as student_no,
             u.first_name as ad,
             u.last_name as soyad,
             u.first_name || ' ' || u.last_name as ad_soyad,
             kr.modul as modul_adi,
-            kr.modul,
-            COUNT(*) as kullanim_sayisi,
-            COUNT(*) as kullanim
-            FROM kullanim_raporlari kr
-            LEFT JOIN users u ON kr.student_no = u.student_no
-            WHERE u.school_name = %s 
-                AND u.class = %s
-                AND TO_CHAR(kr.tarih, 'YYYY-MM') = %s
-            GROUP BY hafta, kr.student_no, u.first_name, u.last_name, kr.modul
-            ORDER BY hafta, u.first_name, kr.modul
+            COUNT(*) as kullanim_sayisi
+        FROM kullanim_raporlari kr
+        LEFT JOIN users u ON kr.student_no = u.student_no
+        WHERE u.school_name = %s 
+            AND u.class = %s
+            AND TO_CHAR(kr.tarih, 'YYYY-MM') = %s
+        GROUP BY EXTRACT(WEEK FROM kr.tarih), kr.student_no, u.first_name, u.last_name, kr.modul
+        ORDER BY hafta, u.first_name, kr.modul
         """, (okul, sinif, ay))
         
         rows = cur.fetchall()
