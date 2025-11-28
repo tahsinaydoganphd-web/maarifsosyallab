@@ -246,7 +246,7 @@ def get_haftalik_rapor(okul, sinif, ay):
         WHERE u.school_name = %s 
             AND u.class = %s
             AND TO_CHAR(kr.tarih, 'YYYY-MM') = %s
-        GROUP BY hafta, kr.student_no, u.first_name, u.last_name, kr.modul, ad, soyad, ad_soyad
+        GROUP BY hafta, kr.student_no, u.first_name, u.last_name, kr.modul
         ORDER BY hafta, u.first_name, kr.modul
         """, (okul, sinif, ay))
         
