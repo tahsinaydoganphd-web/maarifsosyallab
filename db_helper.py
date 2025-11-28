@@ -232,22 +232,22 @@ def get_haftalik_rapor(okul, sinif, ay):
         
         cur.execute("""
             SELECT
-            EXTRACT(WEEK FROM kr.tarih) as hafta,
-            kr.student_no as no,
-            u.first_name as ad,
-            u.last_name as soyad,
-            u.first_name || ' ' || u.last_name as ad_soyad,
-            kr.modul as modul_adi,
+            EXTRACT(WEEK FROM kr.tarih) AS hafta,
+            kr.student_no AS no,
+            u.first_name AS ad,
+            u.last_name AS soyad,
+            TRIM(u.first_name || ' ' || u.last_name) AS ad_soyad,
+            kr.modul AS modul_adi,
             kr.modul,
-            COUNT(*) as kullanim_sayisi,
-            COUNT(*) as kullanim
+            COUNT(*) AS kullanim_sayisi,
+            COUNT(*) AS kullanim
         FROM kullanim_raporlari kr
-        INNER JOIN users u ON kr.student_no = u.student_no  -- LEFT yerine INNER, eşleşmeyenleri dışarıda bırakır
-        WHERE u.school_name = %s
-          AND u.class = %s
-          AND TO_CHAR(kr.tarih, 'YYYY-MM') = %s
-        GROUP BY EXTRACT(WEEK FROM kr.tarih), kr.student_no, u.first_name, u.last_name, kr.modul
-        ORDER BY hafta, u.first_name, kr.modul;
+        LEFT JOIN users u ON kr.student_no = u.student_no::INTEGER   -- EN TEMİZ ÇÖZÜM
+        WHERE TO_CHAR(kr.tarih, 'YYYY-MM') = $3
+          AND (u.school_name = $1 OR u.school_name IS NULL)
+          AND (u.class = $2 OR u.class IS NULL)
+        GROUP BY hafta, kr.student_no, u.first_name, u.last_name, kr.modul
+        ORDER BY hafta, ad_soyad, kr.modul;
         """, (okul, sinif, ay))
         
         rows = cur.fetchall()
