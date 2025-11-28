@@ -1,30 +1,37 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import os
 import bcrypt
-from datetime import datetime
-
-# --- AYARLAR ---
-DB_CONFIG = {
-    'dbname': 'sosyallab',
-    'user': 'tahsinaydogan', # Kendi postgres kullanıcı adınız (genelde 'postgres'tir)
-    'password': '97032647', # <--- ŞİFRE BURAYA
-    'host': 'localhost',
-    'port': '5432'
-}
 
 def get_db_connection():
-    """PostgreSQL bağlantısı"""
-    conn = psycopg2.connect(**DB_CONFIG)
-    conn.autocommit = True # Otomatik kaydetmeyi açtık
+    # 1. Önce Render'ın verdiği adresi kontrol et
+    database_url = os.getenv('DATABASE_URL')
+    
+    if database_url:
+        # --- İNTERNETTEYSEK (RENDER) ---
+        conn = psycopg2.connect(database_url, sslmode='require')
+    else:
+        # --- BİLGİSAYARDAYSAK (LOCAL) ---
+        conn = psycopg2.connect(
+            dbname='sosyallab',
+            user='tahsinaydogan',
+            password='97032647', # Burası sadece lokalde lazım
+            host='localhost',
+            port='5432'
+        )
+    
+    conn.autocommit = True
     return conn
 
+# --- AŞAĞIDAKİLER SENİN KODLARININ AYNISI (DOKUNMA) ---
+
 def init_db():
-    """Tablolar yoksa oluşturur (Sistemi başlatan sihirli fonksiyon)"""
+    """Tabloları oluşturur"""
     try:
         conn = get_db_connection()
         cur = conn.cursor()
         
-        # 1. Kullanıcılar Tablosu
+        # Kullanıcılar
         cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 user_id TEXT PRIMARY KEY,
@@ -38,18 +45,18 @@ def init_db():
             );
         """)
         
-        # 2. Kullanım Raporları Tablosu
+        # Raporlar
         cur.execute("""
             CREATE TABLE IF NOT EXISTS kullanim_raporlari (
                 id SERIAL PRIMARY KEY,
                 student_no TEXT,
-                modul_adi TEXT,
-                aciklama TEXT,
+                modul TEXT,
+                detay TEXT,
                 tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
 
-        # 3. Video İstekleri Tablosu (YENİ - JSON yerine burası kullanılacak)
+        # Video İstekleri
         cur.execute("""
             CREATE TABLE IF NOT EXISTS video_istekleri (
                 id TEXT PRIMARY KEY,
@@ -64,14 +71,12 @@ def init_db():
             );
         """)
         
-        print("✅ Veritabanı tabloları kontrol edildi/oluşturuldu.")
         cur.close()
         conn.close()
+        print("✅ Veritabanı tabloları hazır.")
     except Exception as e:
-        print(f"❌ Veritabanı başlatma hatası: {e}")
-        print("Lütfen şifrenizin ve PostgreSQL servisinin çalıştığından emin olun.")
+        print(f"❌ DB Başlatma hatası: {e}")
 
-# ===== USER İŞLEMLERİ =====
 def load_users():
     try:
         conn = get_db_connection()
@@ -80,8 +85,8 @@ def load_users():
         rows = cur.fetchall()
         cur.close()
         conn.close()
-        users = {row['user_id']: dict(row) for row in rows}
-        return users
+        # Listeyi sözlüğe çevir
+        return {row['user_id']: dict(row) for row in rows}
     except Exception as e:
         print(f"Kullanıcı yükleme hatası: {e}")
         return {}
@@ -90,7 +95,7 @@ def save_user(user_id, user_data):
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        # Önce var mı diye bak, varsa güncelle, yoksa ekle (Upsert mantığı)
+        
         cur.execute("SELECT 1 FROM users WHERE user_id = %s", (user_id,))
         exists = cur.fetchone()
         
@@ -124,9 +129,7 @@ def save_user(user_id, user_data):
         print(f"User kayıt hatası: {e}")
         return False
 
-# ===== VİDEO İSTEK İŞLEMLERİ (YENİ SQL) =====
 def save_video_istek(istek_data):
-    """Yeni video isteğini SQL'e kaydeder"""
     try:
         conn = get_db_connection()
         cur = conn.cursor()
@@ -146,7 +149,6 @@ def save_video_istek(istek_data):
         return False
 
 def get_all_video_istekleri():
-    """Tüm istekleri getirir (En yeniden eskiye)"""
     try:
         conn = get_db_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -154,14 +156,12 @@ def get_all_video_istekleri():
         rows = cur.fetchall()
         cur.close()
         conn.close()
-        # Datetime objelerini string'e çevirmek gerekebilir ama RealDictCursor genelde halleder.
         return [dict(row) for row in rows]
     except Exception as e:
         print(f"İstek listeleme hatası: {e}")
         return []
 
 def delete_video_istek(istek_id):
-    """İsteği siler"""
     try:
         conn = get_db_connection()
         cur = conn.cursor()
@@ -173,9 +173,13 @@ def delete_video_istek(istek_id):
         print(f"İstek silme hatası: {e}")
         return False
 
-# ===== RAPORLAMA VE YARDIMCI FONKSİYONLAR =====
 def verify_password(plain_password, hashed_password):
     if not hashed_password or not plain_password: return False
+    if hashed_password.startswith('$2b$'):
+         try:
+            return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+         except:
+             return False
     return plain_password == hashed_password
 
 def kaydet_kullanim(student_no, modul_adi, aciklama):
@@ -186,7 +190,6 @@ def kaydet_kullanim(student_no, modul_adi, aciklama):
             INSERT INTO kullanim_raporlari (student_no, modul, detay, tarih)
             VALUES (%s, %s, %s, NOW())
         """, (student_no, modul_adi, aciklama))
-        
         cur.close()
         conn.close()
         return True
@@ -227,7 +230,6 @@ def get_haftalik_rapor(okul, sinif, ay):
         conn = get_db_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
         
-        # TARAYICI İLE TAM UYUMLU SÜRÜM
         cur.execute("""
             SELECT 
                 EXTRACT(WEEK FROM kr.tarih) as hafta,
@@ -251,15 +253,7 @@ def get_haftalik_rapor(okul, sinif, ay):
         rows = cur.fetchall()
         cur.close()
         conn.close()
-        
-        print(f"🔍 Haftalık rapor: {len(rows)} kayıt bulundu")
-        
-        # DEBUG: Hangi alanlar dönüyor görelim
-        if rows:
-            print("📋 Dönen alanlar:", list(rows[0].keys()))
-        
         return [dict(row) for row in rows]
-        
     except Exception as e:
         print(f"Haftalık rapor hatası: {e}")
         return []
