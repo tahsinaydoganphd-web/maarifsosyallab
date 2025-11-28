@@ -398,35 +398,55 @@ def login_student():
 
 @app.route('/login-teacher', methods=['POST'])
 def login_teacher():
-    """Öğretmen girişini (Soyadı ile) kontrol eder."""
+    """Öğretmen girişini (Soyadı ile) PostgreSQL veritabanında kontrol eder."""
     try:
         data = request.get_json()
         lastname = data.get('lastname')
         password = data.get('password')
         
-        # Tüm kullanıcıları döngüye al (Öğretmenler soyadıyla girdiği için)
-        for user_id, user_data in users.items():
-            if (user_data.get('role') == 'teacher' and 
-                user_data.get('last_name', '').lower() == lastname.lower() and 
-                db_helper.verify_password(password, user_data.get('password'))):
-                
-                # Session'a bilgileri kaydet
+        if not lastname or not password:
+            return jsonify({'success': False, 'message': 'Soyad ve şifre boş bırakılamaz.'})
+        
+        conn = db_helper.get_db_connection()
+        cur = conn.cursor()
+        
+        # 1. Kullanıcıyı veritabanında soyadıyla ara
+        # Not: Veritabanından şifrenin hash'li (encrypted) halini çekeriz.
+        cur.execute(
+            "SELECT user_id, first_name, last_name, school_name, class, password FROM users WHERE last_name = %s AND role = 'teacher'", 
+            (lastname,)
+        )
+        user_record = cur.fetchone()
+        cur.close()
+        conn.close()
+
+        if user_record:
+            # Sütunları eşleştir
+            user_id, first_name, last_name, school_name, user_class, stored_hash = user_record
+            
+            # 2. Şifreyi Kontrol Et (db_helper hash/plain text karşılaştırmasını yapar)
+            if db_helper.verify_password(password, stored_hash):
+                # BAŞARILI GİRİŞ
                 session["role"] = "teacher"
-                session["school_name"] = user_data.get("school_name", "")
-                session["class"] = user_data.get("class", "")
+                session["school_name"] = school_name
+                session["class"] = user_class
                 session["user_id"] = user_id
-                user_full_name = f"{user_data.get('first_name', '')} {user_data.get('last_name', '')}".strip()
+                user_full_name = f"{first_name} {last_name}".strip()
+                
                 return jsonify({
                     'success': True, 
                     'name': user_full_name,
                     'user_id': user_id, 
-                    'class': user_data.get('class'),
-                    'school_name': user_data.get('school_name')  # ← 'school_name' OLMALI!
+                    'class': user_class,
+                    'school_name': school_name
                 })
         
+        # Kullanıcı bulunamazsa veya şifre yanlışsa
         return jsonify({'success': False, 'message': 'Soyad veya şifre hatalı.'})
+    
     except Exception as e:
-        return jsonify({'success': False, 'message': str(e)})
+        print(f"Öğretmen girişinde kritik hata: {e}")
+        return jsonify({'success': False, 'message': 'Sunucu hatası: Lütfen logları kontrol edin.'})
 
 @app.route('/login-admin', methods=['POST'])
 def login_admin():
