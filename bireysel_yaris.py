@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-Bireysel Yarışma Modülü (SÜRÜM 8 - STATİK SORU BANKASI)
-- Tüm soruları 'bireysel_soru_bankasi.json' dosyasından okur.
-- Gemini API ÇAĞIRMAZ. (Hızlı ve kotasız)
-- Oyunları 'aktif_bireysel_oyunlar' hafızasında (RAM) tutar.
+Bireysel Yarışma Modülü (TAM RENDER/POSTGRESQL UYUMLU - FINAL)
+- Soruları 'bireysel_soru_bankasi.json' dosyasından okur.
+- Skorları, Rozetleri ve İlerlemeyi 'db_helper' ile PostgreSQL'e kaydeder.
+- get_ogrenci_durumu ve get_leaderboard fonksiyonları EKSİKSİZDİR.
 """
 
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 import random
-import db_helper
+import db_helper  # Veritabanı bağlantısı
 
 # Aktif bireysel oyunları hafızada tutar
-# Yapısı: { "student_no": {"sorular": [10 soruluk paket], "mevcut_soru_index": 0} }
 aktif_bireysel_oyunlar = {}
 
-# Skorların tutulduğu dosya
-DB_BIREYSEL_FILE = 'bireysel_skorlar.json'
-# 100 sorunun tutulduğu dosya
+# 100 sorunun tutulduğu dosya (Okuma amaçlı kalabilir)
 SORU_BANKASI_FILE = 'bireysel_soru_bankasi.json'
 
 # --- Soru Bankası Yönetimi ---
@@ -26,59 +23,47 @@ SORU_BANKASI_FILE = 'bireysel_soru_bankasi.json'
 def load_soru_bankasi():
     """100 soruluk ana bankayı JSON'dan yükler."""
     if not os.path.exists(SORU_BANKASI_FILE):
-        print(f"HATA: '{SORU_BANKASI_FILE}' bulunamadı!")
         return {"kolay": [], "orta": [], "zor": []}
     
     try:
         with open(SORU_BANKASI_FILE, 'r', encoding='utf-8') as f:
             sorular = json.load(f)
         
-        # Soruları zorluk seviyesine göre ayır
         banka = {
             "kolay": [s for s in sorular if s.get('zorluk') == 'kolay'],
             "orta": [s for s in sorular if s.get('zorluk') == 'orta'],
             "zor": [s for s in sorular if s.get('zorluk') == 'zor']
         }
-        print(f"Soru Bankası yüklendi: {len(banka['kolay'])} Kolay, {len(banka['orta'])} Orta, {len(banka['zor'])} Zor soru.")
         return banka
     except Exception as e:
         print(f"Soru bankası yüklenirken hata: {e}")
         return {"kolay": [], "orta": [], "zor": []}
 
-# 100 soruluk bankayı sunucu başlarken BİR KEZ hafızaya yükle
 SORU_BANKASI = load_soru_bankasi()
 
 def _create_10_question_pack():
-    """
-    Soru bankasından 3 Kolay, 4 Orta, 3 Zor soru seçerek
-    rastgele 10 soruluk bir oyun paketi oluşturur.
-    """
+    """Rastgele 10 soruluk paket oluşturur."""
     try:
         kolay_secim = random.sample(SORU_BANKASI["kolay"], 3)
         orta_secim = random.sample(SORU_BANKASI["orta"], 4)
         zor_secim = random.sample(SORU_BANKASI["zor"], 3)
-        
-        # Paket her zaman Kolay -> Orta -> Zor sırasıyla gider
         return kolay_secim + orta_secim + zor_secim
     except ValueError:
-        # Bankada yeterli soru yoksa (örn: test için 3 soru eklendiyse)
-        # olanların hepsini döndür
-        print("UYARI: Bankada 3K-4O-3Z için yeterli soru yok. Olanlar kullanılıyor.")
         return SORU_BANKASI["kolay"] + SORU_BANKASI["orta"] + SORU_BANKASI["zor"]
-    except Exception as e:
-        print(f"10'luk paket oluşturma hatası: {e}")
+    except Exception:
         return []
 
-# --- Skor Veritabanı Yönetimi ---
+# --- Veritabanı Yardımcı Fonksiyonu ---
 
-# --- JSON YERİNE VERİTABANINDAN BİLGİ ÇEKEN YENİ FONKSİYON ---
 def get_student_db_status(student_no):
-    """Öğrencinin puanını ve rozetlerini Veritabanından (SQL) çeker."""
+    """
+    Öğrencinin anlık durumunu PostgreSQL'den çeker.
+    """
     try:
         conn = db_helper.get_db_connection()
         cur = conn.cursor()
         
-        # Puan ve Rozet bilgilerini al
+        # 1. Skor tablosunu kontrol et
         cur.execute("""
             SELECT dogru_soru_sayisi, toplam_sure_saniye, altin_rozet_tarihi, 
                    gunluk_elenme_sayisi, son_elenme_tarihi 
@@ -86,46 +71,92 @@ def get_student_db_status(student_no):
         """, (str(student_no),))
         row = cur.fetchone()
         
+        # Eğer kayıt yoksa oluştur (İlk giriş)
+        if not row:
+            cur.execute("INSERT INTO bireysel_skorlar (student_no) VALUES (%s)", (str(student_no),))
+            conn.commit()
+            row = (0, 0, None, 0, None)
+        
+        # 2. Rozetleri çek
         cur.execute("SELECT rozet FROM ogrenci_rozetler WHERE student_no = %s", (str(student_no),))
         rozetler = [r[0] for r in cur.fetchall()]
         
         cur.close()
         conn.close()
         
-        if row:
-            return {
-                "dogru_soru_sayisi": row[0] or 0,
-                "toplam_sure_saniye": row[1] or 0,
-                "altin_rozet_tarihi": str(row[2]) if row[2] else None,
-                "gunluk_elenme_sayisi": row[3] or 0,
-                "son_elenme_tarihi": str(row[4]) if row[4] else None,
-                "rozetler": rozetler
-            }
-        else:
-            return {"dogru_soru_sayisi": 0, "rozetler": [], "toplam_sure_saniye": 0}
+        return {
+            "dogru_soru_sayisi": row[0] or 0,
+            "toplam_sure_saniye": row[1] or 0,
+            "altin_rozet_tarihi": str(row[2]) if row[2] else None,
+            "gunluk_elenme_sayisi": row[3] or 0,
+            "son_elenme_tarihi": str(row[4]) if row[4] else None,
+            "rozetler": rozetler
+        }
     except Exception as e:
-        print(f"DB Hatası: {e}")
-        return {"dogru_soru_sayisi": 0, "rozetler": []}
+        print(f"DB Status Hatası: {e}")
+        return {"dogru_soru_sayisi": 0, "rozetler": [], "toplam_sure_saniye": 0}
 
-# --- Ana API Fonksiyonları (sosyallab.py tarafından çağrılır) ---
+# --- Ana API Fonksiyonları ---
+
+# İŞTE EKSİK OLAN VE HATAYA SEBEP OLAN FONKSİYON BU:
+def get_ogrenci_durumu(student_no, model=None):
+    """
+    /basla tarafından çağrılır. Veritabanındaki durumu kontrol eder.
+    """
+    durum = get_student_db_status(student_no)
+    
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    
+    # Yasak Kontrolleri
+    if durum.get("son_elenme_tarihi") == today_str and durum.get("gunluk_elenme_sayisi", 0) >= 3:
+        return {"success": False, "giris_yasakli": True, "mesaj": "Bugün 3 kez elendiniz. Yarın tekrar deneyin."}
+        
+    if durum.get("altin_rozet_tarihi") == today_str:
+        return {"success": False, "giris_yasakli": True, "mesaj": "Bugün Altın Rozet aldınız. Yarın tekrar deneyin."}
+
+    # Eski günden kalan rozet varsa temizle (Yeni gün kontrolü)
+    if "altin" in durum["rozetler"] and durum["altin_rozet_tarihi"] != today_str:
+        # Veritabanını sıfırla (Yeni oyun için)
+        try:
+            conn = db_helper.get_db_connection()
+            cur = conn.cursor()
+            cur.execute("UPDATE bireysel_skorlar SET dogru_soru_sayisi=0, toplam_sure_saniye=0 WHERE student_no=%s", (str(student_no),))
+            cur.execute("DELETE FROM ogrenci_rozetler WHERE student_no=%s", (str(student_no),))
+            conn.commit()
+            conn.close()
+            # Durumu güncelle
+            durum["dogru_soru_sayisi"] = 0
+            durum["rozetler"] = []
+        except:
+            pass
+
+    return {
+        "success": True,
+        "giris_yasakli": False,
+        "durum": {
+            "dogru_soru_sayisi": durum.get("dogru_soru_sayisi", 0),
+            "rozetler": durum.get("rozetler", []),
+            "toplam_sure_saniye": durum.get("toplam_sure_saniye", 0)
+        }
+    }
+
 def get_yeni_soru_from_gemini(model, student_no):
     """
     Sıradaki soruyu hafızadan veya VERİTABANI SKORUNA GÖRE çeker.
     """
     global aktif_bireysel_oyunlar
-    student_no = str(student_no) 
+    student_no = str(student_no)
     
     # 1. Hafızada oyun yoksa oluştur
     if student_no not in aktif_bireysel_oyunlar:
         print(f"[{student_no}] İçin oyun başlatılıyor...")
         
-        # --- BURASI DEĞİŞTİ: Veritabanından puanı öğren ---
-        durum = get_student_db_status(student_no) # Yeni fonksiyonu kullanıyoruz
+        # Veritabanından puanı öğren
+        durum = get_student_db_status(student_no)
         mevcut_skor = durum.get("dogru_soru_sayisi", 0)
         
-        # Eğer oyun bitmişse (10) sıfırdan başla, değilse kaldığı yerden devam et
+        # Kaldığı yerden devam et
         baslangic_index = mevcut_skor if mevcut_skor < 10 else 0
-        # ---------------------------------------------------
         
         yeni_paket = _create_10_question_pack()
         if not yeni_paket:
@@ -133,29 +164,19 @@ def get_yeni_soru_from_gemini(model, student_no):
             
         aktif_bireysel_oyunlar[student_no] = {
             "sorular": yeni_paket,
-            "mevcut_soru_index": baslangic_index # <-- SKORA GÖRE BAŞLAT
+            "mevcut_soru_index": baslangic_index
         }
-        print(f"[{student_no}] Oyun yüklendi. Başlangıç İndeksi: {baslangic_index}")
+        print(f"[{student_no}] Başlangıç İndeksi: {baslangic_index}")
 
     # 2. Soruyu getir
     oyun = aktif_bireysel_oyunlar[student_no]
     idx = oyun["mevcut_soru_index"]
     
-    # Paket bittiyse
     if idx >= len(oyun["sorular"]):
         return {"success": False, "data": {"metin": "Tüm sorular tamamlandı."}}
 
     soru = oyun["sorular"][idx]
     
-    return {"success": True, "data": {
-        "metin": soru.get("metin"),
-        "beceri_adi": soru.get("beceri_adi"),
-        "deger_adi": soru.get("deger_adi"),
-        "beceri_cumlesi": soru.get("beceri_cumlesi"),
-        "deger_cumlesi": soru.get("deger_cumlesi")
-    }}
-    
-    # 3. Frontend'e gönder
     return {"success": True, "data": {
         "metin": soru.get("metin"),
         "beceri_adi": soru.get("beceri_adi"),
@@ -252,6 +273,7 @@ def kaydet_soru_sonucu(student_no, soru_suresi_saniye):
             "yeni_durum": durum
         }
     }
+
 def kaydet_elenme_sonucu(student_no, harcanan_sure_saniye):
     """
     Elenme durumunu Veritabanına kaydeder ve PUANI SIFIRLAR.
@@ -281,7 +303,6 @@ def kaydet_elenme_sonucu(student_no, harcanan_sure_saniye):
             yeni_tarih = today_str
             
         # Puanı SIFIRLA, süreyi ekle, elenmeyi güncelle
-        # (Eğer kayıt yoksa önce insert yapmamız lazım ama genelde vardır)
         cur.execute("""
             INSERT INTO bireysel_skorlar (student_no, dogru_soru_sayisi, toplam_sure_saniye, gunluk_elenme_sayisi, son_elenme_tarihi)
             VALUES (%s, 0, %s, %s, %s)
@@ -363,4 +384,3 @@ def get_leaderboard(users_db, sinif_filtresi=None):
     except Exception as e:
         print(f"Liderlik Tablosu Hatası: {e}")
         return []
-
