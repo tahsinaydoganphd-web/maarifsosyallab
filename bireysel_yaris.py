@@ -108,67 +108,6 @@ def get_student_db_status(student_no):
         return {"dogru_soru_sayisi": 0, "rozetler": []}
 
 # --- Ana API Fonksiyonları (sosyallab.py tarafından çağrılır) ---
-
-def get_leaderboard(users_db, sinif_filtresi=None):
-    """
-    Liderlik tablosunu doğrudan VERİTABANINDAN (PostgreSQL) çeker.
-    Artık JSON dosyasına bakmaz.
-    """
-    try:
-        conn = db_helper.get_db_connection()
-        cur = conn.cursor()
-        
-        # Kullanıcı bilgileriyle skorları birleştir (SQL JOIN işlemi)
-        query = """
-            SELECT u.student_no, u.first_name, u.last_name, u.school_name, u.class,
-                   bs.dogru_soru_sayisi, bs.toplam_sure_saniye
-            FROM users u
-            JOIN bireysel_skorlar bs ON u.student_no = bs.student_no
-            WHERE u.role = 'student' AND bs.dogru_soru_sayisi > 0
-        """
-        params = []
-        if sinif_filtresi:
-            query += " AND u.class = %s"
-            params.append(sinif_filtresi)
-            
-        cur.execute(query, tuple(params))
-        rows = cur.fetchall()
-        
-        leaderboard = []
-        for row in rows:
-            s_no = row[0]
-            # Rozetleri ayrıca çek
-            cur.execute("SELECT rozet FROM ogrenci_rozetler WHERE student_no = %s", (str(s_no),))
-            rozetler = [r[0] for r in cur.fetchall()]
-            
-            # Puan hesabı
-            skor_puani = row[5] # Doğru sayısı
-            if "altin" in rozetler: skor_puani += 3000
-            elif "gumus" in rozetler: skor_puani += 2000
-            elif "bronz" in rozetler: skor_puani += 1000
-            
-            leaderboard.append({
-                "student_no": s_no,
-                "isim": row[1],
-                "soyisim": row[2],
-                "okul": row[3],
-                "sube": row[4],
-                "rozetler": " ".join([r.capitalize() for r in rozetler]),
-                "dogru_soru": row[5],
-                "toplam_sure": row[6],
-                "skor_puani": skor_puani
-            })
-            
-        conn.close()
-        
-        # Sıralama: Puana göre azalan, Süreye göre artan
-        leaderboard.sort(key=lambda x: (x["skor_puani"], -x["toplam_sure"]), reverse=True)
-        return leaderboard[:10]
-        
-    except Exception as e:
-        print(f"Liderlik Tablosu Hatası: {e}")
-        return []
-
 def get_yeni_soru_from_gemini(model, student_no):
     """
     Sıradaki soruyu hafızadan veya VERİTABANI SKORUNA GÖRE çeker.
@@ -367,48 +306,61 @@ def kaydet_elenme_sonucu(student_no, harcanan_sure_saniye):
 
 def get_leaderboard(users_db, sinif_filtresi=None):
     """
-    Ana 'users.json' ve 'bireysel_skorlar.json' veritabanlarını birleştirir,
-    sıralar ve döndürür.
+    Liderlik tablosunu doğrudan VERİTABANINDAN (PostgreSQL) çeker.
+    Artık JSON dosyasına bakmaz.
     """
-    bireysel_db = load_bireysel_db()
-    leaderboard = []
-
-    for student_no, user_data in users_db.items():
-        if user_data.get('role') != 'student':
-            continue
-            
-        skor_data = bireysel_db.get(student_no)
+    try:
+        conn = db_helper.get_db_connection()
+        cur = conn.cursor()
         
-        if sinif_filtresi and user_data.get('class') != sinif_filtresi:
-            continue
-
-        # Sadece en az 1 soru çözmüş olanları listeye ekle
-        if skor_data and skor_data.get("dogru_soru_sayisi", 0) > 0:
+        # Kullanıcı bilgileriyle skorları birleştir (SQL JOIN işlemi)
+        query = """
+            SELECT u.student_no, u.first_name, u.last_name, u.school_name, u.class,
+                   bs.dogru_soru_sayisi, bs.toplam_sure_saniye
+            FROM users u
+            JOIN bireysel_skorlar bs ON u.student_no = bs.student_no
+            WHERE u.role = 'student' AND bs.dogru_soru_sayisi > 0
+        """
+        params = []
+        if sinif_filtresi:
+            query += " AND u.class = %s"
+            params.append(sinif_filtresi)
             
-            # (Sizdeki skor puanı hesaplamasını koruyoruz)
-            skor_puani = skor_data.get("dogru_soru_sayisi", 0)
-            if "altin" in skor_data.get("rozetler", []):
-                skor_puani += 3000
-            elif "gumus" in skor_data.get("rozetler", []):
-                skor_puani += 2000
-            elif "bronz" in skor_data.get("rozetler", []):
-                skor_puani += 1000
-
+        cur.execute(query, tuple(params))
+        rows = cur.fetchall()
+        
+        leaderboard = []
+        for row in rows:
+            s_no = row[0]
+            # Rozetleri ayrıca çek
+            cur.execute("SELECT rozet FROM ogrenci_rozetler WHERE student_no = %s", (str(s_no),))
+            rozetler = [r[0] for r in cur.fetchall()]
+            
+            # Puan hesabı
+            skor_puani = row[5] # Doğru sayısı
+            if "altin" in rozetler: skor_puani += 3000
+            elif "gumus" in rozetler: skor_puani += 2000
+            elif "bronz" in rozetler: skor_puani += 1000
+            
             leaderboard.append({
-                "student_no": student_no,
-                "isim": user_data.get("first_name", ""),
-                "soyisim": user_data.get("last_name", ""),
-                "okul": user_data.get("school_name", "Bilinmiyor"),
-                "sube": user_data.get('class', 'N/A'),
-                "rozetler": " ".join([r.capitalize() for r in skor_data.get("rozetler", [])]),
-                "dogru_soru": skor_data.get("dogru_soru_sayisi", 0),
-                "toplam_sure": skor_data.get("toplam_sure_saniye", 0),
+                "student_no": s_no,
+                "isim": row[1],
+                "soyisim": row[2],
+                "okul": row[3],
+                "sube": row[4],
+                "rozetler": " ".join([r.capitalize() for r in rozetler]),
+                "dogru_soru": row[5],
+                "toplam_sure": row[6],
                 "skor_puani": skor_puani
             })
+            
+        conn.close()
+        
+        # Sıralama: Puana göre azalan, Süreye göre artan
+        leaderboard.sort(key=lambda x: (x["skor_puani"], -x["toplam_sure"]), reverse=True)
+        return leaderboard[:10]
+        
+    except Exception as e:
+        print(f"Liderlik Tablosu Hatası: {e}")
+        return []
 
-    leaderboard.sort(key=lambda x: (x["skor_puani"], -x["toplam_sure"]), reverse=True)
-
-    if sinif_filtresi:
-        return leaderboard[:5] # Öğretmen için en iyi 5
-    else:
-        return leaderboard[:10] # Genel için en iyi 10
