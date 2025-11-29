@@ -588,15 +588,15 @@ def register_admin():
 @app.route('/dashboard')
 def dashboard():
     """Rol bazlı dashboard"""
+    # 1. Rolü session'dan al (Varsayılan: student)
     user_role = session.get('role', 'student')
+    
     if user_role == 'teacher':
-        return render_template('dashboard_teacher.html')
-    return render_template('dashboard.html')
-
-@app.route('/haritada-bul')
-def haritada_bul():
-    """Haritada Bul sayfası - Geliştirme aşamasında"""
-    return render_template('dashboard.html')
+        # Öğretmen için role bilgisini gönderiyoruz
+        return render_template('dashboard_teacher.html', role=user_role)
+    
+    # Öğrenci için role bilgisini gönderiyoruz (BURASI EKSİKTİ!)
+    return render_template('dashboard.html', role=user_role)
 
 # --- Metin Oluşturma Rotaları ---
 # ==========================================
@@ -1361,7 +1361,8 @@ def validate_text_relevance(user_text, model):
 # ==========================================
 @app.route('/podcast_paneli')
 def podcast_paneli():
-    """Podcast Panel - Rol bazlı"""
+    """Podcast oluşturma sayfası"""
+    # Rol bilgisini alıp sayfaya gönderiyoruz (BURASI EKSİKTİ!)
     user_role = session.get('role', 'student')
     return render_template('podcast.html', role=user_role)
 
