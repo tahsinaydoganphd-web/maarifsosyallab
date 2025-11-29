@@ -122,8 +122,10 @@ class TakimYarismasi:
         # Oyunun 10 sorusunu en başta oluşturur ve hafızaya alır
         self.oyun_soru_listesi = self._oyun_sorularini_olustur()
         # --- BİTTİ ---
-        if self.takimlar:
-            self.siradaki_takim_id = list(self.takimlar.keys())[0]
+       if self.takimlar:
+            # takim_0, takim_1 şeklindeki ID'leri numarasına göre sırala
+            sirali_idler = sorted(list(self.takimlar.keys()), key=lambda x: int(x.split('_')[1]))
+            self.siradaki_takim_id = sirali_idler[0]
         else:
             self.siradaki_takim_id = None
 
@@ -448,7 +450,7 @@ class TakimYarismasi:
                 takim["aktif_uye_index"] = (takim["aktif_uye_index"] + 1) % uye_sayisi
 
     def siradaki_takima_gec(self):
-        """(DÜZELTİLDİ: Kilitlenme Önleyici)"""
+        """(DÜZELTİLDİ: Kilitlenme Önleyici ve Hata Korumalı)"""
         if self.yarışma_bitti:
             return {"success": False, "hata": "Yarışma bitti."}
 
@@ -457,8 +459,14 @@ class TakimYarismasi:
 
         takim_ids = sorted(list(self.takimlar.keys()), key=lambda x: int(x.split('_')[1]))
         
+        # --- HATA KORUMASI (ATTRIBUTE ERROR ÇÖZÜMÜ) ---
+        if not hasattr(self, 'siradaki_takim_id') or self.siradaki_takim_id is None:
+            self.siradaki_takim_id = takim_ids[0]
+        # ----------------------------------------------
+
+        # Şu anki takımın indexini bul
         su_anki_index = -1
-        if hasattr(self, 'siradaki_takim_id') and self.siradaki_takim_id in takim_ids:
+        if self.siradaki_takim_id in takim_ids:
             su_anki_index = takim_ids.index(self.siradaki_takim_id)
 
         # Döngüyle sıradaki SAĞLAM takımı ara
@@ -466,9 +474,10 @@ class TakimYarismasi:
             bakiilacak_index = (su_anki_index + i) % len(takim_ids)
             aday_id = takim_ids[bakiilacak_index]
             
+            # Bu takım aktif mi (elenmemiş mi)?
             takim = self.takimlar[aday_id]
             is_aktif = takim.get("aktif", True)
-            is_elendi = takim.get("elendi", False) # Yeni elenme mantığı
+            is_elendi = takim.get("elendi", False)
             
             if is_aktif and not is_elendi:
                 self.siradaki_takim_id = aday_id
@@ -566,3 +575,4 @@ class TakimYarismasi:
             "son_olay": self.son_olay,
             "dereceye_girdi_mi": self.dereceye_girdi_mi 
         }
+
