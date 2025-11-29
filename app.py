@@ -3,9 +3,6 @@ from dotenv import load_dotenv
 
 # .env dosyasını yükle
 load_dotenv()
-
-
-
 import pandas as pd
 import io
 import json
