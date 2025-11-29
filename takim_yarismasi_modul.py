@@ -426,23 +426,46 @@ class TakimYarismasi:
             uye_sayisi = len(takim["uyeler"])
             if uye_sayisi > 1:
                 takim["aktif_uye_index"] = (takim["aktif_uye_index"] + 1) % uye_sayisi
-    
+
     def siradaki_takima_gec(self):
-        """Manuel olarak sıradaki takıma geçer."""
+        """(DÜZELTİLDİ: Deadlock Çözümü) Sırayı elenmemiş bir sonraki takıma geçirir."""
         if self.yarışma_bitti:
             return {"success": False, "hata": "Yarışma bitti."}
+
+        if not self.takimlar: 
+            return {"success": False, "hata": "Takım yok."}
+
+        takim_ids = sorted(list(self.takimlar.keys()), key=lambda x: int(x.split('_')[1]))
         
-        self.aktif_takim_index = (self.aktif_takim_index + 1) % len(self.takimlar)
-        self.mevcut_soru_verisi = None
-        
-        yeni_aktif_takim_id = self.get_aktif_takim_id()
-        if yeni_aktif_takim_id:
-            return {"success": True, "yeni_aktif_takim_id": yeni_aktif_takim_id}
-        else:
-            return {"success": True, "yeni_aktif_takim_id": None, "mesaj": "Oyun bitti."}
+        # Şu anki takımın indexini bul
+        su_anki_index = -1
+        if self.siradaki_takim_id in takim_ids:
+            su_anki_index = takim_ids.index(self.siradaki_takim_id)
+
+        # Bir sonraki SAĞLAM takımı bulmak için döngü
+        # Kendisi dahil herkesi kontrol et (len + 1)
+        for i in range(1, len(takim_ids) + 1):
+            bakiilacak_index = (su_anki_index + i) % len(takim_ids)
+            aday_id = takim_ids[bakiilacak_index]
             
+            # Bu takım aktif mi (elenmemiş mi)?
+            # get("aktif", True) -> Eski kod uyumluluğu
+            # get("elendi", False) -> Yeni kod uyumluluğu
+            is_aktif = self.takimlar[aday_id].get("aktif", True)
+            is_elendi = self.takimlar[aday_id].get("elendi", False)
+            
+            if is_aktif and not is_elendi:
+                self.siradaki_takim_id = aday_id
+                self.mevcut_soru_verisi = None # Yeni takım için ekranı temizle
+                return {"success": True, "yeni_aktif_takim_id": aday_id}
+
+        # Döngü bitti ve return olmadıysa -> HERKES ELENMİŞ DEMEKTİR
+        print("⚠️ Kimse kalmadı, oyun bitiriliyor.")
+        kazanan = self._yarismayi_bitir(kazanan_id=None) # Kazanansız bitir
+        return {"success": True, "mesaj": "Herkes elendi, oyun bitti.", "kazanan_id": kazanan}
+
     def _yarismayi_bitir(self, kazanan_id=None):
-        """(Kural 11, 13) Yarışmayı bitirir, kazananı ve dereceyi belirler."""
+        """(GÜNCELLENDİ) Yarışmayı bitirir. Kazanan yoksa en yüksek puanlıyı seçer."""
         if self.yarışma_bitti:
             return self.kazanan_takim_id
             
@@ -450,26 +473,29 @@ class TakimYarismasi:
         
         if kazanan_id:
              self.kazanan_takim_id = kazanan_id
-             # --- YENİ: Derece Kontrolü ---
-             import takim_yarismasi_modul as ty # Kendini import et (skor yüklemek için)
+        else:
+            # Kimse 10. soruyu bitiremediyse (Herkes elendi), puanı en yüksek olan kazanır
+            sirali = sorted(self.takimlar.values(), key=lambda x: (-x["puan"], x["toplam_sure_saniye"]))
+            if sirali:
+                self.kazanan_takim_id = sirali[0]["id"]
+                print(f"Herkes elendi. Puanla kazanan: {sirali[0]['isim']}")
+            else:
+                self.kazanan_takim_id = None
+
+        # --- Derece Kontrolü ---
+        if self.kazanan_takim_id:
+             import takim_yarismasi_modul as ty 
              skorlar = ty.load_takim_skorlari()
-             kazanan_takim = self.takimlar[kazanan_id]
+             kazanan_takim = self.takimlar[self.kazanan_takim_id]
              
-             # Mevcut 10. skorla karşılaştır
              if len(skorlar) < 10:
                  self.dereceye_girdi_mi = True
              else:
                  en_kotu_skor = skorlar[-1]
-                 # Basit karşılaştırma: Puanı yüksekse veya (puan eşitse süresi kısaysa)
                  if (kazanan_takim["puan"] > en_kotu_skor["soru_sayisi"]) or \
                     (kazanan_takim["puan"] == en_kotu_skor["soru_sayisi"] and kazanan_takim["toplam_sure_saniye"] < en_kotu_skor["toplam_sure_saniye"]):
                      self.dereceye_girdi_mi = True
-             # -----------------------------
-             print(f"Yarışma bitti. Kazanan: {kazanan_id}. Dereceye girdi mi: {self.dereceye_girdi_mi}")
-        else:
-            # Kimse kazanamadıysa (Herkes elendi)
-            self.kazanan_takim_id = None
-            self.dereceye_girdi_mi = False
+        # -----------------------
 
         return self.kazanan_takim_id
 
@@ -487,21 +513,23 @@ class TakimYarismasi:
             aktif_takim = self.takimlar[aktif_takim_id]
             if aktif_takim["uyeler"]:
                 su_anki_index = aktif_takim["aktif_uye_index"]
+                # Index taşmasını önle
                 su_anki_index = su_anki_index % len(aktif_takim["uyeler"])
                 
-                # 👇👇👇 DÜZELTME: ID'yi KESİNLİKLE STRING YAP 👇👇👇
                 raw_id = aktif_takim["uyeler"][su_anki_index]["no"]
                 aktif_takim_kaptani_id = str(raw_id).strip()
-                # 👆👆👆 BİTTİ 👆👆👆
 
         if aktif_takim_id:
             # Soru numarasını takımın puanına göre ayarla
             self.mevcut_soru_numarasi = self.takimlar[aktif_takim_id]["puan"] + 1
 
             if self.mevcut_soru_verisi:
-                zaman_baslangici = datetime.fromisoformat(self.takimlar[aktif_takim_id]["son_soru_zamani"])
-                gecen_saniye = (datetime.now() - zaman_baslangici).total_seconds()
-                kalan_saniye = max(0, 60 - int(gecen_saniye))
+                try:
+                    zaman_baslangici = datetime.fromisoformat(self.takimlar[aktif_takim_id]["son_soru_zamani"])
+                    gecen_saniye = (datetime.now() - zaman_baslangici).total_seconds()
+                    kalan_saniye = max(0, 60 - int(gecen_saniye))
+                except:
+                    kalan_saniye = 60
                 
                 mevcut_soru_kisitli_veri = {
                     "metin": self.mevcut_soru_verisi["metin"],
@@ -520,5 +548,5 @@ class TakimYarismasi:
             "mevcut_soru_numarasi": self.mevcut_soru_numarasi,
             "mevcut_soru_verisi": mevcut_soru_kisitli_veri,
             "son_olay": self.son_olay,
-            "dereceye_girdi_mi": self.dereceye_girdi_mi # <-- BU SATIRI EKLEYİN
+            "dereceye_girdi_mi": self.dereceye_girdi_mi 
         }
