@@ -262,22 +262,72 @@
                 raporData = result.data;
                 const tbody = document.getElementById("rapor-tbody-modal");
                 tbody.innerHTML = "";
-                result.data.forEach(row => { const ad = (row.first_name||"")+" "+(row.last_name||""); tbody.innerHTML += `<tr><td class="p-3">Hafta ${row.hafta}</td><td class="p-3">${row.student_no}</td><td class="p-3">${ad.trim()}</td><td class="p-3">${row.modul_adi}</td><td class="p-3">${row.kullanim}</td></tr>`; });
+                
+                // --- DÜZELTME BAŞLANGICI ---
+                // Veritabanından gelen 'no', 'ad', 'soyad' anahtarlarını kullanıyoruz
+                result.data.forEach(row => { 
+                    const ad = (row.ad || row.first_name || "") + " " + (row.soyad || row.last_name || ""); 
+                    const numara = row.no || row.student_no || "-";
+                    
+                    tbody.innerHTML += `<tr>
+                        <td class="p-3">Hafta ${row.hafta}</td>
+                        <td class="p-3">${numara}</td>
+                        <td class="p-3">${ad.trim()}</td>
+                        <td class="p-3">${row.modul_adi}</td>
+                        <td class="p-3">${row.kullanim}</td>
+                    </tr>`; 
+                });
+
                 const modSay={}, ogrKul={};
-                result.data.forEach(r => { modSay[r.modul_adi]=(modSay[r.modul_adi]||0)+r.kullanim; const ad=((r.first_name||"")+" "+(r.last_name||"")).trim(); ogrKul[ad]=(ogrKul[ad]||0)+r.kullanim; });
+                result.data.forEach(r => { 
+                    modSay[r.modul_adi]=(modSay[r.modul_adi]||0)+r.kullanim; 
+                    
+                    // En aktif öğrenciler için de düzeltme
+                    const tamAd = ((r.ad || r.first_name || "") + " " + (r.soyad || r.last_name || "")).trim(); 
+                    ogrKul[tamAd]=(ogrKul[tamAd]||0)+r.kullanim; 
+                });
+                // --- DÜZELTME BİTİŞİ ---
+
                 const topMod=Object.entries(modSay).sort((a,b)=>b[1]-a[1]).slice(0,3);
                 document.getElementById("rapor-top-moduller").innerHTML=topMod.map((m,i)=>`<div class="mb-2"><b>${i+1}.</b> ${m[0]} - <span class="text-blue-600 font-bold">${m[1]} kullanım</span></div>`).join("");
+                
                 const topOgr=Object.entries(ogrKul).sort((a,b)=>b[1]-a[1]).slice(0,3);
                 document.getElementById("rapor-top-ogrenciler").innerHTML=topOgr.map((o,i)=>`<div class="mb-2"><b>${i+1}.</b> ${o[0]} - <span class="text-green-600 font-bold">${o[1]} kullanım</span></div>`).join("");
+                
                 document.getElementById("rapor-ozet").style.display="grid";
             }
         }
         
         window.raporSirala = function(alan) {
             if (raporData.length===0) return;
-            raporData.sort((a,b)=>{ if(alan==="kullanim") return b.kullanim-a.kullanim; return String(a[alan]).localeCompare(String(b[alan])); });
-            const tbody=document.getElementById("rapor-tbody-modal"); tbody.innerHTML="";
-            raporData.forEach(row=>{ const ad=(row.first_name||"")+" "+(row.last_name||""); tbody.innerHTML+=`<tr><td class="p-3">Hafta ${row.hafta}</td><td class="p-3">${row.student_no}</td><td class="p-3">${ad.trim()}</td><td class="p-3">${row.modul_adi}</td><td class="p-3">${row.kullanim}</td></tr>`; });
+            
+            // Sıralama anahtarlarını eşleştir
+            let sortKey = alan;
+            if (alan === 'student_no') sortKey = 'no'; // HTML'den gelen 'student_no'yu veritabanındaki 'no' ile eşle
+            if (alan === 'ad_soyad') sortKey = 'ad';   // İsimle sırala
+
+            raporData.sort((a,b)=>{ 
+                if(alan==="kullanim") return b.kullanim-a.kullanim; 
+                // Değer yoksa boş string kabul et ki hata vermesin
+                return String(a[sortKey] || "").localeCompare(String(b[sortKey] || "")); 
+            });
+            
+            const tbody=document.getElementById("rapor-tbody-modal"); 
+            tbody.innerHTML="";
+            
+            // Tabloyu tekrar çizdirirken de doğru anahtarları kullan
+            raporData.forEach(row=>{ 
+                const ad = (row.ad || row.first_name || "") + " " + (row.soyad || row.last_name || ""); 
+                const numara = row.no || row.student_no || "-";
+                
+                tbody.innerHTML+=`<tr>
+                    <td class="p-3">Hafta ${row.hafta}</td>
+                    <td class="p-3">${numara}</td>
+                    <td class="p-3">${ad.trim()}</td>
+                    <td class="p-3">${row.modul_adi}</td>
+                    <td class="p-3">${row.kullanim}</td>
+                </tr>`; 
+            });
         }
     </script>
 
