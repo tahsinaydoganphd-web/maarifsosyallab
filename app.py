@@ -311,8 +311,16 @@ def check_for_game():
         redirect_key = f"{okul}_{sinif}"
         yarisma_id = game_redirects.get(redirect_key)
         
-        # Eğer bir ID varsa VE o oyun hala hafızada (bitmemiş) ise
+        # Eğer bir ID varsa VE o oyun hala hafızada ise
         if yarisma_id and yarisma_id in active_team_games:
+            oyun = active_team_games[yarisma_id]
+            
+            # --- DÜZELTME BURADA: Oyun bitmişse 'found: False' döndür ---
+            # Böylece dashboard, öğrenciyi tekrar bitmiş oyuna sokmaz.
+            if oyun.yarışma_bitti:
+                return jsonify({"found": False})
+            # ------------------------------------------------------------
+
             return jsonify({"found": True, "yarisma_id": yarisma_id})
         else:
             return jsonify({"found": False})
