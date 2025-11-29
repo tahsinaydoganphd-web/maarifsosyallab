@@ -103,7 +103,7 @@ class TakimYarismasi:
     """
     
     def __init__(self, takimlar_listesi, okul, sinif):
-        """Sınıf başlatıcı (initializer) - (NİHAİ SÜRÜM)"""
+        """Sınıf başlatıcı (HAVUZDAN RANDOM UYUMLU)"""
         
         self.takimlar = self._takimlari_baslat(takimlar_listesi) 
         self.okul = okul
@@ -114,39 +114,27 @@ class TakimYarismasi:
         self.kazanan_takim_id = None
         self.aktif_takim_index = 0 
         self.tur_numarasi = 1
-        # --- YENİ: Son Olay Hafızası (İzleyiciler için) ---
-        self.son_olay = {"zaman": 0, "mesaj": "", "tur": "", "detay": {}}
-        self.dereceye_girdi_mi = False # İlk 10'a girdi mi?
         
-        # --- YENİ EKLENDİ (EKSİK OLAN SATIR) ---
-        # Oyunun 10 sorusunu en başta oluşturur ve hafızaya alır
-        self.oyun_soru_listesi = self._oyun_sorularini_olustur()
-        # --- BİTTİ ---
-
-    def _oyun_sorularini_olustur(self):
-        """(YENİ) Soru bankasından 10 soru seçer ve KARIŞTIRIR."""
-        try:
-            kolay_secim = random.sample(SORU_BANKASI["kolay"], 3)
-            orta_secim = random.sample(SORU_BANKASI["orta"], 4)
-            zor_secim = random.sample(SORU_BANKASI["zor"], 3)
+        # Son Olay Hafızası
+        self.son_olay = {"zaman": 0, "mesaj": "", "tur": "", "detay": {}}
+        self.dereceye_girdi_mi = False 
+        
+        # 👇👇👇 BURASI DEĞİŞTİ: ARTIK HAVUZU YÜKLÜYORUZ 👇👇👇
+        import bireysel_yaris as by_v6
+        banka = by_v6.load_soru_bankasi()
+        
+        # Tüm soruları tek bir havuzda birleştiriyoruz
+        self.soru_havuzu = banka["kolay"] + banka["orta"] + banka["zor"]
+        
+        # Sorulanların ID'sini tutacağımız küme (Aynı soru gelmesin diye)
+        self.sorulan_sorular = set()
+        
+        # İlk başta "sıradaki takım" kim olacak? (İlk takım)
+        if self.takimlar:
+            self.siradaki_takim_id = list(self.takimlar.keys())[0]
+        else:
+            self.siradaki_takim_id = None
             
-            # Paketi oluştur
-            tam_liste = kolay_secim + orta_secim + zor_secim
-            
-            # 👇👇👇 DÜZELTME: LİSTEYİ KARIŞTIR 👇👇👇
-            random.shuffle(tam_liste) 
-            # 👆👆👆 ARTIK SORULARIN YERİ HEP FARKLI OLACAK
-            
-            print("Oyun için 10 soruluk KARIŞIK liste oluşturuldu.")
-            return {i + 1: soru for i, soru in enumerate(tam_liste)}
-            
-        except ValueError as e:
-            print(f"UYARI: Bankada yeterli soru yok! {e}")
-            return {} 
-        except Exception as e:
-            print(f"HATA: Oyun soruları oluşturulamadı: {e}")
-            return {}
-
     def _takimlari_baslat(self, takimlar_listesi):
         """Gelen takım listesini oyun formatına çevirir."""
         oyun_takimlari = {}
@@ -243,45 +231,57 @@ class TakimYarismasi:
                 return True # Evet, hala oynaması gereken var
         return False # Herkes bu turu bitirdi
 
-    def soru_iste(self, takim_id, model=None):
+    def soru_iste(self, takim_id):
         """
-        (SÜRÜM 9 - SABİT LİSTE) Oyunun soru listesinden sıradaki soruyu alır.
+        (HAVUZDAN RANDOM + MÖ DÜZELTMESİ) 
+        Sıradaki soruyu tüm havuzdan rastgele seçer ve metni temizler.
         """
         if self.yarışma_bitti:
             return {"success": False, "hata": "Yarışma bitti."}
-            
-        # 1. Soru Numarasını belirle
-        self.mevcut_soru_numarasi = self.takimlar[takim_id]["puan"] + 1
-        soru_no = self.mevcut_soru_numarasi
-        
-        # 2. Soruyu bankadan değil, OYUNUN LİSTESİNDEN al
-        secilen_soru = self.oyun_soru_listesi.get(soru_no)
-        
-        if not secilen_soru:
-             print(f"HATA: Soru {soru_no} oyun listesinde bulunamadı! Banka boş olabilir.")
-             return {"success": False, "hata": f"Soru {soru_no} oyun listesinde bulunamadı!"}
 
-        # 3. Oyunu güncelle
+        # Sıra kontrolü
+        if self.siradaki_takim_id != takim_id:
+            return {"success": False, "hata": "Sıra sizde değil."}
+            
+        import random
+        
+        # 1. Daha önce sorulmamış soruları havuzdan bul
+        # (self.soru_havuzu değişkeni __init__ içinde tanımlı olmalıdır)
+        kalan_sorular = [s for s in self.soru_havuzu if s["id"] not in self.sorulan_sorular]
+        
+        # Soru kalmadıysa oyunu bitir
+        if not kalan_sorular:
+            self.oyunu_bitir_ve_kazanani_belirle()
+            return {"success": False, "hata": "Sorular bitti."}
+            
+        # 2. Rastgele Seç
+        secilen_soru = random.choice(kalan_sorular)
+        
+        # 3. Sorulanlara ekle (Bir daha sormamak için)
+        self.sorulan_sorular.add(secilen_soru["id"])
+        
+        # --- MÖ. 3000 DÜZELTMESİ ---
+        temiz_metin = secilen_soru["metin"]
+        temiz_metin = temiz_metin.replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
+        temiz_metin = temiz_metin.replace("MS.", "MS").replace("M.S.", "MS")
+        temiz_metin = temiz_metin.replace("vb.", "vb")
+        
+        beceri_c = secilen_soru["beceri_cumlesi"].replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
+        deger_c = secilen_soru["deger_cumlesi"].replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
+        # ---------------------------
+
+        # Veriyi kopyalayarak güncelle
+        soru_kopya = secilen_soru.copy()
+        soru_kopya["metin"] = temiz_metin
+        soru_kopya["beceri_cumlesi"] = beceri_c
+        soru_kopya["deger_cumlesi"] = deger_c
+        
+        self.mevcut_soru_verisi = soru_kopya
+        
+        # Takımın son soru zamanını güncelle
         self.takimlar[takim_id]["son_soru_zamani"] = datetime.now().isoformat()
         
-        # Soru verisini (cevap anahtarı) hafızaya al
-        self.mevcut_soru_verisi = secilen_soru
-        
-        # Takımın durumunu sıfırla
-        self.takimlar[takim_id]["bulunan_beceri"] = False
-        self.takimlar[takim_id]["bulunan_deger"] = False
-        self.takimlar[takim_id]["kalan_deneme_hakki"] = 3
-        
-        print(f"Takım Yarışması: Soru {soru_no} (Sabit Oyun Listesinden) yüklendi.")
-        
-        # 4. Veriyi döndür
-        return {
-            "success": True,
-            "soru_numarasi": self.mevcut_soru_numarasi,
-            "metin": secilen_soru["metin"],
-            "beceri_adi": secilen_soru["beceri_adi"],
-            "deger_adi": secilen_soru["deger_adi"]
-        }
+        return {"success": True, "soru": self.mevcut_soru_verisi}
 
     def cevap_ver(self, takim_id, tiklanan_tip, tiklanan_cumle):
         """(Kural 1, 60s, Butonlar) Bir takımın cevabını işler."""
@@ -521,4 +521,5 @@ class TakimYarismasi:
             "mevcut_soru_verisi": mevcut_soru_kisitli_veri,
             "son_olay": self.son_olay,
             "dereceye_girdi_mi": self.dereceye_girdi_mi # <-- BU SATIRI EKLEYİN
+
         }
