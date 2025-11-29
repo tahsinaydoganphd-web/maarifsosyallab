@@ -529,29 +529,40 @@ class TakimYarismasi:
 
     def durumu_json_yap(self, izleyen_no=None, izleyen_rol="student"):
         """
-        (GÜVENLİK GÜNCELLEMESİ) 
-        Oyun durumunu isteyene göre filtreleyerek (Soruyu gizleyerek/göstererek) hazırlar.
+        (GÜVENLİK GÜNCELLEMESİ V2) 
+        Soruyu gösterme mantığı güçlendirildi ve log eklendi.
         """
         
         aktif_takim_id = self.get_aktif_takim_id()
         kalan_saniye = 60
         mevcut_soru_kisitli_veri = None
         
-        # --- 1. KİMLİK KONTROLÜ: Soruyu Göstermeli miyiz? ---
+        # --- 1. KİMLİK KONTROLÜ ---
         soruyu_goster = False
         
         # A. Öğretmense veya Oyun Bittiyse -> HERKES GÖRÜR
-        if izleyen_rol == "teacher" or izleyen_rol == "admin" or self.yarışma_bitti:
+        if izleyen_rol in ["teacher", "admin"] or self.yarışma_bitti:
             soruyu_goster = True
             
         # B. Aktif Takım Üyesiyse -> GÖRÜR
         elif aktif_takim_id:
             aktif_takim = self.takimlar[aktif_takim_id]
-            # İzleyen öğrenci bu takımın listesinde var mı?
+            
+            # İzleyen numarasını temizle (string ve boşluksuz)
+            izleyen_temiz = str(izleyen_no).strip().replace(".0", "")
+            
+            # Takım listesinde var mı kontrol et
             for uye in aktif_takim["uyeler"]:
-                if str(uye["no"]).strip() == str(izleyen_no).strip():
+                uye_no_temiz = str(uye["no"]).strip().replace(".0", "")
+                
+                if uye_no_temiz == izleyen_temiz:
                     soruyu_goster = True
                     break
+            
+            # Hata ayıklama için konsola yaz (Sadece soruyu gizlediğimizde)
+            if not soruyu_goster:
+                print(f"🔒 SORU GİZLENDİ: Sıra {aktif_takim['isim']} takımında. İzleyen No: '{izleyen_temiz}' (Eşleşmedi)")
+
         # ----------------------------------------------------
 
         # --- 2. AKTİF KAPTAN KİM? ---
@@ -560,7 +571,8 @@ class TakimYarismasi:
             aktif_takim = self.takimlar[aktif_takim_id]
             if aktif_takim["uyeler"]:
                 su_anki_index = aktif_takim["aktif_uye_index"] % len(aktif_takim["uyeler"])
-                aktif_takim_kaptani_id = str(aktif_takim["uyeler"][su_anki_index]["no"]).strip()
+                raw_id = aktif_takim["uyeler"][su_anki_index]["no"]
+                aktif_takim_kaptani_id = str(raw_id).strip()
 
         # --- 3. VERİ PAKETİNİ HAZIRLA ---
         if aktif_takim_id:
@@ -575,7 +587,7 @@ class TakimYarismasi:
                 except:
                     kalan_saniye = 60
                 
-                # GÜVENLİK FİLTRESİ: Sadece izinliyse soruyu pakete koy
+                # GÜVENLİK FİLTRESİ
                 if soruyu_goster:
                     mevcut_soru_kisitli_veri = {
                         "metin": self.mevcut_soru_verisi["metin"],
@@ -583,7 +595,6 @@ class TakimYarismasi:
                         "deger_adi": self.mevcut_soru_verisi["deger_adi"]
                     }
                 else:
-                    # İzin yoksa boş/gizli gönder
                     mevcut_soru_kisitli_veri = {
                         "metin": "Sıra diğer takımda. Lütfen bekleyiniz...",
                         "beceri_adi": "???",
@@ -599,11 +610,12 @@ class TakimYarismasi:
             "kazanan_takim_id": self.kazanan_takim_id,
             "kalan_saniye": kalan_saniye,
             "mevcut_soru_numarasi": self.mevcut_soru_numarasi,
-            "mevcut_soru_verisi": mevcut_soru_kisitli_veri, # Filtrelenmiş veri
+            "mevcut_soru_verisi": mevcut_soru_kisitli_veri, 
             "son_olay": self.son_olay,
             "dereceye_girdi_mi": self.dereceye_girdi_mi,
-            "izleyen_kim": str(izleyen_no) # Frontend kontrolü için
+            "izleyen_kim": str(izleyen_no) 
         }
+
 
 
 
