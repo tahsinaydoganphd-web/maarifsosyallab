@@ -420,34 +420,40 @@
             TOAST_TIMER = setTimeout(() => t.className = '', 3000);
         }
         
-        // --- NİHAİ ÇIKIŞ MANTIĞI (10 SN KURALI DAHİL) ---
+        // --- NİHAİ ÇIKIŞ MANTIĞI (Düzeltilmiş) ---
         function oyunuBitir(durum) {
+            // Eğer zaten bitiş işlemi yapılıyorsa tekrar yapma (Döngü Önleyici)
+            if (OYUN_BITTI_ISLENIYOR) return;
+            OYUN_BITTI_ISLENIYOR = true;
+
             clearInterval(DURUM_GUNCELLEME_INTERVAL); 
             stopClientTimer();
+            
             const kazanan = durum.takimlar.find(t => t.id === durum.kazanan_takim_id);
             const mesaj = kazanan ? `Kazanan: ${kazanan.isim}` : "Herkes elendi.";
             
             document.getElementById('tebrik-mesaj').textContent = mesaj;
             gameOverModal.classList.remove('hidden');
             
-            // Skoru kaydet
-            fetch(`/api/takim/bitir/${YARISMA_ID}`, { method: 'POST' });
-
+            // Skoru kaydet (Sadece öğretmen veya sistem otomatik tetiklerse)
+            // fetch isteğini burada tekrar atmaya gerek yok, zaten server bitirmiş.
+            
             const mesajAlani = document.getElementById('yonlendirme-mesaj');
             
             if (durum.dereceye_girdi_mi) {
-                mesajAlani.textContent = "Dereceye girdiniz! 3 sn sonra Liderlik Tablosu açılıyor...";
+                mesajAlani.textContent = "Dereceye girdiniz! 5 sn sonra Liderlik Tablosu açılıyor...";
                 setTimeout(() => {
-                    window.location.href = '/takim-liderlik-tablosu?auto_exit=1';
-                }, 3000);
+                    window.location.href = '/takim-liderlik-tablosu';
+                }, 5000); // Süreyi biraz uzattım (5sn) ki yazıyı okuyabilsinler
             } else {
-                mesajAlani.textContent = "3 sn sonra ana menüye dönülüyor...";
+                mesajAlani.textContent = "5 sn sonra ana menüye dönülüyor...";
                 setTimeout(() => {
                     if (MY_USER_ROLE === 'student') window.location.href = '/yarisma-secim';
                     else window.location.href = '/dashboard';
-                }, 3000);
+                }, 5000);
             }
         }
     </script>
 </body>
 </html>
+
