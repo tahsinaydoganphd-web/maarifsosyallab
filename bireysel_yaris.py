@@ -101,45 +101,59 @@ def get_student_db_status(student_no):
 # İŞTE EKSİK OLAN VE HATAYA SEBEP OLAN FONKSİYON BU:
 def get_ogrenci_durumu(student_no, model=None):
     """
-    /basla tarafından çağrılır. Veritabanındaki durumu kontrol eder.
+    /basla tarafından çağrılır. 
+    DÜZELTME: Öğrenci sayfaya her girdiğinde puanı ve ilerlemeyi SIFIRLAR.
     """
+    # 1. Mevcut durumu veritabanından çek (Yasaklılık kontrolü için bu veriye ihtiyacımız var)
     durum = get_student_db_status(student_no)
     
     today_str = datetime.now().strftime("%Y-%m-%d")
     
-    # Yasak Kontrolleri
+    # --- YASAK KONTROLLERİ (AYNEN KORUNDU) ---
+    # Eğer bugün 3 kez elendiyse oyuna almıyoruz.
     if durum.get("son_elenme_tarihi") == today_str and durum.get("gunluk_elenme_sayisi", 0) >= 3:
         return {"success": False, "giris_yasakli": True, "mesaj": "Bugün 3 kez elendiniz. Yarın tekrar deneyin."}
         
+    # Eğer bugün Altın Rozet aldıysa oyuna almıyoruz.
     if durum.get("altin_rozet_tarihi") == today_str:
         return {"success": False, "giris_yasakli": True, "mesaj": "Bugün Altın Rozet aldınız. Yarın tekrar deneyin."}
 
-    # Eski günden kalan rozet varsa temizle (Yeni gün kontrolü)
-    if "altin" in durum["rozetler"] and durum["altin_rozet_tarihi"] != today_str:
-        # Veritabanını sıfırla (Yeni oyun için)
-        try:
-            conn = db_helper.get_db_connection()
-            cur = conn.cursor()
-            cur.execute("UPDATE bireysel_skorlar SET dogru_soru_sayisi=0, toplam_sure_saniye=0 WHERE student_no=%s", (str(student_no),))
-            cur.execute("DELETE FROM ogrenci_rozetler WHERE student_no=%s", (str(student_no),))
-            conn.commit()
-            conn.close()
-            # Durumu güncelle
-            durum["dogru_soru_sayisi"] = 0
-            durum["rozetler"] = []
-        except:
-            pass
+    # --- SIFIRLAMA İŞLEMİ (YENİ EKLENEN KISIM) ---
+    # Yasaklı değilse, önceki puanı ne olursa olsun sıfırlıyoruz.
+    try:
+        conn = db_helper.get_db_connection()
+        cur = conn.cursor()
+        
+        # Puanı ve o anki süreyi sıfırla. (Rozetlere dokunmuyoruz, onlar kalıcı haktır)
+        cur.execute("""
+            UPDATE bireysel_skorlar 
+            SET dogru_soru_sayisi = 0, toplam_sure_saniye = 0, updated_at = CURRENT_TIMESTAMP
+            WHERE student_no = %s
+        """, (str(student_no),))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
 
+        # Global hafızadan (RAM) bu öğrencinin eski soru paketini siliyoruz.
+        # Böylece 'get_yeni_soru' fonksiyonu yeni ve rastgele 10 soru çekmek zorunda kalacak.
+        global aktif_bireysel_oyunlar
+        if str(student_no) in aktif_bireysel_oyunlar:
+            del aktif_bireysel_oyunlar[str(student_no)]
+            
+    except Exception as e:
+        print(f"Oyun Sıfırlama Hatası: {e}")
+
+    # Arayüze "Sıfır" bilgisi gönderiyoruz (Eskiden veritabanındaki puanı gönderiyorduk)
     return {
         "success": True,
         "giris_yasakli": False,
         "durum": {
-            "dogru_soru_sayisi": durum.get("dogru_soru_sayisi", 0),
-            "rozetler": durum.get("rozetler", []),
-            "toplam_sure_saniye": durum.get("toplam_sure_saniye", 0)
+            "dogru_soru_sayisi": 0, # Her zaman 0 ile başlar
+            "rozetler": durum.get("rozetler", []), # Kazanılmış rozetleri korur
+            "toplam_sure_saniye": 0
         }
     }
-
 def get_yeni_soru_from_gemini(model, student_no):
     """
     Sıradaki soruyu hafızadan veya VERİTABANI SKORUNA GÖRE çeker.
