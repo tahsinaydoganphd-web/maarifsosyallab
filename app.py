@@ -1704,7 +1704,7 @@ def api_get_takim_leaderboard():
 
 @app.route('/api/takim/get_durum/<string:yarisma_id>')
 def api_get_takim_durum(yarisma_id):
-    """Bir yarışmanın mevcut durumunu JSON olarak döndürür."""
+    """Bir yarışmanın mevcut durumunu (Kullanıcıya Özel) JSON olarak döndürür."""
     
     oyun = active_team_games.get(yarisma_id)
     if not oyun:
@@ -1713,51 +1713,42 @@ def api_get_takim_durum(yarisma_id):
     # --- ÖĞRETMEN ZAMAN AŞIMI KONTROLÜ ---
     import time
     su_an = time.time()
-    
     if not hasattr(oyun, 'son_ogretmen_sinyali'):
         oyun.son_ogretmen_sinyali = su_an
     
-    is_teacher = request.args.get('ogretmen_burada') == 'evet'
+    # Session'dan kimlik bilgilerini al
+    user_role = session.get('role', 'student')
+    user_no = str(session.get('user_no', '')).strip() # Öğrenci no veya Teacher ID
     
-    if is_teacher:
+    # Öğretmen ise sinyali güncelle
+    if user_role == 'teacher':
         oyun.son_ogretmen_sinyali = su_an
     
     if su_an - oyun.son_ogretmen_sinyali > 75:
-        print(f"Zaman aşımı! {yarisma_id} siliniyor...")
         if yarisma_id in active_team_games:
             del active_team_games[yarisma_id]
-        for key, val in list(game_redirects.items()):
-            if val == yarisma_id:
-                del game_redirects[key]
         return jsonify({"success": False, "hata": "Öğretmen ayrıldığı için yarışma sonlandırıldı."})
     # -------------------------------------
 
     try:
-        durum_datasi = oyun.durumu_json_yap()
+        # BURASI DEĞİŞTİ: Kimlik bilgilerini modüle gönderiyoruz
+        durum_datasi = oyun.durumu_json_yap(izleyen_no=user_no, izleyen_rol=user_role)
         
-        # --- YENİ: Kaptan Çevrimiçi mi? ---
+        # Kaptan çevrimiçi mi kontrolü (Ekstra özellik)
         kaptan_id = durum_datasi.get("aktif_takim_kaptani_id")
         is_online = False
         if kaptan_id:
-            # Kaptan ID'sini string'e çevirip kontrol et (Veri türü hatasını önlemek için)
             last_seen = online_users.get(str(kaptan_id), 0)
-            if time.time() - last_seen < 15: # 15 saniye tolerans
+            if time.time() - last_seen < 15:
                 is_online = True
         
         durum_datasi["kaptan_cevrimici_mi"] = is_online
-        # ----------------------------------
-
         durum_datasi["success"] = True
+        
         return jsonify(durum_datasi)
+        
     except Exception as e:
-        return jsonify({"success": False, "hata": str(e)})
-    # -----------------------------------------------------
-    
-    try:
-        durum_datasi = oyun.durumu_json_yap()
-        durum_datasi["success"] = True
-        return jsonify(durum_datasi)
-    except Exception as e:
+        print(f"Durum alma hatası: {e}")
         return jsonify({"success": False, "hata": str(e)})
 
 @app.route('/api/takim/soru_goster/<string:yarisma_id>')
