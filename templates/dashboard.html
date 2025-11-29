@@ -47,44 +47,62 @@
                 </div>
             </div>
         </div>
-                <nav class="flex-1 overflow-y-auto p-2 space-y-1 no-bounce">
-            <a id="link-metin-analiz" href="/metin-analiz"
-                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-blue-500 hover:bg-blue-600 transition-all">
-                <i class="fa-solid fa-file-pen mr-3 w-6 text-center"></i>
-                <span>Metin Analiz</span>
+                {% if role == 'student' %}
+        <nav class="flex-1 overflow-y-auto p-2 space-y-1 no-bounce">
+            
+            <a id="link-metin-analiz" href="/metin-analiz" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-blue-500 hover:bg-blue-600 transition-all">
+                <i class="fa-solid fa-file-pen mr-3 w-6 text-center"></i><span>Metin Analiz</span>
             </a>
-            <a id="link-soru-uretim" href="/soru-uretim"
-                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-600 transition-all">
-                <i class="fa-solid fa-circle-question mr-3 w-6 text-center"></i>
-                <span>Soru Üretim</span>
+            
+            <a id="link-soru-uretim" href="/soru-uretim" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-600 transition-all">
+                <i class="fa-solid fa-circle-question mr-3 w-6 text-center"></i><span>Soru Üretim</span>
             </a>
-            <a id="link-haritada-bul" href="/haritada-bul"
-                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-orange-500 hover:bg-orange-600 transition-all">
-                <i class="fa-solid fa-map-location-dot mr-3 w-6 text-center"></i>
-                <span>Haritada Bul</span>
+
+            <a id="link-haritada-bul" href="/haritada-bul" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-orange-500 hover:bg-orange-600 transition-all">
+                <i class="fa-solid fa-map-location-dot mr-3 w-6 text-center"></i><span>Haritada Bul</span>
             </a>
-            <a id="link-podcast" href="/podcast_paneli"
-                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all">
-                <i class="fa-solid fa-microphone-lines mr-3 w-6 text-center"></i>
-                <span>Podcast Yap</span>
+
+            <a id="link-podcast" href="/podcast_paneli" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all">
+                <i class="fa-solid fa-microphone-lines mr-3 w-6 text-center"></i><span>Podcast Yap</span>
             </a>
-            <a id="link-seyret-bul" href="/seyret-bul-liste"
-                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-indigo-500 hover:bg-indigo-600 transition-all">
-                <i class="fa-solid fa-magnifying-glass-plus mr-3 w-6 text-center"></i>
-                <span>Seyret Bul</span>
+
+            <a id="link-seyret-bul" href="/seyret-bul-liste" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-indigo-500 hover:bg-indigo-600 transition-all">
+                <i class="fa-solid fa-magnifying-glass-plus mr-3 w-6 text-center"></i><span>Seyret Bul</span>
             </a>
-            <a id="link-yarisma" href="/yarisma-secim"
-                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-teal-500 hover:bg-teal-600 transition-all">
-                <i class="fa-solid fa-trophy mr-3 w-6 text-center"></i>
-                <span>Beceri/Değer Avcısı</span>
+
+            <a id="link-yarisma" href="/yarisma-secim" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-teal-500 hover:bg-teal-600 transition-all">
+                <i class="fa-solid fa-trophy mr-3 w-6 text-center"></i><span>Beceri/Değer Avcısı</span>
             </a>
-            <a id="link-video-istegi" href="/video-istegi"
-                class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-pink-500 hover:bg-pink-600 transition-all">
-                <i class="fa-solid fa-video mr-3 w-6 text-center"></i>
-                <span>Video İsteği</span>
+
+            <a id="link-video-istegi" href="/video-istegi" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-pink-500 hover:bg-pink-600 transition-all">
+                <i class="fa-solid fa-video mr-3 w-6 text-center"></i><span>Video İsteği</span>
             </a>
         </nav>
 
+        {% else %}
+        <nav class="flex-1 overflow-y-auto p-2 space-y-1 no-bounce">
+            <a id="link-soru-uretim" href="/soru-uretim" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-600 transition-all">
+                <i class="fa-solid fa-circle-question mr-3 w-6 text-center"></i><span>Soru Üretim</span>
+            </a>
+            
+            <a id="link-metin-olusturma" href="/metin-olusturma" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-purple-500 hover:bg-purple-600 transition-all">
+                <i class="fa-solid fa-wand-magic-sparkles mr-3 w-6 text-center"></i><span>Metin Oluşturma</span>
+            </a>
+            
+            <a id="link-podcast" href="/podcast_paneli" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all">
+                <i class="fa-solid fa-microphone-lines mr-3 w-6 text-center"></i><span>Podcast Yap</span>
+            </a>
+            
+            <a id="link-yarisma" href="/yarisma-secim" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-teal-500 hover:bg-teal-600 transition-all">
+                <i class="fa-solid fa-trophy mr-3 w-6 text-center"></i><span>Beceri/Değer Avcısı</span>
+            </a>
+            
+            <a id="link-video-istegi" href="/video-istegi" class="flex items-center mx-2 p-2 rounded-lg text-white font-semibold bg-pink-500 hover:bg-pink-600 transition-all">
+                <i class="fa-solid fa-video mr-3 w-6 text-center"></i><span>Video İsteği</span>
+            </a>
+        </nav>
+        {% endif %}
+        ```
         <div class="p-4 border-t border-gray-200">
             <a href="/"
                 class="flex items-center mx-2 p-2 rounded-lg text-red-600 font-semibold bg-gray-100 hover:bg-red-100 hover:text-red-700 transition-all">
