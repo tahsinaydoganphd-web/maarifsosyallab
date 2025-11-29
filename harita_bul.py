@@ -832,12 +832,32 @@ HARITADA_BUL_HTML = """
 # --- FLASK ROTALARI (GEMINI BAĞIMLILIĞI KALDIRILDI) ---
 # ###############################################################
 
-# DİKKAT: 'gemini_model' parametresi kaldırıldı!
+# harita_bul.py dosyasında register_harita_bul_routes fonksiyonunun içine ekleyin:
+
 def register_harita_bul_routes(app, GOOGLE_MAPS_API_KEY):
-    """
-    Bu fonksiyon, ana 'app' objesini ve 'GOOGLE_MAPS_API_KEY'i
-    parametre olarak alır ve "Haritada Bul" modülünün rotalarını ana uygulamaya kaydeder.
-    """
+    
+    # ... (Mevcut /haritada-bul rotası burada duruyor) ...
+
+    # 👇👇👇 BU KISMI EKLEYİN (Raporlama için arka kapı) 👇👇👇
+    @app.route('/api/harita/kaydet-inceleme', methods=['POST'])
+    def kaydet_harita_inceleme():
+        try:
+            data = request.get_json()
+            student_no = data.get('student_no')
+            yer_adi = data.get('yer_adi')
+            
+            if not student_no or not yer_adi:
+                return jsonify({"success": False})
+
+            # db_helper'ı burada import edip kullanıyoruz
+            import db_helper
+            db_helper.kaydet_kullanim(student_no, "Haritada Bul", f"{yer_adi} incelendi")
+            
+            return jsonify({"success": True})
+        except Exception as e:
+            print(f"Harita log hatası: {e}")
+            return jsonify({"success": False})
+    # 👆👆👆 EKLEME BİTTİ 👆👆👆
 
     @app.route('/haritada-bul')
     def haritada_bul_page():
