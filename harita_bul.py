@@ -7,7 +7,7 @@
 # 4. Hatalı Google Maps URL'si DÜZELTİLDİ.
 # 5. Boş olan ilk görseller (Derinkuyu, Kaymaklı, Yusufeli) Wikimedia Commons'tan eklendi.
 
-from flask import render_template_string, request, jsonify
+from flask import render_template_string, request, jsonify, session
 import json # JSON işlemleri için import edildi
 
 # ###############################################################
@@ -652,13 +652,23 @@ HARITADA_BUL_HTML = """
         document.addEventListener('DOMContentLoaded', () => {
         
         // --- KULLANICI ADI VE ROL YÜKLEME ---
-        const userFullName = localStorage.getItem('loggedInUserName'); 
-        const userRole = localStorage.getItem('loggedInUserRole'); // Rolü al
-
-        if (userFullName) {
-            document.getElementById('user-name-placeholder').textContent = userFullName;
-            document.getElementById('user-avatar-initial').textContent = userFullName[0] ? userFullName[0].toUpperCase() : 'K';
+        // Flask Session'dan verileri alıyoruz
+        const userFullName = "{{ user_name }}"; 
+        const userRole = "{{ user_role }}";
+        const userNo = "{{ user_no }}"; // Raporlama için gerekli
+        
+        // localStorage yedeği (Opsiyonel, garanti olsun diye)
+        if (userFullName === 'Kullanıcı' && localStorage.getItem('loggedInUserName')) {
+             // Session yoksa localStorage'a bak
         }
+        
+        if (userFullName && userFullName !== 'Kullanıcı') {
+             document.getElementById('user-name-placeholder').textContent = userFullName;
+             document.getElementById('user-avatar-initial').textContent = userFullName[0].toUpperCase();
+        }
+        
+        // Öğrenci numarasını global saklayalım (raporlama için)
+        localStorage.setItem('loggedInUserNo', userNo);
         
         // --- YAN MENÜ ROL KONTROLÜ (NİHAİ DOĞRU VERSİYON) ---
         const linkMetinAnaliz = document.getElementById('link-metin-analiz');
@@ -872,15 +882,22 @@ def register_harita_bul_routes(app, GOOGLE_MAPS_API_KEY):
     def haritada_bul_page():
         """
         Haritada Bul ana sayfasını render eder.
-        Gerekli verileri (bileşenler, yerler, api key) HTML şablonuna gönderir.
+        Session bilgilerini HTML'e gönderir.
         """
-        print("Haritada Bul sayfasına erişim sağlandı")
+        # Session'dan bilgileri al
+        user_name = session.get('name', 'Kullanıcı')
+        user_role = session.get('role', 'student')
+        user_no = session.get('user_no', '')
+    
         return render_template_string(
             HARITADA_BUL_HTML,
             surec_bilesenleri=SUREC_BILESENLERI_HARITA,
-            yer_veritabani=HARITA_VERITABANI, # Yeni, tam veritabanı
-            maps_api_key=GOOGLE_MAPS_API_KEY
-        )
-
+            yer_veritabani=HARITA_VERITABANI,
+            maps_api_key=GOOGLE_MAPS_API_KEY,
+            # HTML'e değişkenleri gönderiyoruz:
+            user_name=user_name,
+            user_role=user_role,
+            user_no=user_no
+    )
     # Gemini API Rotası (@app.route('/api/get-location-details'))
     # ARTIK GEREKLİ DEĞİL VE SİLİNDİ.
