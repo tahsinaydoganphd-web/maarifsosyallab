@@ -102,41 +102,42 @@ def get_student_db_status(student_no):
 def get_ogrenci_durumu(student_no, model=None):
     """
     /basla tarafından çağrılır. 
-    DÜZELTME: Öğrenci sayfaya her girdiğinde puanı ve ilerlemeyi SIFIRLAR.
+    DÜZELTME: Öğrenci sayfaya her girdiğinde puanı, ilerlemeyi VE ROZETLERİ sıfırlar.
+    Böylece tam anlamıyla en baştan başlar.
     """
-    # 1. Mevcut durumu veritabanından çek (Yasaklılık kontrolü için bu veriye ihtiyacımız var)
+    # 1. Mevcut durumu veritabanından çek (Yasaklılık kontrolü için)
     durum = get_student_db_status(student_no)
     
     today_str = datetime.now().strftime("%Y-%m-%d")
     
-    # --- YASAK KONTROLLERİ (AYNEN KORUNDU) ---
-    # Eğer bugün 3 kez elendiyse oyuna almıyoruz.
+    # --- YASAK KONTROLLERİ ---
     if durum.get("son_elenme_tarihi") == today_str and durum.get("gunluk_elenme_sayisi", 0) >= 3:
         return {"success": False, "giris_yasakli": True, "mesaj": "Bugün 3 kez elendiniz. Yarın tekrar deneyin."}
         
-    # Eğer bugün Altın Rozet aldıysa oyuna almıyoruz.
     if durum.get("altin_rozet_tarihi") == today_str:
         return {"success": False, "giris_yasakli": True, "mesaj": "Bugün Altın Rozet aldınız. Yarın tekrar deneyin."}
 
-    # --- SIFIRLAMA İŞLEMİ (YENİ EKLENEN KISIM) ---
-    # Yasaklı değilse, önceki puanı ne olursa olsun sıfırlıyoruz.
+    # --- SIFIRLAMA İŞLEMİ (TAM SIFIRLAMA) ---
     try:
         conn = db_helper.get_db_connection()
         cur = conn.cursor()
         
-        # Puanı ve o anki süreyi sıfırla. (Rozetlere dokunmuyoruz, onlar kalıcı haktır)
+        # 1. Puanı ve süreyi sıfırla
         cur.execute("""
             UPDATE bireysel_skorlar 
             SET dogru_soru_sayisi = 0, toplam_sure_saniye = 0, updated_at = CURRENT_TIMESTAMP
             WHERE student_no = %s
         """, (str(student_no),))
         
+        # 2. ROZETLERİ SİL (Sorunun Çözümü Burası)
+        # Öğrenci yeni oyuna başladığında eski rozetleri görünmesin diye siliyoruz.
+        cur.execute("DELETE FROM ogrenci_rozetler WHERE student_no = %s", (str(student_no),))
+        
         conn.commit()
         cur.close()
         conn.close()
 
-        # Global hafızadan (RAM) bu öğrencinin eski soru paketini siliyoruz.
-        # Böylece 'get_yeni_soru' fonksiyonu yeni ve rastgele 10 soru çekmek zorunda kalacak.
+        # 3. Hafızadaki (RAM) eski oyunu temizle
         global aktif_bireysel_oyunlar
         if str(student_no) in aktif_bireysel_oyunlar:
             del aktif_bireysel_oyunlar[str(student_no)]
@@ -144,13 +145,13 @@ def get_ogrenci_durumu(student_no, model=None):
     except Exception as e:
         print(f"Oyun Sıfırlama Hatası: {e}")
 
-    # Arayüze "Sıfır" bilgisi gönderiyoruz (Eskiden veritabanındaki puanı gönderiyorduk)
+    # Arayüze "Tertemiz" bir sayfa gönder
     return {
         "success": True,
         "giris_yasakli": False,
         "durum": {
-            "dogru_soru_sayisi": 0, # Her zaman 0 ile başlar
-            "rozetler": durum.get("rozetler", []), # Kazanılmış rozetleri korur
+            "dogru_soru_sayisi": 0, 
+            "rozetler": [], # Rozet listesi de boş gönderiliyor
             "toplam_sure_saniye": 0
         }
     }
