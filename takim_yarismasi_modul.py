@@ -245,8 +245,7 @@ class TakimYarismasi:
 
     def soru_iste(self, takim_id, model=None):
         """
-        (SÜRÜM 9 - SABİT LİSTE + MÖ DÜZELTMESİ) 
-        Oyunun soru listesinden sıradaki soruyu alır ve metni temizler.
+        (SÜRÜM 9 - SABİT LİSTE) Oyunun soru listesinden sıradaki soruyu alır.
         """
         if self.yarışma_bitti:
             return {"success": False, "hata": "Yarışma bitti."}
@@ -255,35 +254,20 @@ class TakimYarismasi:
         self.mevcut_soru_numarasi = self.takimlar[takim_id]["puan"] + 1
         soru_no = self.mevcut_soru_numarasi
         
-        # 2. Soruyu OYUNUN LİSTESİNDEN al
+        # 2. Soruyu bankadan değil, OYUNUN LİSTESİNDEN al
         secilen_soru = self.oyun_soru_listesi.get(soru_no)
         
         if not secilen_soru:
-             # Eğer soru yoksa (örn: 11. soru isteniyorsa) oyun bitmiş demektir.
-             # (Burada deadlock çözümünü tetiklemiyoruz, çünkü bu kazanma durumudur)
-             return {"success": False, "hata": "Sorular bitti."}
-
-        # --- MÖ. 3000 DÜZELTMESİ ---
-        temiz_metin = secilen_soru["metin"]
-        temiz_metin = temiz_metin.replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
-        temiz_metin = temiz_metin.replace("MS.", "MS").replace("M.S.", "MS")
-        temiz_metin = temiz_metin.replace("vb.", "vb")
-        
-        beceri_c = secilen_soru["beceri_cumlesi"].replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
-        deger_c = secilen_soru["deger_cumlesi"].replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
-
-        # Veriyi kopyalayarak güncelle
-        soru_kopya = secilen_soru.copy()
-        soru_kopya["metin"] = temiz_metin
-        soru_kopya["beceri_cumlesi"] = beceri_c
-        soru_kopya["deger_cumlesi"] = deger_c
-        # ---------------------------
+             print(f"HATA: Soru {soru_no} oyun listesinde bulunamadı! Banka boş olabilir.")
+             return {"success": False, "hata": f"Soru {soru_no} oyun listesinde bulunamadı!"}
 
         # 3. Oyunu güncelle
         self.takimlar[takim_id]["son_soru_zamani"] = datetime.now().isoformat()
         
-        self.mevcut_soru_verisi = soru_kopya
+        # Soru verisini (cevap anahtarı) hafızaya al
+        self.mevcut_soru_verisi = secilen_soru
         
+        # Takımın durumunu sıfırla
         self.takimlar[takim_id]["bulunan_beceri"] = False
         self.takimlar[takim_id]["bulunan_deger"] = False
         self.takimlar[takim_id]["kalan_deneme_hakki"] = 3
@@ -294,9 +278,9 @@ class TakimYarismasi:
         return {
             "success": True,
             "soru_numarasi": self.mevcut_soru_numarasi,
-            "metin": soru_kopya["metin"],
-            "beceri_adi": soru_kopya["beceri_adi"],
-            "deger_adi": soru_kopya["deger_adi"]
+            "metin": secilen_soru["metin"],
+            "beceri_adi": secilen_soru["beceri_adi"],
+            "deger_adi": secilen_soru["deger_adi"]
         }
 
     def cevap_ver(self, takim_id, tiklanan_tip, tiklanan_cumle):
@@ -443,40 +427,22 @@ class TakimYarismasi:
             if uye_sayisi > 1:
                 takim["aktif_uye_index"] = (takim["aktif_uye_index"] + 1) % uye_sayisi
     
-   def siradaki_takima_gec(self):
-        """(DÜZELTİLDİ: Deadlock Çözümü) Sırayı elenmemiş bir sonraki takıma geçirir."""
+    def siradaki_takima_gec(self):
+        """Manuel olarak sıradaki takıma geçer."""
         if self.yarışma_bitti:
             return {"success": False, "hata": "Yarışma bitti."}
-
-        if not self.takimlar: 
-            return {"success": False, "hata": "Takım yok."}
-
-        takim_ids = sorted(list(self.takimlar.keys()), key=lambda x: int(x.split('_')[1]))
         
-        # Şu anki takımın indexini bul
-        su_anki_index = -1
-        if self.siradaki_takim_id in takim_ids:
-            su_anki_index = takim_ids.index(self.siradaki_takim_id)
-
-        # Bir sonraki SAĞLAM takımı bulmak için döngü
-        # Kendisi dahil herkesi kontrol et (len + 1)
-        for i in range(1, len(takim_ids) + 1):
-            bakiilacak_index = (su_anki_index + i) % len(takim_ids)
-            aday_id = takim_ids[bakiilacak_index]
-            
-            # Bu takım aktif mi (elenmemiş mi)?
-            if self.takimlar[aday_id].get("aktif", True):
-                self.siradaki_takim_id = aday_id
-                self.mevcut_soru_verisi = None # Yeni takım için ekranı temizle
-                return {"success": True, "yeni_aktif_takim_id": aday_id}
-
-        # Döngü bitti ve return olmadıysa -> HERKES ELENMİŞ DEMEKTİR
-        print("⚠️ Kimse kalmadı, oyun bitiriliyor.")
-        kazanan = self._yarismayi_bitir(kazanan_id=None) # Kazanansız bitir (veya puanı en yüksek olanı seç)
-        return {"success": True, "mesaj": "Herkes elendi, oyun bitti.", "kazanan_id": kazanan}
+        self.aktif_takim_index = (self.aktif_takim_index + 1) % len(self.takimlar)
+        self.mevcut_soru_verisi = None
+        
+        yeni_aktif_takim_id = self.get_aktif_takim_id()
+        if yeni_aktif_takim_id:
+            return {"success": True, "yeni_aktif_takim_id": yeni_aktif_takim_id}
+        else:
+            return {"success": True, "yeni_aktif_takim_id": None, "mesaj": "Oyun bitti."}
             
     def _yarismayi_bitir(self, kazanan_id=None):
-        """(GÜNCELLENDİ) Yarışmayı bitirir. Kazanan yoksa en yüksek puanlıyı seçer."""
+        """(Kural 11, 13) Yarışmayı bitirir, kazananı ve dereceyi belirler."""
         if self.yarışma_bitti:
             return self.kazanan_takim_id
             
@@ -484,16 +450,27 @@ class TakimYarismasi:
         
         if kazanan_id:
              self.kazanan_takim_id = kazanan_id
+             # --- YENİ: Derece Kontrolü ---
+             import takim_yarismasi_modul as ty # Kendini import et (skor yüklemek için)
+             skorlar = ty.load_takim_skorlari()
+             kazanan_takim = self.takimlar[kazanan_id]
+             
+             # Mevcut 10. skorla karşılaştır
+             if len(skorlar) < 10:
+                 self.dereceye_girdi_mi = True
+             else:
+                 en_kotu_skor = skorlar[-1]
+                 # Basit karşılaştırma: Puanı yüksekse veya (puan eşitse süresi kısaysa)
+                 if (kazanan_takim["puan"] > en_kotu_skor["soru_sayisi"]) or \
+                    (kazanan_takim["puan"] == en_kotu_skor["soru_sayisi"] and kazanan_takim["toplam_sure_saniye"] < en_kotu_skor["toplam_sure_saniye"]):
+                     self.dereceye_girdi_mi = True
+             # -----------------------------
+             print(f"Yarışma bitti. Kazanan: {kazanan_id}. Dereceye girdi mi: {self.dereceye_girdi_mi}")
         else:
-            # Kimse 10. soruyu bitiremediyse (Herkes elendi), puanı en yüksek olan kazanır
-            sirali = sorted(self.takimlar.values(), key=lambda x: (-x["puan"], x["toplam_sure_saniye"]))
-            if sirali:
-                self.kazanan_takim_id = sirali[0]["id"]
-                print(f"Herkes elendi. Puanla kazanan: {self.kazanan_takim_id}")
-            else:
-                self.kazanan_takim_id = None
+            # Kimse kazanamadıysa (Herkes elendi)
+            self.kazanan_takim_id = None
+            self.dereceye_girdi_mi = False
 
-        # ... (Dereceye girdi mi kontrolü buranın altında devam eder) ...
         return self.kazanan_takim_id
 
     def durumu_json_yap(self):
