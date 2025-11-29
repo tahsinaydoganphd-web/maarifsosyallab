@@ -114,6 +114,7 @@ class TakimYarismasi:
         self.kazanan_takim_id = None
         self.aktif_takim_index = 0 
         self.tur_numarasi = 1
+        
         # --- YENİ: Son Olay Hafızası (İzleyiciler için) ---
         self.son_olay = {"zaman": 0, "mesaj": "", "tur": "", "detay": {}}
         self.dereceye_girdi_mi = False # İlk 10'a girdi mi?
@@ -122,7 +123,9 @@ class TakimYarismasi:
         # Oyunun 10 sorusunu en başta oluşturur ve hafızaya alır
         self.oyun_soru_listesi = self._oyun_sorularini_olustur()
         # --- BİTTİ ---
-       if self.takimlar:
+
+        # --- HİZALAMASI DÜZELTİLEN KISIM ---
+        if self.takimlar:
             # takim_0, takim_1 şeklindeki ID'leri numarasına göre sırala
             sirali_idler = sorted(list(self.takimlar.keys()), key=lambda x: int(x.split('_')[1]))
             self.siradaki_takim_id = sirali_idler[0]
@@ -575,4 +578,5 @@ class TakimYarismasi:
             "son_olay": self.son_olay,
             "dereceye_girdi_mi": self.dereceye_girdi_mi 
         }
+
 
