@@ -527,43 +527,68 @@ class TakimYarismasi:
 
         return self.kazanan_takim_id
 
-    def durumu_json_yap(self):
-        """Oyunun mevcut durumunu JSON'a hazırlar."""
+    def durumu_json_yap(self, izleyen_no=None, izleyen_rol="student"):
+        """
+        (GÜVENLİK GÜNCELLEMESİ) 
+        Oyun durumunu isteyene göre filtreleyerek (Soruyu gizleyerek/göstererek) hazırlar.
+        """
         
         aktif_takim_id = self.get_aktif_takim_id()
-        
         kalan_saniye = 60
         mevcut_soru_kisitli_veri = None
         
-        # --- YENİ: Dönüşümlü Kaptan ID'sini Bulma ---
+        # --- 1. KİMLİK KONTROLÜ: Soruyu Göstermeli miyiz? ---
+        soruyu_goster = False
+        
+        # A. Öğretmense veya Oyun Bittiyse -> HERKES GÖRÜR
+        if izleyen_rol == "teacher" or izleyen_rol == "admin" or self.yarışma_bitti:
+            soruyu_goster = True
+            
+        # B. Aktif Takım Üyesiyse -> GÖRÜR
+        elif aktif_takim_id:
+            aktif_takim = self.takimlar[aktif_takim_id]
+            # İzleyen öğrenci bu takımın listesinde var mı?
+            for uye in aktif_takim["uyeler"]:
+                if str(uye["no"]).strip() == str(izleyen_no).strip():
+                    soruyu_goster = True
+                    break
+        # ----------------------------------------------------
+
+        # --- 2. AKTİF KAPTAN KİM? ---
         aktif_takim_kaptani_id = None
         if aktif_takim_id:
             aktif_takim = self.takimlar[aktif_takim_id]
             if aktif_takim["uyeler"]:
-                su_anki_index = aktif_takim["aktif_uye_index"]
-                # Index taşmasını önle
-                su_anki_index = su_anki_index % len(aktif_takim["uyeler"])
-                
-                raw_id = aktif_takim["uyeler"][su_anki_index]["no"]
-                aktif_takim_kaptani_id = str(raw_id).strip()
+                su_anki_index = aktif_takim["aktif_uye_index"] % len(aktif_takim["uyeler"])
+                aktif_takim_kaptani_id = str(aktif_takim["uyeler"][su_anki_index]["no"]).strip()
 
+        # --- 3. VERİ PAKETİNİ HAZIRLA ---
         if aktif_takim_id:
-            # Soru numarasını takımın puanına göre ayarla
             self.mevcut_soru_numarasi = self.takimlar[aktif_takim_id]["puan"] + 1
 
             if self.mevcut_soru_verisi:
+                # Süreyi hesapla
                 try:
-                    zaman_baslangici = datetime.fromisoformat(self.takimlar[aktif_takim_id]["son_soru_zamani"])
-                    gecen_saniye = (datetime.now() - zaman_baslangici).total_seconds()
-                    kalan_saniye = max(0, 60 - int(gecen_saniye))
+                    zaman = datetime.fromisoformat(self.takimlar[aktif_takim_id]["son_soru_zamani"])
+                    fark = (datetime.now() - zaman).total_seconds()
+                    kalan_saniye = max(0, 60 - int(fark))
                 except:
                     kalan_saniye = 60
                 
-                mevcut_soru_kisitli_veri = {
-                    "metin": self.mevcut_soru_verisi["metin"],
-                    "beceri_adi": self.mevcut_soru_verisi["beceri_adi"],
-                    "deger_adi": self.mevcut_soru_verisi["deger_adi"]
-                }
+                # GÜVENLİK FİLTRESİ: Sadece izinliyse soruyu pakete koy
+                if soruyu_goster:
+                    mevcut_soru_kisitli_veri = {
+                        "metin": self.mevcut_soru_verisi["metin"],
+                        "beceri_adi": self.mevcut_soru_verisi["beceri_adi"],
+                        "deger_adi": self.mevcut_soru_verisi["deger_adi"]
+                    }
+                else:
+                    # İzin yoksa boş/gizli gönder
+                    mevcut_soru_kisitli_veri = {
+                        "metin": "Sıra diğer takımda. Lütfen bekleyiniz...",
+                        "beceri_adi": "???",
+                        "deger_adi": "???"
+                    }
             
         return {
             "takimlar": list(self.takimlar.values()),
@@ -574,9 +599,11 @@ class TakimYarismasi:
             "kazanan_takim_id": self.kazanan_takim_id,
             "kalan_saniye": kalan_saniye,
             "mevcut_soru_numarasi": self.mevcut_soru_numarasi,
-            "mevcut_soru_verisi": mevcut_soru_kisitli_veri,
+            "mevcut_soru_verisi": mevcut_soru_kisitli_veri, # Filtrelenmiş veri
             "son_olay": self.son_olay,
-            "dereceye_girdi_mi": self.dereceye_girdi_mi 
+            "dereceye_girdi_mi": self.dereceye_girdi_mi,
+            "izleyen_kim": str(izleyen_no) # Frontend kontrolü için
         }
+
 
 
