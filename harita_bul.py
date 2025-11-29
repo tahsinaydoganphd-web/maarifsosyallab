@@ -711,25 +711,34 @@ HARITADA_BUL_HTML = """
                     return;
                 }
                 
-                yerler.forEach(yer => {
-                    const item = document.createElement('div');
-                    item.className = 'yer-listesi-item p-4';
-                    item.innerHTML = `
-                        <h5 class="font-semibold text-gray-800">${yer.yer_adi}</h5>
-                        <p class="text-sm text-gray-600 truncate italic">"${yer.cumle}"</p>
-                        <span class="text-xs text-gray-400">Sayfa: ${yer.sayfa}</span>
-                    `;
-                    item.addEventListener('click', () => {
-                        if (aktifYerItem) {
-                            aktifYerItem.classList.remove('active');
-                        }
-                        item.classList.add('active');
-                        aktifYerItem = item;
-                        fetchYerDetaylari(yer); // yer objesinin tamamını gönder
-                    });
-                    yerListesiContainer.appendChild(item);
-                });
-            });
+               yerler.forEach(yer => {
+    const item = document.createElement('div');
+    // ... (item oluşturma kodları) ...
+
+        item.addEventListener('click', () => {
+            if (aktifYerItem) {
+                aktifYerItem.classList.remove('active');
+            }
+            item.classList.add('active');
+            aktifYerItem = item;
+            fetchYerDetaylari(yer); 
+    
+            // 👇👇👇 BU KISMI EKLEYİN (Tıklayınca sunucuya haber ver) 👇👇👇
+            const activeUserNo = localStorage.getItem('loggedInUserNo');
+            if (activeUserNo) {
+                fetch('/api/harita/kaydet-inceleme', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        student_no: activeUserNo, 
+                        yer_adi: yer.yer_adi 
+                    })
+                }).catch(err => console.error("Loglama hatası:", err));
+            }
+            // 👆👆👆 EKLEME BİTTİ 👆👆👆
+        });
+        yerListesiContainer.appendChild(item);
+    });
             
             function resetDetayPaneli() {
                 baslangicMesaji.style.display = 'flex';
