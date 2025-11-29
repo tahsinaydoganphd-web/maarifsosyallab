@@ -309,128 +309,95 @@ class TakimYarismasi:
         }
 
     def cevap_ver(self, takim_id, tiklanan_tip, tiklanan_cumle):
-        """(Kural 1, 60s, Butonlar) Bir takımın cevabını işler."""
-        if self.yarışma_bitti:
-            return {"success": False, "hata": "Yarışma bitti."}
+        """(DÜZELTİLDİ: Tek Takım Kaldığında Rozet Sonrası Devam Etme)"""
+        if self.yarışma_bitti: return {"success": False, "hata": "Yarışma bitti."}
             
         takim = self.takimlar.get(takim_id)
-        if not takim or not takim["aktif"]:
-            return {"success": False, "hata": "Takım bulunamadı veya elendi."}
+        if not takim or not takim.get("aktif", True) or takim.get("elendi", False):
+            return {"success": False, "hata": "Takım elendi."}
         
-        if not self.mevcut_soru_verisi:
-            return {"success": False, "hata": "Aktif soru bulunamadı. Lütfen önce 'Soruyu Göster'e basın."}
+        if not self.mevcut_soru_verisi: return {"success": False, "hata": "Aktif soru yok."}
 
-        # Süre kontrolü (Kural 60s)
-        zaman_baslangici = datetime.fromisoformat(takim["son_soru_zamani"])
-        harcanan_sure = (datetime.now() - zaman_baslangici).total_seconds()
-        
-        if tiklanan_cumle == "SÜRE DOLDU" or harcanan_sure > 60:
-            takim["aktif"] = False # Elendi
-            takim["toplam_sure_saniye"] += 60
-            self.mevcut_soru_verisi = None
-            print(f"Takım {takim['isim']} süre dolduğu için elendi.")
-            return {"success": True, "sonuc": "elendi", "mesaj": "Süre dolduğu için elendiniz.", "guncel_takim_durumu": takim}
-
-        # Cevap anahtarını ve tıklanan cümleyi al
-        dogru_beceri_cumlesi = self.mevcut_soru_verisi["beceri_cumlesi"].strip()
-        dogru_deger_cumlesi = self.mevcut_soru_verisi["deger_cumlesi"].strip()
-        tiklanan_cumle = tiklanan_cumle.strip()
+        # Cevapları karşılaştır
+        dogru_beceri = self.mevcut_soru_verisi["beceri_cumlesi"].strip()
+        dogru_deger = self.mevcut_soru_verisi["deger_cumlesi"].strip()
+        tiklanan = tiklanan_cumle.strip()
 
         sonuc = "yanlis"
-        mesaj = f"Yanlış eşleştirme. Kalan deneme hakkınız: {takim['kalan_deneme_hakki'] - 1}"
+        mesaj = "Yanlış cevap!"
 
-        # 1. Doğru Buton + Doğru Cümle (Beceri)
-        if tiklanan_tip == "beceri" and tiklanan_cumle == dogru_beceri_cumlesi:
+        # Doğru mu?
+        if (tiklanan_tip == "beceri" and tiklanan == dogru_beceri):
             takim["bulunan_beceri"] = True
             sonuc = "dogru_parca"
-            mesaj = "Beceri cümlesi doğru! Şimdi değeri bulun."
-        
-        # 2. Doğru Buton + Doğru Cümle (Değer)
-        elif tiklanan_tip == "deger" and tiklanan_cumle == dogru_deger_cumlesi:
+        elif (tiklanan_tip == "deger" and tiklanan == dogru_deger):
             takim["bulunan_deger"] = True
             sonuc = "dogru_parca"
-            mesaj = "Değer cümlesi doğru! Şimdi beceriyi bulun."
-        
         else:
-            # SADECE YANLIŞ CEVAPLARDA hak düşür (Kural 1)
+            # YANLIŞ -> Hak düşür
             takim["kalan_deneme_hakki"] -= 1
-        
-        # Durum kontrolü:
-        
-        # A. Soru Bitti mi? (Her iki parça da bulunduysa)
-        if takim["bulunan_beceri"] and takim["bulunan_deger"]:
-            takim["puan"] += 1
-            takim["toplam_sure_saniye"] += harcanan_sure
-            self.mevcut_soru_verisi = None 
-            
-            self._rozet_guncelle(takim) # Rozeti hesapla
-            
-            puan = takim["puan"]
-            
-            # --- YENİ KURAL MANTIĞI (2-7-10 SİSTEMİ) ---
-            
-            # 1. KAZANMA (10. Soruyu Yapan İlk Takım)
-            if puan >= 10:
-                self._yarismayi_bitir(kazanan_id=takim_id)
-                sonuc = "oyun_bitti"
-                mesaj = f"TEBRİKLER! {takim['isim']} 10 soruyu tamamladı ve ALTIN ROZET ile kazandı!"
-
-            # 2. TUR BİTİŞ NOKTALARI (2. ve 7. Sorular - DURAKLAR)
-            # Kural: Puan 2 veya 7 olduğunda "tur_bitti" diyerek sırayı diğer takıma salar.
-            elif puan == 2: 
-                sonuc = "tur_bitti"
-                mesaj = f"TEBRİKLER! {takim['isim']} 2. soruyu bildi ve BRONZ rozeti aldı! Sıra diğer takıma geçiyor."
-            elif puan == 7:
-                sonuc = "tur_bitti"
-                mesaj = f"TEBRİKLER! {takim['isim']} 7. soruyu bildi ve GÜMÜŞ rozeti aldı! Sıra diğer takıma geçiyor."
+            if takim["kalan_deneme_hakki"] <= 0:
+                takim["elendi"] = True
+                takim["aktif"] = False
                 
-            # 3. DEVAM ETME (Ara Sorular: 1, 3, 4, 5, 6, 8, 9)
-            # Kural: Durak noktası değilse aynı takım devam eder.
+                # Aktif takım kaldı mı?
+                aktifler = [t for t in self.takimlar.values() if not t.get("elendi", False)]
+                
+                if len(aktifler) == 0:
+                    self.oyunu_bitir_ve_kazanani_belirle()
+                    return {"success": False, "sonuc": "elendi", "oyun_bitti": True, "mesaj": "Herkes elendi! Oyun bitti."}
+                elif len(aktifler) == 1:
+                    self.kazanan_takim_id = aktifler[0]["id"]
+                    self.yarışma_bitti = True
+                    return {"success": False, "sonuc": "elendi", "oyun_bitti": True, "mesaj": f"Elendiniz! Kazanan: {aktifler[0]['isim']}"}
+                else:
+                    self.siradaki_takima_gec()
+                    return {"success": False, "sonuc": "elendi", "mesaj": "Elendiniz, sıra diğer takımda."}
             else:
-                sonuc = "soru_bitti_devam_et"
-                mesaj = f"Doğru! {puan}. soruyu tamamladınız. Sıradaki soruya devam!"
-            # -------------------------------------------
+                return {"success": False, "sonuc": "yanlis", "mesaj": f"Yanlış! Kalan hak: {takim['kalan_deneme_hakki']}"}
 
-        # B. Elendi mi?
-        elif takim["kalan_deneme_hakki"] <= 0:
-            takim["aktif"] = False
-            takim["toplam_sure_saniye"] += harcanan_sure
-            self.mevcut_soru_verisi = None 
-            sonuc = "elendi"
-            mesaj = "3 deneme hakkınız bittiği için elendiniz."
+        # Parça Doğruysa Tamamlandı mı?
+        if sonuc == "dogru_parca":
+            if takim["bulunan_beceri"] and takim["bulunan_deger"]:
+                takim["puan"] += 1
+                self.mevcut_soru_verisi = None
+                
+                # Rozet Güncelle
+                p = takim["puan"]
+                if p >= 10: takim["rozet"] = "altin"
+                elif p >= 7: takim["rozet"] = "gümüş"
+                elif p >= 2: takim["rozet"] = "bronz"
+                
+                # --- KAZANMA (10. Soru) ---
+                if p >= 10:
+                    self.kazanan_takim_id = takim_id
+                    self.yarışma_bitti = True
+                    return {"success": True, "sonuc": "oyun_bitti", "mesaj": "KAZANDINIZ!"}
+                
+                # --- ROZET / TUR GEÇİŞ KONTROLÜ (KRİTİK DÜZELTME) ---
+                elif p == 2 or p == 7:
+                    # Başka aktif takım var mı?
+                    baska_aktif_var_mi = False
+                    for t_id, t_data in self.takimlar.items():
+                        if t_id != takim_id and not t_data.get("elendi", False):
+                            baska_aktif_var_mi = True
+                            break
+                    
+                    rozet_adi = "BRONZ" if p == 2 else "GÜMÜŞ"
+                    
+                    if baska_aktif_var_mi:
+                        # Başkası varsa sıra ona geçer (Normal Kural)
+                        self.siradaki_takima_gec()
+                        return {"success": True, "sonuc": "tur_bitti", "mesaj": f"Tebrikler! {rozet_adi} rozet aldınız. Sıra değişiyor."}
+                    else:
+                        # Başkası yoksa beklemene gerek yok, DEVAM ET!
+                        return {"success": True, "sonuc": "soru_bitti_devam_et", "mesaj": f"Tebrikler! {rozet_adi} rozet aldınız. Tek kaldığınız için devam ediyorsunuz!"}
 
-        # 👇👇👇 BURADAN AŞAĞISINI KONTROL EDİN 👇👇👇
-        
-        # --- 1. SON OLAYI KAYDET (İzleyiciler İçin) ---
-        import time
-        
-        # Olay türünü belirle (renk için)
-        olay_turu = "info"
-        if sonuc == "yanlis" or sonuc == "elendi": 
-            olay_turu = "error"
-        elif sonuc == "dogru_parca" or "TEBRİKLER" in mesaj: 
-            olay_turu = "success"
-
-        # Hafızaya kaydet
-        self.son_olay = {
-            "zaman": time.time(),
-            "mesaj": mesaj,
-            "tur": olay_turu,
-            "detay": {
-                "tiklanan_cumle": tiklanan_cumle,
-                "tiklanan_tip": tiklanan_tip,
-                "sonuc": sonuc
-            }
-        }
-
-        # --- 2. SIRA DEĞİŞTİRME ---
-        # Eğer işlem bittiyse (Soru bildi, Yanlış yaptı, Elendi veya Tur bitti)
-        # Sadece "dogru_parca" (yani yarım kalan iş) değilse sıra değişsin.
-        if sonuc != "dogru_parca": 
-            self._takim_ici_sirayi_degistir(takim_id)
-
-        # --- 3. SONUCU DÖNDÜR ---
-        return {"success": True, "sonuc": sonuc, "mesaj": mesaj, "guncel_takim_durumu": takim}
+                else:
+                    # Ara sorularda devam
+                    return {"success": True, "sonuc": "soru_bitti_devam_et", "mesaj": "Soru bitti, devam!"}
+            
+            return {"success": True, "sonuc": "dogru_parca", "mesaj": "Doğru, devam et."}
         
     def _rozet_guncelle(self, takim):
         """(Kural 1) Takımın puanına göre rozet durumunu günceller (2-7-10 kuralı)"""
@@ -615,6 +582,7 @@ class TakimYarismasi:
             "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "izleyen_kim": str(izleyen_no) 
         }
+
 
 
 
