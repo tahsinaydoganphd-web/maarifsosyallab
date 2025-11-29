@@ -355,11 +355,23 @@
                     tbody.innerHTML = "";
                     if (res.success && res.data.length > 0) {
                         res.data.forEach(row => {
-                            // --- İSİM DÜZELTMESİ ---
-                            const ad = row.ad_soyad || (row.ad + " " + row.soyad) || (row.first_name + " " + row.last_name) || "İsimsiz";
+                            // --- DÜZELTME BURADA YAPILDI ---
+                            // Önce veritabanından gelen gerçek anahtarları (first_name, last_name) kontrol ediyoruz.
+                            let ad = "İsimsiz";
                             
-                            // --- NUMARA DÜZELTMESİ ---
-                            // Veritabanı 'no' gönderiyor, kod 'student_no' arıyordu. İkisini de kontrol ediyoruz.
+                            if (row.first_name || row.last_name) {
+                                ad = (row.first_name || "") + " " + (row.last_name || "");
+                            } else if (row.ad || row.soyad) {
+                                ad = (row.ad || "") + " " + (row.soyad || "");
+                            } else if (row.ad_soyad) {
+                                ad = row.ad_soyad;
+                            }
+                            
+                            ad = ad.trim();
+                            if (ad === "") ad = "İsimsiz Öğrenci";
+                            // -------------------------------
+                            
+                            // Numara kontrolü
                             const ogrenciNo = row.no || row.student_no || '-';
 
                             tbody.innerHTML += `<tr>
@@ -789,3 +801,4 @@
 </script>
 </body>
 </html>
+
