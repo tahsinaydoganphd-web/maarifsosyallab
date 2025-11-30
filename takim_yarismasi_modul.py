@@ -21,11 +21,12 @@ def load_soru_bankasi():
         zor = []
         
         for s in sorular:
-            if s.get('zorluk') == 'kolay':
+            z = s.get('zorluk')
+            if z == 'kolay':
                 kolay.append(s)
-            elif s.get('zorluk') == 'orta':
+            elif z == 'orta':
                 orta.append(s)
-            elif s.get('zorluk') == 'zor':
+            elif z == 'zor':
                 zor.append(s)
                 
         return {"kolay": kolay, "orta": orta, "zor": zor}
@@ -51,7 +52,7 @@ def save_takim_skorlari(data):
     except:
         pass
 
-def kaydet_yarışma_sonucu(takim_adi, rozet, soru_sayisi, toplam_sure, okul, sinif):
+def kaydet_yarisma_sonucu(takim_adi, rozet, soru_sayisi, toplam_sure, okul, sinif):
     try:
         skor_tablosu = load_takim_skorlari()
         rozet_degeri = {"altin": 3, "gümüş": 2, "bronz": 1, "yok": 0}
@@ -69,7 +70,6 @@ def kaydet_yarışma_sonucu(takim_adi, rozet, soru_sayisi, toplam_sure, okul, si
         }
         
         skor_tablosu.append(yeni_skor)
-        # Sıralama: Rozet > Soru Sayısı > Süre (Az olan iyi)
         skor_tablosu.sort(key=lambda x: (-x["rozet_degeri"], -x["soru_sayisi"], x["toplam_sure_saniye"]))
         
         save_takim_skorlari(skor_tablosu[:10])
@@ -81,7 +81,7 @@ class TakimYarismasi:
         self.takimlar = self._takimlari_baslat(takimlar_listesi) 
         self.okul = okul
         self.sinif = sinif
-        self.yarışma_bitti = False 
+        self.yarisma_bitti = False 
         self.bitis_mesaji = ""
         self.mevcut_soru_numarasi = 1
         self.mevcut_soru_verisi = None 
@@ -134,7 +134,7 @@ class TakimYarismasi:
         return oyun_takimlari
 
     def _oyun_bitti_mi_kontrol_et(self):
-        if self.yarışma_bitti:
+        if self.yarisma_bitti:
             return True
 
         aktif_takimlar = []
@@ -152,20 +152,17 @@ class TakimYarismasi:
                 if t["puan"] > max_elenen_puan:
                     max_elenen_puan = t["puan"]
 
-        # DURUM 1: Tek Aktif Takım Kaldıysa (SURVIVOR KURALI)
         if len(aktif_takimlar) == 1:
             hayatta_kalan = aktif_takimlar[0]
             if hayatta_kalan["puan"] > max_elenen_puan:
                 self._yarismayi_bitir(kazanan_id=hayatta_kalan["id"])
                 return True
         
-        # DURUM 2: Herkes Elendiyse (TIE-BREAKER KURALI)
         if len(aktif_takimlar) == 0:
             en_yuksek_puan = max_elenen_puan
             
-            # KURAL 3: BRONZ BARAJI
             if en_yuksek_puan < 2:
-                self._yarismayi_bitir(kazanan_id=None, ozel_mesaj="2. Soruyu Bilerek Bronz Rozet Alan Takım Olmadığı İçin 1. Yoktur.")
+                self._yarismayi_bitir(kazanan_id=None, ozel_mesaj="2. Soruyu gecen olmadigi icin kazanan yoktur.")
                 return True
             
             liderler = []
@@ -174,6 +171,7 @@ class TakimYarismasi:
                     liderler.append(t)
             
             liderler.sort(key=lambda x: x["toplam_sure_saniye"])
+            
             if len(liderler) > 0:
                 kazanan = liderler[0]
                 self._yarismayi_bitir(kazanan_id=kazanan["id"])
@@ -215,7 +213,7 @@ class TakimYarismasi:
         return False
 
     def soru_iste(self, takim_id):
-        if self.yarışma_bitti:
+        if self.yarisma_bitti:
             return {"success": False}
         
         if self._oyun_bitti_mi_kontrol_et():
@@ -240,14 +238,24 @@ class TakimYarismasi:
             "deger_adi": soru["deger_adi"]
         }
 
-    def cevap_ver(self, takim_id, tip, cumle):
-        if self.yarışma_bitti or not self.mevcut_soru_verisi:
+    # --- DÜZELTME BURADA: Parametre isimleri 'tiklanan_tip' ve 'tiklanan_cumle' olarak güncellendi ---
+    def cevap_ver(self, takim_id, tiklanan_tip, tiklanan_cumle):
+        if self.yarisma_bitti or not self.mevcut_soru_verisi:
             return {"success": False}
         
         takim = self.takimlar[takim_id]
-        start = datetime.fromisoformat(takim["son_soru_zamani"])
+        
+        try:
+            start = datetime.fromisoformat(takim["son_soru_zamani"])
+        except:
+            start = datetime.now()
+
         gecen = (datetime.now() - start).total_seconds()
         
+        # Parametre isimlerini kod içinde kullandığım değişkenlere eşitleyelim
+        tip = tiklanan_tip
+        cumle = tiklanan_cumle.strip() if tiklanan_cumle else ""
+
         if cumle == "SÜRE DOLDU" or gecen > 65:
             takim["aktif"] = False
             takim["toplam_sure_saniye"] += 60
@@ -261,7 +269,6 @@ class TakimYarismasi:
 
         dbeceri = self.mevcut_soru_verisi["beceri_cumlesi"].strip()
         ddeger = self.mevcut_soru_verisi["deger_cumlesi"].strip()
-        cumle = cumle.strip()
         
         sonuc = "yanlis"
         mesaj = "Yanlış!"
@@ -335,23 +342,23 @@ class TakimYarismasi:
             t["aktif_uye_index"] = (t["aktif_uye_index"] + 1) % len(t["uyeler"])
 
     def siradaki_takima_gec(self):
-        if self.yarışma_bitti:
+        if self.yarisma_bitti:
             return
         self.aktif_takim_index += 1
         self.mevcut_soru_verisi = None
 
     def _yarismayi_bitir(self, kazanan_id=None, ozel_mesaj=None):
-        if self.yarışma_bitti:
+        if self.yarisma_bitti:
             return self.kazanan_takim_id
         
-        self.yarışma_bitti = True
+        self.yarisma_bitti = True
         self.kazanan_takim_id = kazanan_id
         self.mevcut_soru_verisi = None
         self.bitis_mesaji = ozel_mesaj if ozel_mesaj else ""
         
         if kazanan_id:
             k = self.takimlar[kazanan_id]
-            kaydet_yarışma_sonucu(k["isim"], k["rozet"], k["puan"], k["toplam_sure_saniye"], self.okul, self.sinif)
+            kaydet_yarisma_sonucu(k["isim"], k["rozet"], k["puan"], k["toplam_sure_saniye"], self.okul, self.sinif)
             
             s = load_takim_skorlari()
             
@@ -382,7 +389,11 @@ class TakimYarismasi:
                 kid = str(t["uyeler"][idx]["no"]).strip()
             
             if self.mevcut_soru_verisi:
-                start = datetime.fromisoformat(t["son_soru_zamani"])
+                try:
+                    start = datetime.fromisoformat(t["son_soru_zamani"])
+                except:
+                    start = datetime.now()
+                    
                 gecen = (datetime.now() - start).total_seconds()
                 ks = max(0, 60 - int(gecen))
                 
@@ -396,7 +407,7 @@ class TakimYarismasi:
             "takimlar": list(self.takimlar.values()),
             "aktif_takim_id": aid,
             "aktif_takim_kaptani_id": kid,
-            "yarışma_bitti": self.yarışma_bitti,
+            "yarışma_bitti": self.yarisma_bitti,
             "kazanan_takim_id": self.kazanan_takim_id,
             "kalan_saniye": ks,
             "mevcut_soru_numarasi": self.mevcut_soru_numarasi,
