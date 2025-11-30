@@ -346,35 +346,55 @@ class TakimYarismasi:
                 takim["elendi"] = True
                 takim["aktif"] = False
                 
-                # Aktif takım kaldı mı?
+                # --- GÜNCELLENMİŞ ELEME VE BİTİRME MANTIĞI (YETERLİLİK KURALI) ---
+                
+                # 1. Aktif (sağlam) takım kaldı mı?
                 aktifler = [t for t in self.takimlar.values() if not t.get("elendi", False)]
                 
                 if len(aktifler) == 0:
-                    self.oyunu_bitir_ve_kazanani_belirle()
-                    return {"success": False, "sonuc": "elendi", "oyun_bitti": True, "mesaj": "Herkes elendi! Oyun bitti."}
-                elif len(aktifler) == 1:
-                    # --- DÜZELTİLEN KISIM ---
-                    survivor = aktifler[0]
-                    
-                    # 1. Sırayı zorla hayatta kalan takıma ver
-                    self.siradaki_takim_id = survivor["id"]
-                    
-                    # 2. Mevcut soruyu boşa düşür ki sistem yeni soru çekebilsin
-                    self.mevcut_soru_verisi = None 
-                    
-                    # 3. YARIŞMA BİTMEDİ! (Eskiden burada bitiriyorduk)
-                    # Frontend'e "Oyun bitmedi, şu kişi devam ediyor" bilgisini dönüyoruz:
+                    # DURUM A: Herkes elendi.
+                    self.yarışma_bitti = True
+                    self.kazanan_takim_id = None
                     return {
                         "success": False, 
-                        "sonuc": "elendi", 
-                        "oyun_bitti": False,  # <-- Burası çok önemli, False olmalı
-                        "mesaj": f"Elendiniz! {survivor['isim']} tek başına devam ediyor."
+                        "sonuc": "oyun_bitti", # Frontend bunu görünce 10 sn bekleyecek
+                        "oyun_bitti": True, 
+                        "mesaj": "Tüm takımlar elendi! Kazanan çıkmadı."
                     }
+                
+                elif len(aktifler) == 1:
+                    # DURUM B: Biri elendi, geriye tek takım kaldı.
+                    survivor = aktifler[0]
+                    
+                    # --- KURAL: Kalan Takımın Puanı 2 veya Üzeri mi? ---
+                    if survivor["puan"] >= 2:
+                         # ŞART SAĞLANDI: Şampiyon ilan et.
+                         self.kazanan_takim_id = survivor["id"]
+                         self.oyunu_bitir_ve_kazanani_belirle() # Veritabanına kaydet
+                         
+                         return {
+                            "success": False, # Cevap yanlıştı (elenen için)
+                            "sonuc": "oyun_bitti", # Frontend 10 sn bekler
+                            "oyun_bitti": True,
+                            "mesaj": f"Oyun Bitti! {survivor['isim']} 2 puan barajını geçtiği için KAZANDI!"
+                         }
+                    
+                    else:
+                        # ŞART SAĞLANMADI: Tek kaldı ama puanı yetersiz (< 2).
+                        # Kimse kazanmaz, oyun biter.
+                        self.yarışma_bitti = True
+                        self.kazanan_takim_id = None # Kazanan yok
+                        
+                        return {
+                            "success": False, 
+                            "sonuc": "oyun_bitti", # Frontend 10 sn bekler
+                            "oyun_bitti": True, 
+                            "mesaj": f"Oyun Bitti! {survivor['isim']} takımının puanı (2) barajının altında olduğu için kazanan ilan edilmedi."
+                        }
                 else:
+                    # DURUM C: Hala 2 veya daha fazla takım var, oyun devam eder.
                     self.siradaki_takima_gec()
                     return {"success": False, "sonuc": "elendi", "mesaj": "Elendiniz, sıra diğer takımda."}
-            else:
-                return {"success": False, "sonuc": "yanlis", "mesaj": f"Yanlış! Kalan hak: {takim['kalan_deneme_hakki']}"}
 
         # Parça Doğruysa Tamamlandı mı?
         if sonuc == "dogru_parca":
@@ -610,6 +630,7 @@ class TakimYarismasi:
             "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "izleyen_kim": str(izleyen_no) 
         }
+
 
 
 
