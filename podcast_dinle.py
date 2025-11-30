@@ -222,11 +222,15 @@ def handle_generation():
         if not audio_url:
             raise Exception("Ses dosyası oluşturulamadı.") 
 
-        # --- RAPORLAMA ---
+        # --- RAPORLAMA (GÜNCELLENDİ: Kelime Sayısı Detayı Eklendi) ---
         if student_no:
             try:
-                db_helper.kaydet_kullanim(student_no, "Podcast Yap", "Podcast oluşturuldu")
-                print(f"✅ Rapor Eklendi: Öğrenci {student_no}")
+                # Metindeki kelime sayısını hesaplayıp rapora ekliyoruz
+                kelime_sayisi = len(user_text.split())
+                detay_mesaji = f"Podcast oluşturuldu ({kelime_sayisi} kelime)"
+                
+                db_helper.kaydet_kullanim(student_no, "Podcast Yap", detay_mesaji)
+                print(f"✅ Rapor Eklendi: Öğrenci {student_no} - {detay_mesaji}")
             except Exception as db_err:
                 print(f"⚠️ Raporlama Hatası: {db_err}")
 
@@ -235,3 +239,4 @@ def handle_generation():
     except Exception as e:
         print(f"İşlem sırasında hata (podcast_dinle.py): {e}")
         return jsonify({"success": False, "error": str(e)}), 500
+
