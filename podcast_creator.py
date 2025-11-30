@@ -1,119 +1,91 @@
 import google.generativeai as genai
+from google.cloud import texttospeech
 import os
-import subprocess
 import uuid
 
-# --- MUTLAK YOL BELİRLEME ---
-print(f"🔍 Python çalışma dizini: {os.getcwd()}")
-print(f"🔍 podcast_creator.py'nin yeri: {os.path.abspath(__file__)}")
+# --- AYARLAR ---
+# Google Cloud JSON Dosyasının Adı
+JSON_FILENAME = "google_key.json"
 
-# LOCAL (Windows/macOS) ve RENDER (Linux) ortamlarını otomatik ayır
-if os.name == "nt":   # Windows (local)
-    BASE_DIR = os.getcwd()
-    PIPER_PATH = os.path.join(BASE_DIR, "piper", "piper.exe")
-    MODEL_PATH = os.path.join(BASE_DIR, "models", "tr_TR-fahrettin-medium.onnx")
-    CONFIG_PATH = os.path.join(BASE_DIR, "models", "tr_TR-fahrettin-medium.onnx.json")
-else:                 # Linux (Render)
-    BASE_DIR = "/app"
-    PIPER_PATH = "/app/piper/piper"   # Linux binary
-    MODEL_PATH = "/app/models/tr_TR-fahrettin-medium.onnx"
-    CONFIG_PATH = "/app/models/tr_TR-fahrettin-medium.onnx.json"
+# --- KİMLİK DOĞRULAMA (LOCAL vs RENDER) ---
+# Render'da 'Secret Files' yüklediysen dosya genellikle /etc/secrets/ altında olur.
+# Lokalde ise projenin ana dizininde olur.
 
-print(f"✅ BASE_DIR: {BASE_DIR}")
-print(f"✅ PIPER_PATH: {PIPER_PATH}")
-print(f"🔍 Piper var mı? {os.path.exists(PIPER_PATH)}")
-print(f"🔍 Model var mı? {os.path.exists(MODEL_PATH)}")
+if os.path.exists(f"/etc/secrets/{JSON_FILENAME}"):
+    # RENDER ORTAMI
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f"/etc/secrets/{JSON_FILENAME}"
+    print(f"✅ Render ortamı algılandı. Anahtar yolu: /etc/secrets/{JSON_FILENAME}")
+elif os.path.exists(os.path.join(os.getcwd(), JSON_FILENAME)):
+    # LOCAL (BİLGİSAYAR) ORTAMI
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.getcwd(), JSON_FILENAME)
+    print(f"✅ Local ortam algılandı. Anahtar yolu: {JSON_FILENAME}")
+else:
+    print("⚠️ UYARI: google_key.json dosyası bulunamadı! Ses oluşturma çalışmayabilir.")
 
-
-# --- FONKSİYONLAR ---
+# -------------------------------------------
 
 def generate_podcast_content(user_text, gemini_model):
     """
-    Kullanıcıdan gelen metni alır ve bunu bir sohbet diyaloğuna dönüştürür.
+    Gemini ile metin oluşturma kısmı.
     """
     prompt = f"""
-    GÖREV: Aşağıda "METİN:" ile belirtilen metni al ve bu metni, bir 5. Sınıf Sosyal Bilgiler öğretmeni tarafından sunulan, 
-    sohbet havasında bir podcast metnine dönüştür.
-
-    KURALLAR:
-    1. Metni TEK BİR ANLATICI (Öğretmen) sunmalıdır. (Asla "Anlatıcı 1", "Anlatıcı 2" gibi ayırma.)
-    2. Anlatıcı, metindeki ana fikirleri sanki öğrencileriyle konuşuyormuş gibi açıklamalıdır.
-    3. Konunun en önemli yerlerini veya kilit kavramları vurgulamalıdır.
-    4. Bu önemli yerleri vurgularken, "Burası çok önemli, buna dikkat edin!" veya 
-       "İşte bu nokta tam bir sınav sorusu olabilir!" gibi ilgi çekici ifadeler kullanmalıdır.
-    5. Sadece üretilen sohbet metnini döndür. Giriş veya kapanış selamlaması ekleme.
-
+    GÖREV: Aşağıdaki metni 5. Sınıf öğrencilerine hitap eden, samimi bir öğretmenin anlatacağı
+    bir podcast metnine dönüştür. Tek bir kişi konuşsun. Konuşma dili kullan.
+    
     METİN:
     "{user_text}"
     """
-
     try:
         response = gemini_model.generate_content(prompt)
-        return response.text
+        # Gemini bazen * veya # kullanır, ses motoru okumasın diye temizleyelim
+        clean_text = response.text.replace("*", "").replace("#", "").replace("Anlatıcı:", "")
+        return clean_text
     except Exception as e:
         print(f"Gemini hatası: {e}")
         return None
 
 def convert_text_to_speech(text, static_folder):
     """
-    Metni Piper kullanarak sese çevirir.
+    Google Cloud Text-to-Speech API (Wavenet) kullanır.
     """
-    if not os.path.exists(MODEL_PATH):
-        print(f"❌ KRİTİK HATA: Model bulunamadı: {MODEL_PATH}")
-        return None
-
-    # Benzersiz dosya adı oluştur
-    file_name = f"podcast_{uuid.uuid4()}.wav"
-    output_path = os.path.join(static_folder, file_name)
-    audio_url = f"/static/{file_name}"
-    
-    # Mutlak yolları kullan (Garanti olsun)
-    absolute_piper_path = os.path.abspath(PIPER_PATH)
-    absolute_model_path = os.path.abspath(MODEL_PATH)
-    absolute_config_path = os.path.abspath(CONFIG_PATH)
-    absolute_output_path = os.path.abspath(output_path)
-    
-    # Komut dizesini oluştur
-    komut_string = (
-        f'"{absolute_piper_path}" -m "{absolute_model_path}" '
-        f'-c "{absolute_config_path}" -f "{absolute_output_path}" --sentence_silence 0.2'
-    )
-    
     try:
-        # Komutu çalıştır
-        # DÜZELTME: input=text.encode ('podcast_text' değişkeni yanlıştı)
-        result = subprocess.run(
-            komut_string,
-            input=text.encode('utf-8'), 
-            check=True,
-            shell=True,
-            capture_output=True,
-            timeout=60
-        )
+        print("🔊 Google Cloud Wavenet ile ses oluşturuluyor...")
         
-        # Piper çıktısını göster (Loglama için)
-        if result.stdout:
-            print(f"✅ Piper STDOUT: {result.stdout.decode('utf-8', errors='ignore')}")
-        if result.stderr:
-            print(f"ℹ️ Piper STDERR: {result.stderr.decode('utf-8', errors='ignore')}")
-        
-        # Dosya oluştu mu kontrol et
-        if os.path.exists(output_path):
-            print(f"✅ Ses dosyası oluşturuldu: {output_path}")
-            return audio_url
-        else:
-            print(f"❌ HATA: Dosya oluşmadı: {output_path}")
-            return None
+        # 1. İstemciyi başlat (Otomatik olarak yukarıdaki JSON yolunu kullanır)
+        client = texttospeech.TextToSpeechClient()
 
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Piper HATASI (CalledProcessError):")
-        print(f"Exit code: {e.returncode}")
-        if e.stderr:
-            print(f"STDERR: {e.stderr.decode('utf-8', errors='ignore')}")
-        return None
-    except subprocess.TimeoutExpired:
-        print("❌ HATA: Piper zaman aşımına uğradı (60 saniye)")
-        return None
+        # 2. Metni ayarla
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+
+        # 3. SES AYARLARI (KALİTE BURADA BELİRLENİR)
+        # language_code='tr-TR' -> Türkçe
+        # name='tr-TR-Wavenet-C' -> Tok Erkek Sesi (C). (B=Kadın, A=Kadın, D=Erkek, E=Erkek)
+        voice = texttospeech.VoiceSelectionParams(
+            language_code="tr-TR",
+            name="tr-TR-Wavenet-C", 
+            ssml_gender=texttospeech.SsmlVoiceGender.MALE
+        )
+
+        # 4. Dosya formatı (MP3)
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3
+        )
+
+        # 5. İsteği gönder
+        response = client.synthesize_speech(
+            input=synthesis_input, voice=voice, audio_config=audio_config
+        )
+
+        # 6. Dosyayı kaydet
+        file_name = f"podcast_{uuid.uuid4()}.mp3"
+        output_path = os.path.join(static_folder, file_name)
+        
+        with open(output_path, "wb") as out:
+            out.write(response.audio_content)
+            
+        print(f"✅ Wavenet ses dosyası oluşturuldu: {output_path}")
+        return f"/static/{file_name}"
+
     except Exception as e:
-        print(f"❌ Beklenmeyen hata: {e}")
+        print(f"❌ Google Cloud TTS Hatası: {e}")
         return None
