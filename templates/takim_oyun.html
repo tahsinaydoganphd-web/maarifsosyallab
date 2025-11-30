@@ -106,14 +106,29 @@
         </div>
     </div>
 
-    <script>
+   <script>
+        // --- 1. GLOBAL DEĞİŞKENLER VE AYARLAR ---
         const YARISMA_ID = window.location.pathname.split('/').pop();
-        let MY_USER_ID = ''; let MY_USER_ROLE = ''; let MY_USER_NAME = '';
-        let AKTIF_TAKIM_ID = null; let AKTIF_SORU_NUMARASI = 0; let SECILI_BUTON_TIPI = null;
-        let TIMER_INTERVAL = null; let DURUM_GUNCELLEME_INTERVAL = null; let KalanSaniye = 60;
-        let TOAST_TIMER = null; let OYUN_KILITLI = false; let soruVerisi = null;
-        let LAST_EVENT_TIME = 0; 
+        
+        // Kimlik Bilgilerini Güvenli Çekme
+        const MY_USER_NAME = localStorage.getItem('loggedInUserName') || 'Kullanıcı';
+        const MY_USER_ROLE = localStorage.getItem('loggedInUserRole') || 'student'; // Varsayılan student
+        // Öğrenci nosunu string'e çevirip boşlukları temizliyoruz
+        const MY_USER_ID = String(localStorage.getItem('loggedInUserNo') || '').trim();
 
+        let AKTIF_TAKIM_ID = null; 
+        let AKTIF_SORU_NUMARASI = 0; 
+        let SECILI_BUTON_TIPI = null;
+        let TIMER_INTERVAL = null; 
+        let DURUM_GUNCELLEME_INTERVAL = null; 
+        let KalanSaniye = 60;
+        let TOAST_TIMER = null; 
+        let OYUN_KILITLI = false; 
+        let soruVerisi = null;
+        let LAST_EVENT_TIME = 0; 
+        let OYUN_BITTI_ISLENIYOR = false;
+
+        // HTML Elementleri
         const teamListContainer = document.getElementById('team-list-container');
         const soruNumarasiText = document.getElementById('soru-numarasi-text');
         const metinContainer = document.getElementById('metin-container');
@@ -126,14 +141,17 @@
         const gameOverModal = document.getElementById('game-over-modal');
         const exitBtn = document.getElementById('btn-exit-game');
 
+        // --- 2. SAYFA YÜKLENDİĞİNDE ÇALIŞACAKLAR ---
         document.addEventListener('DOMContentLoaded', () => {
-            MY_USER_NAME = localStorage.getItem('loggedInUserName') || 'Kullanıcı';
-            MY_USER_ROLE = localStorage.getItem('loggedInUserRole');
-            MY_USER_ID = String(localStorage.getItem('loggedInUserNo') || '').trim();
-
+            // Arayüzdeki İsimleri Güncelle
             document.getElementById('user-name-placeholder').textContent = MY_USER_NAME;
             document.getElementById('user-avatar-initial').textContent = MY_USER_NAME[0] || 'K';
 
+            console.log("KİMLİK KONTROLÜ:");
+            console.log("Rol:", MY_USER_ROLE);
+            console.log("ID:", MY_USER_ID);
+
+            // Buton Olayları
             soruGosterBtn.addEventListener('click', soruGoster);
             btnBeceri.addEventListener('click', () => secimYap('beceri'));
             btnDeger.addEventListener('click', () => secimYap('deger'));
@@ -144,6 +162,7 @@
                     if (MY_USER_ROLE === 'teacher') {
                         if (confirm("Yarışmayı sonlandırıp çıkmak istiyor musunuz?")) {
                              const data = new FormData();
+                             // Beacon ile çıkış sinyali gönder
                              navigator.sendBeacon(`/api/takim/bitir/${YARISMA_ID}`, data);
                              window.location.href = '/dashboard';
                         }
@@ -153,6 +172,7 @@
                 });
             }
             
+            // Sayfa kapanırken öğretmense bitir
             window.addEventListener('pagehide', () => {
                 if (MY_USER_ROLE === 'teacher') {
                     const data = new FormData();
@@ -160,14 +180,17 @@
                 }
             });
 
+            // Döngüyü Başlat
             getDurum();
             DURUM_GUNCELLEME_INTERVAL = setInterval(getDurum, 3000);
         });
 
+        // --- 3. DURUM SORGULAMA (ANA FONKSİYON) ---
         async function getDurum() {
             if (OYUN_KILITLI) return;
             try {
                 let url = `/api/takim/get_durum/${YARISMA_ID}`;
+                // Öğretmen ise "ben buradayım" sinyali ekle
                 if (MY_USER_ROLE === 'teacher') url += '?ogretmen_burada=evet';
 
                 const response = await fetch(url);
@@ -175,41 +198,45 @@
 
                 const durum = await response.json();
 
-                // Eğer oyun silindiyse
+                // Hata veya Sonlanma Kontrolü
                 if (!durum.success) {
                     clearInterval(DURUM_GUNCELLEME_INTERVAL);
                     showToast("Yarışma sonlandı. Yönlendiriliyorsunuz...", "error");
                     setTimeout(() => {
-                        if (MY_USER_ROLE === 'student') window.location.href = '/yarisma-secim';
-                        else window.location.href = '/dashboard';
+                        window.location.href = (MY_USER_ROLE === 'student') ? '/yarisma-secim' : '/dashboard';
                     }, 2000);
                     return;
                 }
 
-                // Eğer oyun bittiyse (10. soru veya elenme)
+                // Oyun Bitti mi?
                 if (durum.yarışma_bitti) {
                     oyunuBitir(durum);
                     return;
                 }
 
+                // Takım Değiştiyse Ekranı Temizle
                 if (AKTIF_TAKIM_ID !== durum.aktif_takim_id) {
                     stopClientTimer();
-                    resetSoruAlani();
+                    // Buraya resetSoruAlani koymuyoruz çünkü aşağıda render edecek
                 }
 
                 AKTIF_TAKIM_ID = durum.aktif_takim_id;
                 AKTIF_SORU_NUMARASI = durum.mevcut_soru_numarasi;
+                
+                // Takım Listesini Çiz
                 renderTakimListesi(durum.takimlar, durum.aktif_takim_id);
 
+                // Kaptanlık Kontrolü (String'e çevirip boşlukları alarak karşılaştır)
                 const kaptanId = String(durum.aktif_takim_kaptani_id || '').trim();
                 const amICaptain = (MY_USER_ROLE === 'student' && MY_USER_ID === kaptanId);
                 const isTeacher = (MY_USER_ROLE === 'teacher');
                 
-                // Son olay (İzleyici için)
+                // Olay Bildirimleri (Toast)
                 if (durum.son_olay && durum.son_olay.zaman > LAST_EVENT_TIME) {
                     LAST_EVENT_TIME = durum.son_olay.zaman;
                     showToast(durum.son_olay.mesaj, durum.son_olay.tur);
                     
+                    // Yanlış cevapta görsel efekt
                     const detay = durum.son_olay.detay;
                     if (detay && detay.sonuc === "yanlis" && detay.tiklanan_cumle) {
                          const yanlisEleman = document.querySelector(`.sentence[data-text="${detay.tiklanan_cumle}"]`);
@@ -220,8 +247,7 @@
                     }
                 }
 
-               // --- getDurum fonksiyonunun içindeki ilgili kısım ---
-
+                // --- SORU GÖSTERİMİ VE GİZLİLİK MANTIĞI ---
                 if (durum.mevcut_soru_verisi) {
                     KalanSaniye = durum.kalan_saniye;
                     renderTimer(KalanSaniye);
@@ -231,41 +257,41 @@
                     const beceriBulundu = aktifTakim ? aktifTakim.bulunan_beceri : false;
                     const degerBulundu = aktifTakim ? aktifTakim.bulunan_deger : false;
 
-                    // --- YENİ EKLENEN: BENİM TAKIMIM HANGİSİ? ---
+                    // Benim Takımım Hangisi?
                     let myTeamId = null;
                     if (MY_USER_ROLE === 'student') {
                         durum.takimlar.forEach(t => {
                             t.uyeler.forEach(u => {
-                                if (String(u.no).trim() === String(MY_USER_ID).trim()) {
+                                if (String(u.no).trim() === MY_USER_ID) {
                                     myTeamId = t.id;
                                 }
                             });
                         });
                     }
 
-                    // --- YENİ EKLENEN: GÖRÜNÜRLÜK KONTROLÜ ---
-                    // Eğer öğretmensem VEYA benim takımımın sırasıysa soruyu göster
+                    // SIRA KİMDE? (Görünürlük Kontrolü)
                     const isMyTurn = (myTeamId === durum.aktif_takim_id);
-                    const isTeacher = (MY_USER_ROLE === 'teacher');
 
+                    // Öğretmen VEYA Sırası Gelen Takım Görsün
                     if (isTeacher || isMyTurn) {
-                        // Soru Ekranını Normal Çiz
                         renderSoruAlani(soruVerisi.metin, soruVerisi.beceri_adi, soruVerisi.deger_adi, beceriBulundu, degerBulundu, amICaptain);
                         
-                        // Buton durumlarını ayarla
                         btnBeceri.disabled = !amICaptain || beceriBulundu;
                         btnDeger.disabled = !amICaptain || degerBulundu;
                         
+                        // Buton metinlerini düzelt (Bekleyiniz kalmasın)
+                        if(btnBeceri.textContent === "Bekleyiniz") btnBeceri.textContent = soruVerisi.beceri_adi;
+                        if(btnDeger.textContent === "Bekleyiniz") btnDeger.textContent = soruVerisi.deger_adi;
+
                         if (amICaptain) {
                             kontrolMesaj.textContent = "Sıra SİZDE! (Kaptan)";
                             kontrolMesaj.className = "text-sm font-bold text-green-600 mb-3 animate-pulse";
                         } else {
-                            kontrolMesaj.textContent = isTeacher ? `Sıra: ${aktifTakim.isim}` : "Takımınız Yarışıyor...";
+                            kontrolMesaj.textContent = isTeacher ? `Sıra: ${aktifTakim ? aktifTakim.isim : '...'}` : "Takımınız Yarışıyor...";
                             kontrolMesaj.className = "text-sm text-gray-500 mb-3";
                         }
-
                     } else {
-                        // --- SIRA BENDE DEĞİLSE GİZLE ---
+                        // Diğerleri İçin GİZLEME EKRANI
                         metinContainer.innerHTML = `
                             <div class="flex flex-col items-center justify-center h-full text-gray-400 py-10">
                                 <i class="fa-solid fa-lock text-4xl mb-4 text-gray-300"></i>
@@ -273,7 +299,7 @@
                                 <p class="text-sm mt-2">Şu an <span class="text-blue-500 font-bold">${aktifTakim ? aktifTakim.isim : 'Rakip'}</span> yarışıyor.</p>
                             </div>
                         `;
-                        // Butonları kilitle ve gizle
+                        // Butonları Kilitle
                         btnBeceri.textContent = "Bekleyiniz";
                         btnDeger.textContent = "Bekleyiniz";
                         btnBeceri.disabled = true;
@@ -281,22 +307,39 @@
                         kontrolMesaj.textContent = "Rakip Takım İzleniyor...";
                         kontrolMesaj.className = "text-sm text-gray-400 mb-3";
                     }
-                    // ---------------------------------------------
 
+                    // Soru Göster Butonu (Artık pasif çünkü soru var)
                     soruGosterBtn.disabled = true;
                     soruGosterBtn.textContent = `${AKTIF_SORU_NUMARASI}. Soru Gösterildi`;
-
+                    
                     if (!TIMER_INTERVAL) startClientTimer(KalanSaniye);
 
                 } else {
-                    // Soru yoksa bekleme ekranı
+                    // Soru YOKSA (Bekleme Modu)
                     stopClientTimer();
-                    resetSoruAlani();
+                    
+                    metinContainer.innerHTML = '<p class="text-gray-500 text-center p-8">Sıradaki soru bekleniyor...</p>';
+                    btnBeceri.textContent = "Beceri"; 
+                    btnDeger.textContent = "Değer";
+                    btnBeceri.disabled = true; 
+                    btnDeger.disabled = true;
+
+                    // Öğretmen için butonu aç, öğrenci için gizle
                     soruGosterBtn.disabled = !isTeacher;
                     soruGosterBtn.style.display = isTeacher ? 'block' : 'none';
                     soruGosterBtn.textContent = `${AKTIF_SORU_NUMARASI}. Soruyu Göster`;
-                    kontrolMesaj.textContent = "Sıradaki soru bekleniyor...";
-                } 
+                    
+                    kontrolMesaj.textContent = "Öğretmen bekleniyor...";
+                    kontrolMesaj.className = "text-sm text-gray-500 mb-3";
+                }
+
+            } catch (err) {
+                console.error("Durum hatası:", err);
+                // Hata durumunda hemen yönlendirme yapma, belki internet kopukluğu
+            }
+        }
+
+        // --- 4. YARDIMCI FONKSİYONLAR ---
 
         function renderTakimListesi(takimlar, aktifTakimId) {
             teamListContainer.innerHTML = "";
@@ -318,6 +361,7 @@
                 let membersHtml = '<div class="flex flex-wrap gap-2 mb-2">';
                 takim.uyeler.forEach((uye, index) => {
                     const isCaptain = (index === currentCaptainIndex);
+                    // Kaptan Vurgusu
                     const activeStyle = (isTeamActive && isCaptain) 
                         ? 'bg-green-500 text-white font-bold ring-2 ring-green-300 transform scale-105 shadow' 
                         : (isCaptain ? 'bg-gray-300 text-gray-600 font-semibold' : 'bg-gray-100 text-gray-500 text-xs');
@@ -348,6 +392,8 @@
         function renderSoruAlani(metin, beceriAdi, degerAdi, beceriBulundu, degerBulundu, amICaptain) {
             metinContainer.innerHTML = "";
             soruNumarasiText.textContent = `${AKTIF_SORU_NUMARASI}. Soru`;
+            
+            // Cümleleri ayır
             const sentences = metin.match(/[^.!?]+[.!?]+/g) || [metin];
             
             sentences.forEach(sentenceText => {
@@ -355,12 +401,16 @@
                 const span = document.createElement('span');
                 span.textContent = cleanText + ' ';
                 span.className = 'sentence'; 
+                // Yanlış cevap efektleri için veri özelliği ekle
+                span.setAttribute('data-text', cleanText);
                 
+                // Sadece Kaptan Tıklayabilir
                 if (amICaptain) { 
                     span.classList.add('clickable');
                     span.onclick = (e) => { e.preventDefault(); cevapVer(cleanText); }; 
                 } 
                 
+                // Doğru Cevapları Renklendir
                 if (soruVerisi) { 
                     if (beceriBulundu && cleanText === soruVerisi.beceri_cumlesi) span.className = 'sentence correct-beceri';
                     if (degerBulundu && cleanText === soruVerisi.deger_cumlesi) span.className = 'sentence correct-deger';
@@ -371,6 +421,7 @@
             btnDeger.textContent = degerAdi;
         }
 
+        // --- 5. ETKİLEŞİM (CEVAP VERME) ---
         async function cevapVer(tiklananCumleMetni) {
             if (OYUN_KILITLI || (KalanSaniye <= 0 && tiklananCumleMetni !== "SÜRE DOLDU")) return;
             
@@ -380,9 +431,11 @@
             }
 
             OYUN_KILITLI = true;
+            // Butonları geçici kilitle (Çift tıklamayı önle)
             btnBeceri.disabled = true; btnDeger.disabled = true;
 
             try {
+                // Backend'e 'tiklanan_tip' ve 'tiklanan_cumle' olarak gönderiyoruz
                 const response = await fetch(`/api/takim/cevap_ver/${YARISMA_ID}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -394,33 +447,22 @@
                 });
                 const result = await response.json();
                 
-                // 👇👇👇 YENİ EKLENEN KISIM: OYUN BİTTİ Mİ? 👇👇👇
+                // OYUN BİTTİ Mİ? (Backend 'oyun_bitti' derse)
                 if (result.sonuc === "oyun_bitti") {
-                    // Büyük bir kutu aç, konfetiler patlasın, 10 saniye bekle
-                    Swal.fire({
-                        title: 'TEBRİKLER!',
-                        text: result.mesaj, // "KAZANDINIZ!" veya "X Takımı Kazandı"
-                        icon: 'success',
-                        timer: 10000, // 10 Saniye bekle
-                        timerProgressBar: true,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        willClose: () => {
-                            // Süre dolunca Ana Panele git
-                            window.location.href = "/panel"; 
-                        }
-                    });
-                    return; // Fonksiyonu burada kes, başka işlem yapmasın.
+                    showToast(result.mesaj, "success");
+                    // Burası KRİTİK: Sayaç kurmuyoruz, sadece bekliyoruz.
+                    // Bir sonraki getDurum() çağrısı oyunun bittiğini algılayıp Modal'ı açacak.
+                    return; 
                 }
-                // 👆👆👆 YENİ KISIM BİTTİ 👆👆👆
 
                 if (result.sonuc === "yanlis") {
                     showToast("Yanlış!", "error");
-                    getDurum(); 
+                    getDurum(); // Ekranı tazele (Hakkı düşsün)
                 } else if (result.sonuc === "dogru_parca") {
                     showToast("Doğru Parça!", "success");
+                    // Ekranı getDurum tazeleyecek
                 } else {
-                    // Elendi, Tur Bitti veya Diğer durumlar
+                    // Elendi veya Tur Bitti (Ama Oyun Bitmedi)
                     if (result.sonuc === "elendi") {
                         showToast(result.mesaj, "error");
                         kontrolMesaj.textContent = result.mesaj;
@@ -431,12 +473,12 @@
                     
                     stopClientTimer();
                     
-                    // Eğer tur bittiyse veya elendiyse 3 saniye sonra diğer takıma geç
+                    // SADECE Oyun bitmediyse sıradaki takıma geçiyoruz
                     if(result.sonuc === "tur_bitti" || result.sonuc === "elendi") {
                         setTimeout(siradakiTakimaGec, 3000);
                     }
-                    // Not: oyun_bitti kontrolünü en yukarı aldığımız için buradaki eski kodu sildik.
                     else { 
+                        // Doğru parça bulunduysa sadece ekranı resetle
                         resetSoruAlani(); 
                     } 
                 }
@@ -449,6 +491,7 @@
             await fetch(`/api/takim/soru_goster/${YARISMA_ID}`);
             getDurum();
         }
+        
         async function siradakiTakimaGec() {
             await fetch(`/api/takim/siradaki_takim/${YARISMA_ID}`);
             getDurum();
@@ -459,11 +502,13 @@
              btnBeceri.textContent = "Beceri"; btnDeger.textContent = "Değer";
              btnBeceri.disabled = true; btnDeger.disabled = true;
         }
+        
         function secimYap(tip) {
             SECILI_BUTON_TIPI = tip;
             if (tip === 'beceri') { btnBeceri.classList.add('active-beceri'); btnDeger.classList.remove('active-deger'); } 
             else { btnDeger.classList.add('active-deger'); btnBeceri.classList.remove('active-beceri'); }
         }
+        
         function startClientTimer(saniye) {
             stopClientTimer(); KalanSaniye = saniye; renderTimer(KalanSaniye);
             TIMER_INTERVAL = setInterval(() => {
@@ -471,8 +516,10 @@
                 if (KalanSaniye <= 0) { stopClientTimer(); cevapVer("SÜRE DOLDU"); }
             }, 1000);
         }
+        
         function stopClientTimer() { clearInterval(TIMER_INTERVAL); TIMER_INTERVAL = null; }
         function renderTimer(s) { timerText.textContent = s; timerBar.style.width = `${(s/60)*100}%`; }
+        
         function showToast(msg, type='info') {
             const t = document.getElementById('toast-notification');
             if (TOAST_TIMER) clearTimeout(TOAST_TIMER);
@@ -480,9 +527,8 @@
             TOAST_TIMER = setTimeout(() => t.className = '', 3000);
         }
         
-        // --- NİHAİ ÇIKIŞ MANTIĞI (Düzeltilmiş) ---
+        // --- 6. OYUNU BİTİRME (MODAL AÇMA) ---
         function oyunuBitir(durum) {
-            // Eğer zaten bitiş işlemi yapılıyorsa tekrar yapma (Döngü Önleyici)
             if (OYUN_BITTI_ISLENIYOR) return;
             OYUN_BITTI_ISLENIYOR = true;
 
@@ -490,21 +536,24 @@
             stopClientTimer();
             
             const kazanan = durum.takimlar.find(t => t.id === durum.kazanan_takim_id);
-            const mesaj = kazanan ? `Kazanan: ${kazanan.isim}` : "Herkes elendi.";
+            // Mesajı Backend'den gelen 'bitis_mesaji' varsa ona göre, yoksa kazanana göre ayarla
+            let mesaj = "";
+            if (durum.bitis_mesaji) {
+                mesaj = durum.bitis_mesaji;
+            } else {
+                mesaj = kazanan ? `KAZANAN: ${kazanan.isim}` : "Kazanan Yok.";
+            }
             
             document.getElementById('tebrik-mesaj').textContent = mesaj;
             gameOverModal.classList.remove('hidden');
             
-            // Skoru kaydet (Sadece öğretmen veya sistem otomatik tetiklerse)
-            // fetch isteğini burada tekrar atmaya gerek yok, zaten server bitirmiş.
-            
             const mesajAlani = document.getElementById('yonlendirme-mesaj');
             
             if (durum.dereceye_girdi_mi) {
-                mesajAlani.textContent = "Dereceye girdiniz! 5 sn sonra Liderlik Tablosu açılıyor...";
+                mesajAlani.textContent = "Dereceye girdiniz! Liderlik Tablosu açılıyor...";
                 setTimeout(() => {
                     window.location.href = '/takim-liderlik-tablosu';
-                }, 5000); // Süreyi biraz uzattım (5sn) ki yazıyı okuyabilsinler
+                }, 5000);
             } else {
                 mesajAlani.textContent = "5 sn sonra ana menüye dönülüyor...";
                 setTimeout(() => {
@@ -516,6 +565,7 @@
     </script>
 </body>
 </html>
+
 
 
 
