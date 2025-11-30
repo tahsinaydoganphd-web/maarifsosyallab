@@ -165,10 +165,6 @@ class TakimYarismasi:
         # --- GÜVENLİK EKLEMESİ BİTİŞİ ---
         # Normal Sıra Döngüsü (Artık 0'a bölme hatası vermez)
         baslangic = self.aktif_takim_index % len(takim_id_listesi)
-
-        
-        # Normal Sıra Döngüsü
-        baslangic = self.aktif_takim_index % len(takim_id_listesi)
         for i in range(len(takim_id_listesi)):
             idx = (baslangic + i) % len(takim_id_listesi)
             tid = takim_id_listesi[idx]
@@ -362,5 +358,6 @@ class TakimYarismasi:
             "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "bitis_mesaji": self.bitis_mesaji # Frontend bunu yakalamalı
         }
+
 
 
