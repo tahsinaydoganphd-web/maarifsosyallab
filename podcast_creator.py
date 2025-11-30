@@ -3,19 +3,6 @@ import google.generativeai as genai
 import os
 import subprocess
 import uuid
-from google.cloud import texttospeech
-import json
-
-# --- GOOGLE TTS KURULUMU ---
-SERVICE_ACCOUNT_FILE = os.path.join(os.getcwd(), "service-account-key.json")
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = SERVICE_ACCOUNT_FILE
-
-try:
-    tts_client = texttospeech.TextToSpeechClient()
-    print("✅ Google TTS client başarıyla başlatıldı")
-except Exception as e:
-    print(f"❌ Google TTS client hatası: {e}")
-    tts_client = None
 
 # --- MUTLAK YOL BELİRLEME ---
 print(f"🔍 Python çalışma dizini: {os.getcwd()}")
