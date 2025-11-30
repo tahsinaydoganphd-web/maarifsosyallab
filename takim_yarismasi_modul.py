@@ -32,11 +32,8 @@ SORU_BANKASI = load_soru_bankasi()
 
 def load_takim_skorlari():
     if os.path.exists(TAKIM_SKOR_DB_FILE):
-        try:
-            with open(TAKIM_SKOR_DB_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except:
-            return []
+        try: with open(TAKIM_SKOR_DB_FILE, 'r', encoding='utf-8') as f: return json.load(f)
+        except: return []
     return []
 
 def save_takim_skorlari(data):
@@ -156,11 +153,15 @@ class TakimYarismasi:
         return False
 
     def get_aktif_takim_id(self):
-        # Önce oyun bitmiş mi kontrol et (Survivor kuralı için)
-        if self._oyun_bitti_mi_kontrol_et():
-            return None
-
         takim_id_listesi = sorted(list(self.takimlar.keys()), key=lambda x: int(x.split('_')[1]))
+        
+        # --- GÜVENLİK EKLEMESİ BAŞLANGICI ---
+        if len(takim_id_listesi) == 0:
+            return None
+        # --- GÜVENLİK EKLEMESİ BİTİŞİ ---
+        # Normal Sıra Döngüsü (Artık 0'a bölme hatası vermez)
+        baslangic = self.aktif_takim_index % len(takim_id_listesi)
+
         
         # Normal Sıra Döngüsü
         baslangic = self.aktif_takim_index % len(takim_id_listesi)
@@ -218,16 +219,17 @@ class TakimYarismasi:
         start = datetime.fromisoformat(takim["son_soru_zamani"])
         gecen = (datetime.now() - start).total_seconds()
         
-        # Elenme Kontrolü (Süre)
+        # Elenme Kontrolü (Süre) - GÜNCELLENMİŞ
         if cumle == "SÜRE DOLDU" or gecen > 65:
             takim["aktif"] = False
             takim["toplam_sure_saniye"] += 60 # Ceza süresi
             self.mevcut_soru_verisi = None
             self._olay("Süre doldu, elendiniz.", "error", {"sonuc": "elendi"})
             
-            # ELENME OLDUĞU İÇİN OYUN BİTTİ Mİ DİYE BAK (Survivor/Tie-Breaker)
+            # KRİTİK DÜZELTME: Eğer oyun bittiyse "elendi" değil "oyun_bitti" gönderiyoruz
             if self._oyun_bitti_mi_kontrol_et():
-                return {"success": True, "sonuc": "elendi", "mesaj": "Süre doldu. Oyun Sona Erdi."}
+                kazanan = self.takimlar[self.kazanan_takim_id]["isim"] if self.kazanan_takim_id else "Yok"
+                return {"success": True, "sonuc": "oyun_bitti", "mesaj": f"Oyun Sona Erdi! Kazanan: {kazanan}"}
                 
             return {"success": True, "sonuc": "elendi", "mesaj": "Süre doldu."}
 
@@ -262,15 +264,16 @@ class TakimYarismasi:
             else: 
                 sonuc = "soru_bitti_devam_et"; mesaj = "Doğru! Devam..."
         
-        elif takim["kalan_deneme_hakki"] <= 0:
-            takim["aktif"] = False
-            takim["toplam_sure_saniye"] += gecen
-            self.mevcut_soru_verisi = None
-            sonuc = "elendi"; mesaj = "Hak bitti."
-            
-            # ELENME OLDUĞU İÇİN OYUN BİTTİ Mİ BAK
-            if self._oyun_bitti_mi_kontrol_et():
-                return {"success": True, "sonuc": "elendi", "mesaj": "Elendiniz. Oyun Sona Erdi."}
+            elif takim["kalan_deneme_hakki"] <= 0:
+                takim["aktif"] = False
+                takim["toplam_sure_saniye"] += gecen
+                self.mevcut_soru_verisi = None
+                sonuc = "elendi"; mesaj = "Hak bitti."
+                
+                # KRİTİK DÜZELTME: Eğer oyun bittiyse "elendi" değil "oyun_bitti" gönderiyoruz
+                if self._oyun_bitti_mi_kontrol_et():
+                    kazanan = self.takimlar[self.kazanan_takim_id]["isim"] if self.kazanan_takim_id else "Yok"
+                    return {"success": True, "sonuc": "oyun_bitti", "mesaj": f"Oyun Sona Erdi! Kazanan: {kazanan}"}
 
         self._olay(mesaj, "success" if "dogru" in sonuc or "KAZANDINIZ" in mesaj else "error", {"tiklanan_cumle": cumle, "sonuc": sonuc})
         if sonuc != "dogru_parca": self._takim_ici_sirayi_degistir(takim_id)
@@ -345,4 +348,3 @@ class TakimYarismasi:
             "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "bitis_mesaji": self.bitis_mesaji # Frontend bunu yakalamalı
         }
-
