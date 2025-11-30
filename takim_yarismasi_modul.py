@@ -216,7 +216,17 @@ class TakimYarismasi:
         if self.yarışma_bitti or not self.mevcut_soru_verisi: return {"success": False}
         
         takim = self.takimlar[takim_id]
-        start = datetime.fromisoformat(takim["son_soru_zamani"])
+        
+        # --- GÜVENLİK AYARI: Eğer zaman kaydedilmediyse hata verme, şu anı kabul et ---
+        if not takim.get("son_soru_zamani"): 
+            start = datetime.now()
+        else:
+            try:
+                start = datetime.fromisoformat(takim["son_soru_zamani"])
+            except:
+                start = datetime.now()
+        # -----------------------------------------------------------------------------
+        
         gecen = (datetime.now() - start).total_seconds()
         
         # Elenme Kontrolü (Süre) - GÜNCELLENMİŞ
@@ -348,3 +358,4 @@ class TakimYarismasi:
             "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "bitis_mesaji": self.bitis_mesaji # Frontend bunu yakalamalı
         }
+
