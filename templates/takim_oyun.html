@@ -220,6 +220,8 @@
                     }
                 }
 
+               // --- getDurum fonksiyonunun içindeki ilgili kısım ---
+
                 if (durum.mevcut_soru_verisi) {
                     KalanSaniye = durum.kalan_saniye;
                     renderTimer(KalanSaniye);
@@ -229,45 +231,72 @@
                     const beceriBulundu = aktifTakim ? aktifTakim.bulunan_beceri : false;
                     const degerBulundu = aktifTakim ? aktifTakim.bulunan_deger : false;
 
-                    renderSoruAlani(soruVerisi.metin, soruVerisi.beceri_adi, soruVerisi.deger_adi, beceriBulundu, degerBulundu, amICaptain);
+                    // --- YENİ EKLENEN: BENİM TAKIMIM HANGİSİ? ---
+                    let myTeamId = null;
+                    if (MY_USER_ROLE === 'student') {
+                        durum.takimlar.forEach(t => {
+                            t.uyeler.forEach(u => {
+                                if (String(u.no).trim() === String(MY_USER_ID).trim()) {
+                                    myTeamId = t.id;
+                                }
+                            });
+                        });
+                    }
+
+                    // --- YENİ EKLENEN: GÖRÜNÜRLÜK KONTROLÜ ---
+                    // Eğer öğretmensem VEYA benim takımımın sırasıysa soruyu göster
+                    const isMyTurn = (myTeamId === durum.aktif_takim_id);
+                    const isTeacher = (MY_USER_ROLE === 'teacher');
+
+                    if (isTeacher || isMyTurn) {
+                        // Soru Ekranını Normal Çiz
+                        renderSoruAlani(soruVerisi.metin, soruVerisi.beceri_adi, soruVerisi.deger_adi, beceriBulundu, degerBulundu, amICaptain);
+                        
+                        // Buton durumlarını ayarla
+                        btnBeceri.disabled = !amICaptain || beceriBulundu;
+                        btnDeger.disabled = !amICaptain || degerBulundu;
+                        
+                        if (amICaptain) {
+                            kontrolMesaj.textContent = "Sıra SİZDE! (Kaptan)";
+                            kontrolMesaj.className = "text-sm font-bold text-green-600 mb-3 animate-pulse";
+                        } else {
+                            kontrolMesaj.textContent = isTeacher ? `Sıra: ${aktifTakim.isim}` : "Takımınız Yarışıyor...";
+                            kontrolMesaj.className = "text-sm text-gray-500 mb-3";
+                        }
+
+                    } else {
+                        // --- SIRA BENDE DEĞİLSE GİZLE ---
+                        metinContainer.innerHTML = `
+                            <div class="flex flex-col items-center justify-center h-full text-gray-400 py-10">
+                                <i class="fa-solid fa-lock text-4xl mb-4 text-gray-300"></i>
+                                <h3 class="text-xl font-bold text-gray-500">Sıranızı Bekleyin</h3>
+                                <p class="text-sm mt-2">Şu an <span class="text-blue-500 font-bold">${aktifTakim ? aktifTakim.isim : 'Rakip'}</span> yarışıyor.</p>
+                            </div>
+                        `;
+                        // Butonları kilitle ve gizle
+                        btnBeceri.textContent = "Bekleyiniz";
+                        btnDeger.textContent = "Bekleyiniz";
+                        btnBeceri.disabled = true;
+                        btnDeger.disabled = true;
+                        kontrolMesaj.textContent = "Rakip Takım İzleniyor...";
+                        kontrolMesaj.className = "text-sm text-gray-400 mb-3";
+                    }
+                    // ---------------------------------------------
 
                     soruGosterBtn.disabled = true;
                     soruGosterBtn.textContent = `${AKTIF_SORU_NUMARASI}. Soru Gösterildi`;
 
-                    btnBeceri.disabled = !amICaptain || beceriBulundu;
-                    btnDeger.disabled = !amICaptain || degerBulundu;
-                    
-                    if (amICaptain) {
-                        kontrolMesaj.textContent = "Sıra SİZDE! (Kaptan)";
-                        kontrolMesaj.className = "text-sm font-bold text-green-600 mb-3 animate-pulse";
-                    } else {
-                        kontrolMesaj.textContent = `Sıra: ${aktifTakim ? aktifTakim.isim : '...'}`;
-                        kontrolMesaj.className = "text-sm text-gray-500 mb-3";
-                    }
-
                     if (!TIMER_INTERVAL) startClientTimer(KalanSaniye);
 
                 } else {
+                    // Soru yoksa bekleme ekranı
                     stopClientTimer();
                     resetSoruAlani();
                     soruGosterBtn.disabled = !isTeacher;
                     soruGosterBtn.style.display = isTeacher ? 'block' : 'none';
                     soruGosterBtn.textContent = `${AKTIF_SORU_NUMARASI}. Soruyu Göster`;
                     kontrolMesaj.textContent = "Sıradaki soru bekleniyor...";
-                }
-
-            } catch (err) {
-                console.error("Durum hatası:", err);
-                if (err.message.includes("Oyun bulunamadı") || err.message.includes("JSON") || err.message.includes("Failed to fetch")) {
-                     clearInterval(DURUM_GUNCELLEME_INTERVAL);
-                     showToast("Bağlantı koptu.", "error");
-                     setTimeout(() => {
-                         if (typeof MY_USER_ROLE !== 'undefined' && MY_USER_ROLE === 'student') window.location.href = '/yarisma-secim';
-                         else window.location.href = '/dashboard';
-                     }, 2000);
-                }
-            }
-        }
+                } 
 
         function renderTakimListesi(takimlar, aktifTakimId) {
             teamListContainer.innerHTML = "";
@@ -487,5 +516,6 @@
     </script>
 </body>
 </html>
+
 
 
