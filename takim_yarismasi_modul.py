@@ -213,13 +213,13 @@ class TakimYarismasi:
         return {"success": True, "metin": soru["metin"], "beceri_adi": soru["beceri_adi"], "deger_adi": soru["deger_adi"]}
 
     def cevap_ver(self, takim_id, tiklanan_tip, tiklanan_cumle):
-        # BAŞLIKTAKİ DEĞİŞİKLİK: 'tip' -> 'tiklanan_tip', 'cumle' -> 'tiklanan_cumle' yapıldı.
+        # DÜZELTME: Parametreler app.py ile uyumlu hale getirildi (tiklanan_tip)
         
         if self.yarışma_bitti or not self.mevcut_soru_verisi: return {"success": False}
         
         takim = self.takimlar[takim_id]
         
-        # --- GÜVENLİK AYARI ---
+        # --- GÜVENLİK AYARI (Tarih Hatasını Önler) ---
         if not takim.get("son_soru_zamani"): 
             start = datetime.now()
         else:
@@ -227,13 +227,13 @@ class TakimYarismasi:
                 start = datetime.fromisoformat(takim["son_soru_zamani"])
             except:
                 start = datetime.now()
-        # ----------------------
+        # ---------------------------------------------
         
         gecen = (datetime.now() - start).total_seconds()
         
-        # İÇERİDEKİ DEĞİŞKENLERİ DE GÜNCELLİYORUZ
-        cumle = tiklanan_cumle.strip() # Artık gelen veriyi kullanıyoruz
-        tip = tiklanan_tip # Artık gelen veriyi kullanıyoruz
+        # Eski değişken isimlerine eşleme yapıyoruz
+        cumle = tiklanan_cumle.strip()
+        tip = tiklanan_tip 
         
         # Elenme Kontrolü (Süre)
         if cumle == "SÜRE DOLDU" or gecen > 65:
@@ -253,7 +253,7 @@ class TakimYarismasi:
         
         sonuc, mesaj = "yanlis", "Yanlış!"
         
-        # Karşılaştırmalar
+        # Eşleşme Kontrolleri
         if tip == "beceri" and cumle == dbeceri:
             takim["bulunan_beceri"] = True; sonuc = "dogru_parca"; mesaj = "Beceri Doğru!"
         elif tip == "deger" and cumle == ddeger:
@@ -261,7 +261,7 @@ class TakimYarismasi:
         else:
             takim["kalan_deneme_hakki"] -= 1
 
-        # BAŞARI DURUMU (İKİSİ DE BULUNDUYSA)
+        # BAŞARI DURUMU
         if takim["bulunan_beceri"] and takim["bulunan_deger"]:
             takim["puan"] += 1; takim["toplam_sure_saniye"] += gecen
             self.mevcut_soru_verisi = None
@@ -362,6 +362,7 @@ class TakimYarismasi:
             "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "bitis_mesaji": self.bitis_mesaji # Frontend bunu yakalamalı
         }
+
 
 
 
