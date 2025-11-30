@@ -1,4 +1,3 @@
-# Bu dosyanın adı: podcast_creator.py
 import google.generativeai as genai
 import os
 import subprocess
@@ -32,7 +31,6 @@ def generate_podcast_content(user_text, gemini_model):
     """
     Kullanıcıdan gelen metni alır ve bunu bir sohbet diyaloğuna dönüştürür.
     """
-
     prompt = f"""
     GÖREV: Aşağıda "METİN:" ile belirtilen metni al ve bu metni, bir 5. Sınıf Sosyal Bilgiler öğretmeni tarafından sunulan, 
     sohbet havasında bir podcast metnine dönüştür.
@@ -57,55 +55,43 @@ def generate_podcast_content(user_text, gemini_model):
         return None
 
 def convert_text_to_speech(text, static_folder):
-    try:
-        from gtts import gTTS
-        import uuid
-        audio_filename = f"podcast_{uuid.uuid4()}.mp3"
-        audio_path = os.path.join(static_folder, audio_filename)
-        tts = gTTS(text=text, lang='tr', slow=False)
-        tts.save(audio_path)
-        return f"/static/{audio_filename}"
-    except Exception as e:
-        print(f"❌ gTTS hatası: {e}")
-        return None
-    
+    """
+    Metni Piper kullanarak sese çevirir.
+    """
     if not os.path.exists(MODEL_PATH):
         print(f"❌ KRİTİK HATA: Model bulunamadı: {MODEL_PATH}")
         return None
 
+    # Benzersiz dosya adı oluştur
     file_name = f"podcast_{uuid.uuid4()}.wav"
     output_path = os.path.join(static_folder, file_name)
     audio_url = f"/static/{file_name}"
     
-    # Mutlak yolları kullan
+    # Mutlak yolları kullan (Garanti olsun)
     absolute_piper_path = os.path.abspath(PIPER_PATH)
     absolute_model_path = os.path.abspath(MODEL_PATH)
     absolute_config_path = os.path.abspath(CONFIG_PATH)
     absolute_output_path = os.path.abspath(output_path)
     
-    print(f"🔍 Mutlak Piper yolu: {absolute_piper_path}")
-    print(f"🔍 Var mı? {os.path.exists(absolute_piper_path)}")
-    
-    # Piper komut dizesi
+    # Komut dizesini oluştur
     komut_string = (
         f'"{absolute_piper_path}" -m "{absolute_model_path}" '
         f'-c "{absolute_config_path}" -f "{absolute_output_path}" --sentence_silence 0.2'
     )
     
-    # Debug removed
-
     try:
         # Komutu çalıştır
+        # DÜZELTME: input=text.encode ('podcast_text' değişkeni yanlıştı)
         result = subprocess.run(
             komut_string,
-            input=podcast_text.encode('utf-8'),
+            input=text.encode('utf-8'), 
             check=True,
             shell=True,
             capture_output=True,
             timeout=60
         )
         
-        # Piper çıktısını göster
+        # Piper çıktısını göster (Loglama için)
         if result.stdout:
             print(f"✅ Piper STDOUT: {result.stdout.decode('utf-8', errors='ignore')}")
         if result.stderr:
