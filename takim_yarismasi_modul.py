@@ -217,7 +217,7 @@ class TakimYarismasi:
         
         takim = self.takimlar[takim_id]
         
-        # --- GÜVENLİK AYARI: Eğer zaman kaydedilmediyse hata verme, şu anı kabul et ---
+        # --- GÜVENLİK AYARI ---
         if not takim.get("son_soru_zamani"): 
             start = datetime.now()
         else:
@@ -225,18 +225,17 @@ class TakimYarismasi:
                 start = datetime.fromisoformat(takim["son_soru_zamani"])
             except:
                 start = datetime.now()
-        # -----------------------------------------------------------------------------
+        # ----------------------
         
         gecen = (datetime.now() - start).total_seconds()
         
-        # Elenme Kontrolü (Süre) - GÜNCELLENMİŞ
+        # Elenme Kontrolü (Süre)
         if cumle == "SÜRE DOLDU" or gecen > 65:
             takim["aktif"] = False
             takim["toplam_sure_saniye"] += 60 # Ceza süresi
             self.mevcut_soru_verisi = None
             self._olay("Süre doldu, elendiniz.", "error", {"sonuc": "elendi"})
             
-            # KRİTİK DÜZELTME: Eğer oyun bittiyse "elendi" değil "oyun_bitti" gönderiyoruz
             if self._oyun_bitti_mi_kontrol_et():
                 kazanan = self.takimlar[self.kazanan_takim_id]["isim"] if self.kazanan_takim_id else "Yok"
                 return {"success": True, "sonuc": "oyun_bitti", "mesaj": f"Oyun Sona Erdi! Kazanan: {kazanan}"}
@@ -256,34 +255,33 @@ class TakimYarismasi:
         else:
             takim["kalan_deneme_hakki"] -= 1
 
+        # BAŞARI DURUMU
         if takim["bulunan_beceri"] and takim["bulunan_deger"]:
             takim["puan"] += 1; takim["toplam_sure_saniye"] += gecen
             self.mevcut_soru_verisi = None
             self._rozet_guncelle(takim)
             
-            # PUAN ALDIĞI İÇİN OYUN BİTTİ Mİ DİYE BAK (Survivor Kuralı)
             if self._oyun_bitti_mi_kontrol_et():
                 return {"success": True, "sonuc": "oyun_bitti", "mesaj": "TEBRİKLER! OYUNU KAZANDINIZ!"}
             
             p = takim["puan"]
             if p >= 10: 
-                # Zaten yukarıdaki kontrol yakalar ama garanti olsun
                 self._yarismayi_bitir(takim_id); sonuc = "oyun_bitti"; mesaj = "KAZANDINIZ!"
             elif p in [2, 7]: 
                 sonuc = "tur_bitti"; mesaj = f"{p}. soru bitti, tur tamam!"
             else: 
                 sonuc = "soru_bitti_devam_et"; mesaj = "Doğru! Devam..."
         
-            elif takim["kalan_deneme_hakki"] <= 0:
-                takim["aktif"] = False
-                takim["toplam_sure_saniye"] += gecen
-                self.mevcut_soru_verisi = None
-                sonuc = "elendi"; mesaj = "Hak bitti."
-                
-                # KRİTİK DÜZELTME: Eğer oyun bittiyse "elendi" değil "oyun_bitti" gönderiyoruz
-                if self._oyun_bitti_mi_kontrol_et():
-                    kazanan = self.takimlar[self.kazanan_takim_id]["isim"] if self.kazanan_takim_id else "Yok"
-                    return {"success": True, "sonuc": "oyun_bitti", "mesaj": f"Oyun Sona Erdi! Kazanan: {kazanan}"}
+        # ELENME DURUMU (HAK BİTTİ) - BURASI DÜZELTİLDİ (SOLA ÇEKİLDİ)
+        elif takim["kalan_deneme_hakki"] <= 0:
+            takim["aktif"] = False
+            takim["toplam_sure_saniye"] += gecen
+            self.mevcut_soru_verisi = None
+            sonuc = "elendi"; mesaj = "Hak bitti."
+            
+            if self._oyun_bitti_mi_kontrol_et():
+                kazanan = self.takimlar[self.kazanan_takim_id]["isim"] if self.kazanan_takim_id else "Yok"
+                return {"success": True, "sonuc": "oyun_bitti", "mesaj": f"Oyun Sona Erdi! Kazanan: {kazanan}"}
 
         self._olay(mesaj, "success" if "dogru" in sonuc or "KAZANDINIZ" in mesaj else "error", {"tiklanan_cumle": cumle, "sonuc": sonuc})
         if sonuc != "dogru_parca": self._takim_ici_sirayi_degistir(takim_id)
@@ -358,6 +356,7 @@ class TakimYarismasi:
             "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "bitis_mesaji": self.bitis_mesaji # Frontend bunu yakalamalı
         }
+
 
 
 
