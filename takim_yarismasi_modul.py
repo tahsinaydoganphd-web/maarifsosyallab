@@ -272,18 +272,24 @@ class TakimYarismasi:
              self.oyunu_bitir_ve_kazanani_belirle()
              return {"success": False, "hata": "Sorular bitti."}
 
-        # --- MÖ. 3000 DÜZELTMESİ BURADA ---
+        # --- MÖ. 3000 DÜZELTMESİ ---
         temiz_metin = secilen_soru["metin"]
         temiz_metin = temiz_metin.replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
         temiz_metin = temiz_metin.replace("MS.", "MS").replace("M.S.", "MS")
         temiz_metin = temiz_metin.replace("vb.", "vb")
         
+        # 👇👇👇 DÜZELTME BURAYA GELECEK (Kopyalamadan ÖNCE) 👇👇👇
+        import re
+        # Rakamların arasındaki noktaları kaldırır (12.000 -> 12000 olur)
+        temiz_metin = re.sub(r'(?<=\d)\.(?=\d)', '', temiz_metin)
+        # 👆👆👆 BİTTİ 👆👆👆
+
         beceri_c = secilen_soru["beceri_cumlesi"].replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
         deger_c = secilen_soru["deger_cumlesi"].replace("MÖ.", "MÖ").replace("M.Ö.", "MÖ")
 
         # Orijinal veriyi bozmadan kopyala ve temizle
         soru_kopya = secilen_soru.copy()
-        soru_kopya["metin"] = temiz_metin
+        soru_kopya["metin"] = temiz_metin  # Artık burada TAM TEMİZLENMİŞ hali var
         soru_kopya["beceri_cumlesi"] = beceri_c
         soru_kopya["deger_cumlesi"] = deger_c
         # ----------------------------------
@@ -604,6 +610,7 @@ class TakimYarismasi:
             "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "izleyen_kim": str(izleyen_no) 
         }
+
 
 
 
