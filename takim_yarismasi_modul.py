@@ -544,42 +544,51 @@ class TakimYarismasi:
 
     def durumu_json_yap(self, izleyen_no=None, izleyen_rol="student"):
         """
-        (DÜZELTİLDİ) ID kontrolü kaldırıldı. 
-        Soru verisi Frontend'e gönderilir, Frontend kendi sırası değilse göstermez.
-        Böylece 'Eşleşmedi' hatası yüzünden soru gizlenmez.
+        (KESİN ÇÖZÜM - GÜVENLİK DUVARI KALDIRILDI)
+        Kimlik (ID) kontrolü yapmadan, eğer aktif bir soru varsa
+        verisini JSON paketine koyar ve gönderir.
         """
         
         aktif_takim_id = self.get_aktif_takim_id()
         kalan_saniye = 60
         
-        # Soru verisini hazırlayalım
+        # --- 1. SORU VERİSİNİ HAZIRLA ---
+        # Varsayılan olarak boş
         mevcut_soru_paketi = None
-
-        # Eğer aktif bir takım varsa ve soru çekilmişse
-        if aktif_takim_id and self.mevcut_soru_verisi:
+        
+        # Eğer sistemde bir soru tanımlıysa (Oyun başlamışsa)
+        if self.mevcut_soru_verisi:
             
-            # 1. Süreyi Hesapla
+            # Süreyi hesapla
             try:
-                zaman = datetime.fromisoformat(self.takimlar[aktif_takim_id]["son_soru_zamani"])
-                fark = (datetime.now() - zaman).total_seconds()
-                kalan_saniye = max(0, 60 - int(fark))
-            except:
+                if aktif_takim_id and "son_soru_zamani" in self.takimlar[aktif_takim_id]:
+                    zaman_str = self.takimlar[aktif_takim_id]["son_soru_zamani"]
+                    if zaman_str:
+                        zaman = datetime.fromisoformat(zaman_str)
+                        fark = (datetime.now() - zaman).total_seconds()
+                        kalan_saniye = max(0, 60 - int(fark))
+            except Exception as e:
+                print(f"Süre hesaplama hatası: {e}")
                 kalan_saniye = 60
             
-            # 2. SORUYU DİREKT GÖNDER (Kısıtlama Yok)
-            # Güvenlik kontrolünü kaldırdık ki ID hatası yüzünden soru kaybolmasın.
-            # Senin HTML sayfan zaten sıra kendinde değilse göstermiyor.
+            # 👇👇👇 İŞTE KİLİDİ AÇAN KOD BURASI 👇👇👇
+            # "İzleyen kim?" diye sormuyoruz. Soru varsa pakete koyuyoruz.
             mevcut_soru_paketi = {
                 "metin": self.mevcut_soru_verisi["metin"],
                 "beceri_adi": self.mevcut_soru_verisi["beceri_adi"],
                 "deger_adi": self.mevcut_soru_verisi["deger_adi"]
             }
-        
-        # Eğer soru yoksa (Öğretmen henüz başlatmadıysa)
-        elif not self.mevcut_soru_verisi:
-            mevcut_soru_paketi = None
+            # 👆👆👆 ARTIK KİMSE SORUYU GİZLEYEMEZ 👆👆👆
 
-        # Kaptan bilgisini çek
+        elif not self.mevcut_soru_verisi and not self.yarışma_bitti:
+             # Soru verisi yoksa ama oyun bitmediyse "Bekleniyor" gönder
+             mevcut_soru_paketi = {
+                "metin": "Sıradaki soru hazırlanıyor...",
+                "beceri_adi": "...",
+                "deger_adi": "..."
+            }
+
+        # --- 2. KAPTAN KİM? ---
         aktif_takim_kaptani_id = None
         if aktif_takim_id:
             try:
@@ -589,6 +598,7 @@ class TakimYarismasi:
             except:
                 pass
 
+        # --- 3. PAKETİ DÖNDÜR ---
         return {
             "takimlar": list(self.takimlar.values()),
             "aktif_takim_id": aktif_takim_id,
@@ -598,11 +608,12 @@ class TakimYarismasi:
             "kazanan_takim_id": self.kazanan_takim_id,
             "kalan_saniye": kalan_saniye,
             "mevcut_soru_numarasi": self.mevcut_soru_numarasi,
-            "mevcut_soru_verisi": mevcut_soru_paketi, # Artık hep dolu gider
+            "mevcut_soru_verisi": mevcut_soru_paketi, # Dolu paket gidiyor
             "son_olay": self.son_olay,
             "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "izleyen_kim": str(izleyen_no) 
         }
+
 
 
 
