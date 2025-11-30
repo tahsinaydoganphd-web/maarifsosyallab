@@ -195,10 +195,14 @@
                     
                     try {
                         const response = await fetch('/generate-podcast', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ text: userText, student_no: localStorage.getItem('user_no') }), 
-                        });
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        // Sadece bu doğru satır kalsın:
+                        body: JSON.stringify({ 
+                            text: userText, 
+                            student_no: localStorage.getItem('loggedInUserNo') 
+                        })
+                    });
 
                         const data = await response.json();
 
