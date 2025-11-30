@@ -32,8 +32,11 @@ SORU_BANKASI = load_soru_bankasi()
 
 def load_takim_skorlari():
     if os.path.exists(TAKIM_SKOR_DB_FILE):
-        try: with open(TAKIM_SKOR_DB_FILE, 'r', encoding='utf-8') as f: return json.load(f)
-        except: return []
+        try:
+            with open(TAKIM_SKOR_DB_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return []
     return []
 
 def save_takim_skorlari(data):
@@ -342,3 +345,4 @@ class TakimYarismasi:
             "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "bitis_mesaji": self.bitis_mesaji # Frontend bunu yakalamalı
         }
+
