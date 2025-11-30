@@ -212,7 +212,9 @@ class TakimYarismasi:
         
         return {"success": True, "metin": soru["metin"], "beceri_adi": soru["beceri_adi"], "deger_adi": soru["deger_adi"]}
 
-    def cevap_ver(self, takim_id, tip, cumle):
+    def cevap_ver(self, takim_id, tiklanan_tip, tiklanan_cumle):
+        # BAŞLIKTAKİ DEĞİŞİKLİK: 'tip' -> 'tiklanan_tip', 'cumle' -> 'tiklanan_cumle' yapıldı.
+        
         if self.yarışma_bitti or not self.mevcut_soru_verisi: return {"success": False}
         
         takim = self.takimlar[takim_id]
@@ -229,10 +231,14 @@ class TakimYarismasi:
         
         gecen = (datetime.now() - start).total_seconds()
         
+        # İÇERİDEKİ DEĞİŞKENLERİ DE GÜNCELLİYORUZ
+        cumle = tiklanan_cumle.strip() # Artık gelen veriyi kullanıyoruz
+        tip = tiklanan_tip # Artık gelen veriyi kullanıyoruz
+        
         # Elenme Kontrolü (Süre)
         if cumle == "SÜRE DOLDU" or gecen > 65:
             takim["aktif"] = False
-            takim["toplam_sure_saniye"] += 60 # Ceza süresi
+            takim["toplam_sure_saniye"] += 60 
             self.mevcut_soru_verisi = None
             self._olay("Süre doldu, elendiniz.", "error", {"sonuc": "elendi"})
             
@@ -244,10 +250,10 @@ class TakimYarismasi:
 
         dbeceri = self.mevcut_soru_verisi["beceri_cumlesi"].strip()
         ddeger = self.mevcut_soru_verisi["deger_cumlesi"].strip()
-        cumle = cumle.strip()
         
         sonuc, mesaj = "yanlis", "Yanlış!"
         
+        # Karşılaştırmalar
         if tip == "beceri" and cumle == dbeceri:
             takim["bulunan_beceri"] = True; sonuc = "dogru_parca"; mesaj = "Beceri Doğru!"
         elif tip == "deger" and cumle == ddeger:
@@ -255,7 +261,7 @@ class TakimYarismasi:
         else:
             takim["kalan_deneme_hakki"] -= 1
 
-        # BAŞARI DURUMU
+        # BAŞARI DURUMU (İKİSİ DE BULUNDUYSA)
         if takim["bulunan_beceri"] and takim["bulunan_deger"]:
             takim["puan"] += 1; takim["toplam_sure_saniye"] += gecen
             self.mevcut_soru_verisi = None
@@ -272,7 +278,7 @@ class TakimYarismasi:
             else: 
                 sonuc = "soru_bitti_devam_et"; mesaj = "Doğru! Devam..."
         
-        # ELENME DURUMU (HAK BİTTİ) - BURASI DÜZELTİLDİ (SOLA ÇEKİLDİ)
+        # ELENME DURUMU (HAK BİTTİ)
         elif takim["kalan_deneme_hakki"] <= 0:
             takim["aktif"] = False
             takim["toplam_sure_saniye"] += gecen
@@ -356,6 +362,7 @@ class TakimYarismasi:
             "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "bitis_mesaji": self.bitis_mesaji # Frontend bunu yakalamalı
         }
+
 
 
 
