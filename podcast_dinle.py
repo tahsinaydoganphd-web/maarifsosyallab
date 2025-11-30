@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template_string
 import os
 import podcast_creator
 import google.generativeai as genai
+import db_helper
 
 app = Flask(__name__)
 
@@ -136,6 +137,9 @@ def podcast_paneli():
                 event.preventDefault();
                 const userText = textArea.value.trim();
                 
+                // 1. ÖĞRENCİ NUMARASINI AL (Senin yazdığın yer)
+                const studentNo = localStorage.getItem('loggedInUserNo'); 
+
                 if (!userText) {
                     alert("Lütfen bir metin girin.");
                     return;
@@ -156,7 +160,10 @@ def podcast_paneli():
                     const response = await fetch('/generate-podcast', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ text: userText }), 
+                        body: JSON.stringify({ 
+                            text: userText,
+                            student_no: studentNo  // <--- 2. BURAYI EKLEMEZSEN GİTMEZ!
+                        }), 
                     });
                     
                     const data = await response.json();
@@ -190,27 +197,24 @@ def podcast_paneli():
     return render_template_string(html_content)
 
 @app.route('/generate-podcast', methods=['POST'])
+@app.route('/generate-podcast', methods=['POST'])
 def handle_generation():
     data = request.get_json()
     user_text = data.get('text')
+    student_no = data.get('student_no') # <--- 1. BAŞA BUNU EKLE (Yoksa hata verir)
     
-    if not user_text:
-        return jsonify({"success": False, "error": "Metin boş olamaz."}), 400
+    # ... (aradaki kodlar aynı kalsın) ...
 
-    try:
-        # Gemini modelini kontrol et
-        if not gemini_model:
-            return jsonify({"success": False, "error": "Gemini API bağlantısı kurulamadı. Lütfen API anahtarınızı kontrol edin."}), 500
-
-        podcast_text = podcast_creator.generate_podcast_content(user_text, gemini_model)
-        if not podcast_text:
-            raise Exception("Gemini'den boş yanıt alındı.")
-            
-        audio_url = podcast_creator.convert_text_to_speech(podcast_text, app.static_folder)
-        
-        # Hata mesajı düzeltildi: Artık Piper'a atıf yapıyor.
         if not audio_url:
-            raise Exception("Ses dosyası (Piper TTS) oluşturulamadı. (Piper yürütülebilir/model yolu hatası olabilir.)") 
+            raise Exception("Ses dosyası (TTS) oluşturulamadı.") 
+
+        # --- 2. SONA (Senin dediğin yer) BUNU YAPIŞTIR ---
+        if student_no:
+            try:
+                db_helper.kaydet_kullanim(student_no, "Podcast Yap", "Podcast oluşturuldu")
+                print(f"✅ Rapor Eklendi: Öğrenci {student_no}")
+            except Exception as db_err:
+                print(f"⚠️ Raporlama Hatası: {db_err}")
 
         return jsonify({"success": True, "audio_url": audio_url})
 
@@ -228,3 +232,4 @@ Bu, en yaygın Piper hatasıdır. Python, Piper yürütülebilir dosyasını ça
     ```bash
 
     chmod +x piper/piper
+
