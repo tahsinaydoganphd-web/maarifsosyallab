@@ -347,9 +347,23 @@ class TakimYarismasi:
                     self.oyunu_bitir_ve_kazanani_belirle()
                     return {"success": False, "sonuc": "elendi", "oyun_bitti": True, "mesaj": "Herkes elendi! Oyun bitti."}
                 elif len(aktifler) == 1:
-                    self.kazanan_takim_id = aktifler[0]["id"]
-                    self.yarışma_bitti = True
-                    return {"success": False, "sonuc": "elendi", "oyun_bitti": True, "mesaj": f"Elendiniz! Kazanan: {aktifler[0]['isim']}"}
+                    # --- DÜZELTİLEN KISIM ---
+                    survivor = aktifler[0]
+                    
+                    # 1. Sırayı zorla hayatta kalan takıma ver
+                    self.siradaki_takim_id = survivor["id"]
+                    
+                    # 2. Mevcut soruyu boşa düşür ki sistem yeni soru çekebilsin
+                    self.mevcut_soru_verisi = None 
+                    
+                    # 3. YARIŞMA BİTMEDİ! (Eskiden burada bitiriyorduk)
+                    # Frontend'e "Oyun bitmedi, şu kişi devam ediyor" bilgisini dönüyoruz:
+                    return {
+                        "success": False, 
+                        "sonuc": "elendi", 
+                        "oyun_bitti": False,  # <-- Burası çok önemli, False olmalı
+                        "mesaj": f"Elendiniz! {survivor['isim']} tek başına devam ediyor."
+                    }
                 else:
                     self.siradaki_takima_gec()
                     return {"success": False, "sonuc": "elendi", "mesaj": "Elendiniz, sıra diğer takımda."}
@@ -582,6 +596,7 @@ class TakimYarismasi:
             "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "izleyen_kim": str(izleyen_no) 
         }
+
 
 
 
