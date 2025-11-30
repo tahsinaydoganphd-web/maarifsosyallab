@@ -1227,12 +1227,30 @@ def seyret_bul_liste_page():
 
 @app.route('/api/seyret-bul/surecler')
 def api_get_surecler():
-    """Tüm süreç bileşenlerini döndürür"""
+    """Tüm süreç bileşenlerini Ünite bazlı gruplayarak döndürür."""
     try:
-        surecler_dict = seyret_bul.tum_surecleri_getir()
-        surecler_listesi = [{"kod": kod, "aciklama": aciklama} for kod, aciklama in surecler_dict.items()]
-        return jsonify({"success": True, "surecler": surecler_listesi})
+        tum_surecler = seyret_bul.SURECLER
+        unite_yapisi = seyret_bul.UNITE_YAPISI
+        
+        # YENİ YAPI: Gruplanmış Array (JS'in <optgroup> için beklediği yapı)
+        grouped_list = []
+        for unite_adi, kodlar in unite_yapisi.items():
+            group = {"unite": unite_adi, "kodlar": []}
+            for kod in kodlar:
+                # Sadece mevcut kodları ekle
+                if kod in tum_surecler:
+                    group["kodlar"].append({
+                        "kod": kod,
+                        "aciklama": tum_surecler[kod],
+                        "unite": unite_adi
+                    })
+            grouped_list.append(group)
+        
+        # Admin JS'i şimdi bu gruplanmış listeyi okuyup optgroup etiketi oluşturmalıdır.
+        return jsonify({"success": True, "surecler": grouped_list})
+        
     except Exception as e:
+        print(f"Süreç listesi API hatası: {e}")
         return jsonify({"success": False, "hata": str(e)})
 
 @app.route('/api/seyret-bul/videolar')
