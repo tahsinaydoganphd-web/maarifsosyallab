@@ -507,6 +507,14 @@ class TakimYarismasi:
         # -----------------------
 
         return self.kazanan_takim_id
+    
+    def oyunu_bitir_ve_kazanani_belirle(self):
+        """
+        (EKSİK OLAN PARÇA)
+        Hata veren fonksiyon ismi buraya yönlendiriliyor.
+        Otomatik olarak puanları hesaplayıp oyunu bitirir.
+        """
+        return self._yarismayi_bitir(kazanan_id=None)
 
     def durumu_json_yap(self, izleyen_no=None, izleyen_rol="student"):
         """
@@ -596,6 +604,7 @@ class TakimYarismasi:
             "dereceye_girdi_mi": self.dereceye_girdi_mi,
             "izleyen_kim": str(izleyen_no) 
         }
+
 
 
 
