@@ -344,12 +344,15 @@
 
         async function cevapVer(tiklananCumleMetni) {
             if (OYUN_KILITLI || (KalanSaniye <= 0 && tiklananCumleMetni !== "SÜRE DOLDU")) return;
+            
             if (!SECILI_BUTON_TIPI && tiklananCumleMetni !== "SÜRE DOLDU") {
                 showToast("Lütfen önce bir buton seçin.", "info");
                 return;
             }
+
             OYUN_KILITLI = true;
             btnBeceri.disabled = true; btnDeger.disabled = true;
+
             try {
                 const response = await fetch(`/api/takim/cevap_ver/${YARISMA_ID}`, {
                     method: 'POST',
@@ -362,12 +365,33 @@
                 });
                 const result = await response.json();
                 
+                // 👇👇👇 YENİ EKLENEN KISIM: OYUN BİTTİ Mİ? 👇👇👇
+                if (result.sonuc === "oyun_bitti") {
+                    // Büyük bir kutu aç, konfetiler patlasın, 10 saniye bekle
+                    Swal.fire({
+                        title: 'TEBRİKLER!',
+                        text: result.mesaj, // "KAZANDINIZ!" veya "X Takımı Kazandı"
+                        icon: 'success',
+                        timer: 10000, // 10 Saniye bekle
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        willClose: () => {
+                            // Süre dolunca Ana Panele git
+                            window.location.href = "/panel"; 
+                        }
+                    });
+                    return; // Fonksiyonu burada kes, başka işlem yapmasın.
+                }
+                // 👆👆👆 YENİ KISIM BİTTİ 👆👆👆
+
                 if (result.sonuc === "yanlis") {
                     showToast("Yanlış!", "error");
                     getDurum(); 
                 } else if (result.sonuc === "dogru_parca") {
                     showToast("Doğru Parça!", "success");
                 } else {
+                    // Elendi, Tur Bitti veya Diğer durumlar
                     if (result.sonuc === "elendi") {
                         showToast(result.mesaj, "error");
                         kontrolMesaj.textContent = result.mesaj;
@@ -375,10 +399,17 @@
                     } else {
                         showToast(result.mesaj, "success");
                     }
+                    
                     stopClientTimer();
-                    if(result.sonuc === "tur_bitti" || result.sonuc === "elendi") setTimeout(siradakiTakimaGec, 3000);
-                    else if(result.sonuc === "oyun_bitti") setTimeout(getDurum, 3000);
-                    else { resetSoruAlani(); } 
+                    
+                    // Eğer tur bittiyse veya elendiyse 3 saniye sonra diğer takıma geç
+                    if(result.sonuc === "tur_bitti" || result.sonuc === "elendi") {
+                        setTimeout(siradakiTakimaGec, 3000);
+                    }
+                    // Not: oyun_bitti kontrolünü en yukarı aldığımız için buradaki eski kodu sildik.
+                    else { 
+                        resetSoruAlani(); 
+                    } 
                 }
             } catch(e) { console.error(e); }
             finally { OYUN_KILITLI = false; }
@@ -456,4 +487,5 @@
     </script>
 </body>
 </html>
+
 
