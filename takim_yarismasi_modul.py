@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-TAKIM YARIŞMASI MODÜLÜ (SÜRÜM 10 - FİNAL DÜZELTME)
-- Tek takım/Çok takım ayrımı kaldırıldı.
-- Oyunun anında bitmesi engellendi.
+TAKIM YARIŞMASI MODÜLÜ (SÜRÜM 11 - KESİN KURALLI)
+- Kural 1: Aktif takım, elenenlerin puanını geçtiği an KAZANIR (Oyun uzamaz).
+- Kural 2: Herkes elendiyse, eşit puanda süreye bakılır.
+- Kural 3: En yüksek puan 2'den azsa KAZANAN YOKTUR.
 """
 
 import json
@@ -11,12 +12,12 @@ import random
 from datetime import datetime
 import time
 
-# --- Soru Bankası Yükleyicisi ---
+# --- Soru Bankası ve Veritabanı Ayarları ---
 SORU_BANKASI_FILE = 'bireysel_soru_bankasi.json'
+TAKIM_SKOR_DB_FILE = 'takim_sonuclari.json'
 
 def load_soru_bankasi():
-    if not os.path.exists(SORU_BANKASI_FILE):
-        return {"kolay": [], "orta": [], "zor": []}
+    if not os.path.exists(SORU_BANKASI_FILE): return {"kolay": [], "orta": [], "zor": []}
     try:
         with open(SORU_BANKASI_FILE, 'r', encoding='utf-8') as f:
             sorular = json.load(f)
@@ -25,17 +26,13 @@ def load_soru_bankasi():
             "orta": [s for s in sorular if s.get('zorluk') == 'orta'],
             "zor": [s for s in sorular if s.get('zorluk') == 'zor']
         }
-    except Exception as e:
-        print(f"Soru bankası hatası: {e}")
-        return {"kolay": [], "orta": [], "zor": []}
+    except: return {"kolay": [], "orta": [], "zor": []}
 
 SORU_BANKASI = load_soru_bankasi()
-TAKIM_SKOR_DB_FILE = 'takim_sonuclari.json'
 
 def load_takim_skorlari():
     if os.path.exists(TAKIM_SKOR_DB_FILE):
-        try:
-            with open(TAKIM_SKOR_DB_FILE, 'r', encoding='utf-8') as f: return json.load(f)
+        try: with open(TAKIM_SKOR_DB_FILE, 'r', encoding='utf-8') as f: return json.load(f)
         except: return []
     return []
 
@@ -46,6 +43,7 @@ def save_takim_skorlari(data):
     except: pass
 
 def kaydet_yarışma_sonucu(takim_adi, rozet, soru_sayisi, toplam_sure, okul, sinif):
+    """Liderlik tablosuna kaydeder (Sadece ilk 10)."""
     try:
         skor_tablosu = load_takim_skorlari()
         rozet_degeri = {"altin": 3, "gümüş": 2, "bronz": 1, "yok": 0}
@@ -56,11 +54,12 @@ def kaydet_yarışma_sonucu(takim_adi, rozet, soru_sayisi, toplam_sure, okul, si
             "tarih": datetime.now().strftime("%Y-%m-%d %H:%M")
         }
         skor_tablosu.append(yeni_skor)
+        # Sıralama: 1. Rozet Değeri, 2. Soru Sayısı, 3. Süre (Az olan iyi)
         skor_tablosu.sort(key=lambda x: (-x["rozet_degeri"], -x["soru_sayisi"], x["toplam_sure_saniye"]))
         save_takim_skorlari(skor_tablosu[:10])
     except: pass
 
-# --- Ana Yarışma Sınıfı ---
+# --- Ana Sınıf ---
 
 class TakimYarismasi:
     def __init__(self, takimlar_listesi, okul, sinif):
@@ -68,6 +67,7 @@ class TakimYarismasi:
         self.okul = okul
         self.sinif = sinif
         self.yarışma_bitti = False 
+        self.bitis_mesaji = "" # Özel bitiş mesajı (Bronz yok vb.)
         self.mevcut_soru_numarasi = 1
         self.mevcut_soru_verisi = None 
         self.kazanan_takim_id = None
@@ -103,35 +103,82 @@ class TakimYarismasi:
             }
         return oyun_takimlari
 
-    def get_aktif_takim_id(self):
-        """HATA DÜZELTİLDİ: Tek takım olsa bile döngüye girer, oyunu bitirmez."""
-        if self.yarışma_bitti: return None
-        
-        takim_id_listesi = sorted(list(self.takimlar.keys()), key=lambda x: int(x.split('_')[1]))
-        aktifler = [t for t in self.takimlar.values() if t["aktif"]]
-        
-        if not aktifler: return self._yarismayi_bitir()
+    def _oyun_bitti_mi_kontrol_et(self):
+        """
+        KURAL KONTROL MERKEZİ:
+        Oyunun bitip bitmediğini senin kurallarına göre denetler.
+        Çağrıldığı yerler: get_aktif_takim_id, cevap_ver
+        """
+        if self.yarışma_bitti: return True
 
-        # Normal Sıra Kontrolü
+        aktif_takimlar = [t for t in self.takimlar.values() if t["aktif"]]
+        elenen_takimlar = [t for t in self.takimlar.values() if not t["aktif"]]
+        
+        # En yüksek puanlı elenen takımı bul (Eğer hiç elenen yoksa 0 kabul et)
+        max_elenen_puan = 0
+        if elenen_takimlar:
+            max_elenen_puan = max(t["puan"] for t in elenen_takimlar)
+
+        # DURUM 1: Tek Aktif Takım Kaldıysa (SURVIVOR KURALI)
+        if len(aktif_takimlar) == 1:
+            hayatta_kalan = aktif_takimlar[0]
+            # Eğer hayatta kalanın puanı, elenenlerin en iyisinden bile yüksekse
+            # VEYA hiç elenen yoksa ama tek takım varsa (bu teorik, oyun başı hariç)
+            # Oyun ANINDA biter. Diğerleri onu yakalayamaz.
+            if hayatta_kalan["puan"] > max_elenen_puan:
+                self._yarismayi_bitir(kazanan_id=hayatta_kalan["id"])
+                return True
+        
+        # DURUM 2: Herkes Elendiyse (TIE-BREAKER KURALI)
+        if len(aktif_takimlar) == 0:
+            # En yüksek puanı bul
+            en_yuksek_puan = max_elenen_puan # Zaten hepsi elendi
+            
+            # KURAL 3: BRONZ BARAJI (Kimse 2. soruyu bilemediyse)
+            if en_yuksek_puan < 2:
+                self._yarismayi_bitir(kazanan_id=None, ozel_mesaj="2. Soruyu Bilerek Bronz Rozet Alan Takım Olmadığı İçin 1. Yoktur.")
+                return True
+            
+            # KURAL 2: Eşitlik ve Süre
+            # En yüksek puanı alanları filtrele
+            liderler = [t for t in elenen_takimlar if t["puan"] == en_yuksek_puan]
+            
+            # Süresi EN AZ olana göre sırala (Ascending)
+            liderler.sort(key=lambda x: x["toplam_sure_saniye"])
+            kazanan = liderler[0]
+            
+            self._yarismayi_bitir(kazanan_id=kazanan["id"])
+            return True
+
+        return False
+
+    def get_aktif_takim_id(self):
+        # Önce oyun bitmiş mi kontrol et (Survivor kuralı için)
+        if self._oyun_bitti_mi_kontrol_et():
+            return None
+
+        takim_id_listesi = sorted(list(self.takimlar.keys()), key=lambda x: int(x.split('_')[1]))
+        
+        # Normal Sıra Döngüsü
         baslangic = self.aktif_takim_index % len(takim_id_listesi)
         for i in range(len(takim_id_listesi)):
             idx = (baslangic + i) % len(takim_id_listesi)
             tid = takim_id_listesi[idx]
             takim = self.takimlar[tid]
             
-            # Takım aktif mi VE bu turda oynaması gerekiyor mu?
             if takim["aktif"] and self._tur_kontrolu(takim):
                 return tid
         
-        # Eğer kimse bu turda oynayamıyorsa -> Tur Atla
-        print(f"Tur {self.tur_numarasi} bitti. Yeni tura geçiliyor.")
+        # Kimse bu turda oynayamıyorsa -> Tur Atla
+        # NOT: Eğer herkes elendiyse yukarıdaki _oyun_bitti_mi zaten yakalardı.
+        # Buraya geldiysek, herkes aktif ama herkes barajı geçti demektir.
         self.tur_numarasi += 1
         
         if self.tur_numarasi > 3: 
-            kazanan = max(aktifler, key=lambda t: t['puan'])
-            return self._yarismayi_bitir(kazanan_id=kazanan['id'])
+            # 10. soru bitti, herkes bitirdi. Puan/Süreye bak.
+            self._oyun_bitti_mi_kontrol_et() # Bu fonksiyon kazananı belirler
+            return None
         
-        # Tur atladıktan sonra tekrar dene (Recursive)
         return self.get_aktif_takim_id()
 
     def _tur_kontrolu(self, takim):
@@ -144,9 +191,9 @@ class TakimYarismasi:
     def soru_iste(self, takim_id):
         if self.yarışma_bitti: return {"success": False}
         
-        aktif_id = self.get_aktif_takim_id()
-        if aktif_id != takim_id and not self.yarışma_bitti:
-             pass 
+        # Güvenlik: Oyun bitmiş olabilir
+        if self._oyun_bitti_mi_kontrol_et():
+             return {"success": False, "hata": "Oyun bitti."}
 
         self.mevcut_soru_numarasi = self.takimlar[takim_id]["puan"] + 1
         soru = self.oyun_soru_listesi.get(self.mevcut_soru_numarasi)
@@ -168,10 +215,17 @@ class TakimYarismasi:
         start = datetime.fromisoformat(takim["son_soru_zamani"])
         gecen = (datetime.now() - start).total_seconds()
         
+        # Elenme Kontrolü (Süre)
         if cumle == "SÜRE DOLDU" or gecen > 65:
             takim["aktif"] = False
+            takim["toplam_sure_saniye"] += 60 # Ceza süresi
             self.mevcut_soru_verisi = None
             self._olay("Süre doldu, elendiniz.", "error", {"sonuc": "elendi"})
+            
+            # ELENME OLDUĞU İÇİN OYUN BİTTİ Mİ DİYE BAK (Survivor/Tie-Breaker)
+            if self._oyun_bitti_mi_kontrol_et():
+                return {"success": True, "sonuc": "elendi", "mesaj": "Süre doldu. Oyun Sona Erdi."}
+                
             return {"success": True, "sonuc": "elendi", "mesaj": "Süre doldu."}
 
         dbeceri = self.mevcut_soru_verisi["beceri_cumlesi"].strip()
@@ -192,8 +246,13 @@ class TakimYarismasi:
             self.mevcut_soru_verisi = None
             self._rozet_guncelle(takim)
             
+            # PUAN ALDIĞI İÇİN OYUN BİTTİ Mİ DİYE BAK (Survivor Kuralı)
+            if self._oyun_bitti_mi_kontrol_et():
+                return {"success": True, "sonuc": "oyun_bitti", "mesaj": "TEBRİKLER! OYUNU KAZANDINIZ!"}
+            
             p = takim["puan"]
             if p >= 10: 
+                # Zaten yukarıdaki kontrol yakalar ama garanti olsun
                 self._yarismayi_bitir(takim_id); sonuc = "oyun_bitti"; mesaj = "KAZANDINIZ!"
             elif p in [2, 7]: 
                 sonuc = "tur_bitti"; mesaj = f"{p}. soru bitti, tur tamam!"
@@ -201,7 +260,14 @@ class TakimYarismasi:
                 sonuc = "soru_bitti_devam_et"; mesaj = "Doğru! Devam..."
         
         elif takim["kalan_deneme_hakki"] <= 0:
-            takim["aktif"] = False; self.mevcut_soru_verisi = None; sonuc = "elendi"; mesaj = "Hak bitti."
+            takim["aktif"] = False
+            takim["toplam_sure_saniye"] += gecen
+            self.mevcut_soru_verisi = None
+            sonuc = "elendi"; mesaj = "Hak bitti."
+            
+            # ELENME OLDUĞU İÇİN OYUN BİTTİ Mİ BAK
+            if self._oyun_bitti_mi_kontrol_et():
+                return {"success": True, "sonuc": "elendi", "mesaj": "Elendiniz. Oyun Sona Erdi."}
 
         self._olay(mesaj, "success" if "dogru" in sonuc or "KAZANDINIZ" in mesaj else "error", {"tiklanan_cumle": cumle, "sonuc": sonuc})
         if sonuc != "dogru_parca": self._takim_ici_sirayi_degistir(takim_id)
@@ -222,19 +288,32 @@ class TakimYarismasi:
         self.aktif_takim_index += 1
         self.mevcut_soru_verisi = None
 
-    def _yarismayi_bitir(self, kazanan_id=None):
+    def _yarismayi_bitir(self, kazanan_id=None, ozel_mesaj=None):
         if self.yarışma_bitti: return self.kazanan_takim_id
+        
         self.yarışma_bitti = True
         self.kazanan_takim_id = kazanan_id
         self.mevcut_soru_verisi = None
+        self.bitis_mesaji = ozel_mesaj if ozel_mesaj else ""
         
         if kazanan_id:
             k = self.takimlar[kazanan_id]
+            # Sadece Rozet "yok" değilse kaydet (İsteğe bağlı, ama genelde kaydedilir)
             kaydet_yarışma_sonucu(k["isim"], k["rozet"], k["puan"], k["toplam_sure_saniye"], self.okul, self.sinif)
             
+            # Derece Kontrolü
             s = load_takim_skorlari()
-            self.dereceye_girdi_mi = len(s) < 10 or (k["puan"] > s[-1]["soru_sayisi"])
-            
+            # Listede 10 kişiden az varsa VEYA Puanı sonuncudan yüksekse VEYA Puan eşit Süre kısaysa
+            son = s[-1] if s else None
+            if not son or len(s) < 10:
+                self.dereceye_girdi_mi = True
+            elif k["puan"] > son["soru_sayisi"]:
+                self.dereceye_girdi_mi = True
+            elif k["puan"] == son["soru_sayisi"] and k["toplam_sure_saniye"] < son["toplam_sure_saniye"]:
+                self.dereceye_girdi_mi = True
+            else:
+                self.dereceye_girdi_mi = False
+        
         return self.kazanan_takim_id
 
     def durumu_json_yap(self, izleyen_no=None, izleyen_rol=None):
@@ -260,5 +339,6 @@ class TakimYarismasi:
             "aktif_takim_kaptani_id": kid, "yarışma_bitti": self.yarışma_bitti,
             "kazanan_takim_id": self.kazanan_takim_id, "kalan_saniye": ks,
             "mevcut_soru_numarasi": self.mevcut_soru_numarasi, "mevcut_soru_verisi": msv,
-            "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi
+            "son_olay": self.son_olay, "dereceye_girdi_mi": self.dereceye_girdi_mi,
+            "bitis_mesaji": self.bitis_mesaji # Frontend bunu yakalamalı
         }
