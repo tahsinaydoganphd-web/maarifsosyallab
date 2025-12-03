@@ -15,10 +15,9 @@ def api_yapilandir(api_key):
     if guvenli_anahtar:
         genai.configure(api_key=guvenli_anahtar)
         
-        # ESKİSİ (Düşük Kota): return genai.GenerativeModel('models/gemini-pro')
-        # YENİSİ (Yüksek Kota ve Hızlı):
-        print("✅ Model yapılandırıldı: gemini-1.5-flash")
-        return genai.GenerativeModel('gemini-1.5-flash')
+        # LİSTENİZDE GÖRÜNEN VE ÇALIŞAN MODEL:
+        print("✅ Model yapılandırıldı: models/gemini-2.0-flash")
+        return genai.GenerativeModel('models/gemini-2.0-flash')
         
     return None
 
@@ -510,4 +509,5 @@ if __name__ == "__main__":
     test_prompt = prompt_olustur("SB.5.6.2.", "Örnek Olay Analizi (Çoktan Seçmeli)")
 
     print(test_prompt)
+
 
