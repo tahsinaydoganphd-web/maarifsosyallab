@@ -6,31 +6,51 @@ from gtts import gTTS
 
 # --- FONKSİYONLAR ---
 
-def generate_podcast_content(user_text, gemini_model):
+def generate_podcast_content(user_text, gemini_model=None):
     """
     Kullanıcıdan gelen metni alır ve bunu bir sohbet diyaloğuna dönüştürür.
+    NOT: Kotası yüksek olan 'gemini-1.5-flash' modelini ZORLA kullanır.
     """
-    prompt = f"""
-    GÖREV: Aşağıda "METİN:" ile belirtilen metni al ve bu metni, bir 5. Sınıf Sosyal Bilgiler öğretmeni tarafından sunulan, 
-    sohbet havasında bir podcast metnine dönüştür.
-
-    KURALLAR:
-    1. Metni TEK BİR ANLATICI (Öğretmen) sunmalıdır.
-    2. Anlatıcı, metindeki ana fikirleri sanki öğrencileriyle konuşuyormuş gibi açıklamalıdır.
-    3. Konunun en önemli yerlerini veya kilit kavramları vurgulamalıdır.
-    4. Sadece üretilen sohbet metnini döndür. Giriş veya kapanış selamlaması ekleme.
     
-    METİN:
-    "{user_text}"
-    """
-
+    # 1. MODELİ BURADA ZORLA (Flash Modeli - Yüksek Kota)
+    # Dışarıdan gelen 'gemini_model' parametresini yok sayıp kendi modelimizi kuruyoruz.
     try:
-        response = gemini_model.generate_content(prompt)
+        # API Anahtarını al
+        api_key = os.getenv('GOOGLE_API_KEY')
+        
+        if api_key:
+            genai.configure(api_key=api_key)
+            # KOTA DOSTU MODEL: gemini-1.5-flash
+            # Burası çok önemli: Dışarıdan ne gelirse gelsin Flash kullanacak.
+            active_model = genai.GenerativeModel('gemini-1.5-flash')
+        else:
+            # Eğer API key çevresel değişkenlerde yoksa mecburen geleni kullan
+            print("UYARI: Podcast creator içinde API Key bulunamadı, app.py'den gelen model kullanılıyor.")
+            active_model = gemini_model
+
+        prompt = f"""
+        GÖREV: Aşağıda "METİN:" ile belirtilen metni al ve bu metni, bir 5. Sınıf Sosyal Bilgiler öğretmeni tarafından sunulan, 
+        sohbet havasında bir podcast metnine dönüştür.
+
+        KURALLAR:
+        1. Metni TEK BİR ANLATICI (Öğretmen) sunmalıdır.
+        2. Anlatıcı, metindeki ana fikirleri sanki öğrencileriyle konuşuyormuş gibi açıklamalıdır.
+        3. Konunun en önemli yerlerini veya kilit kavramları vurgulamalıdır.
+        4. Sadece üretilen sohbet metnini döndür. Giriş veya kapanış selamlaması ekleme.
+        
+        METİN:
+        "{user_text}"
+        """
+
+        # Oluşturduğumuz Flash modelini kullan
+        response = active_model.generate_content(prompt)
+        
         # Temizlik: Yıldızları ve gereksiz karakterleri kaldır
         clean_text = response.text.replace("*", "").replace("#", "")
         return clean_text
+
     except Exception as e:
-        print(f"Gemini hatası: {e}")
+        print(f"Podcast içerik üretim hatası: {e}")
         return None
 
 def convert_text_to_speech(text, static_folder):
@@ -40,6 +60,10 @@ def convert_text_to_speech(text, static_folder):
     """
     try:
         print("🔊 gTTS ile ses oluşturuluyor...")
+        
+        # Klasör yoksa oluştur (Garanti olsun diye kontrol ekledim)
+        if not os.path.exists(static_folder):
+            os.makedirs(static_folder)
         
         # Benzersiz dosya adı oluştur
         file_name = f"podcast_{uuid.uuid4()}.mp3"
