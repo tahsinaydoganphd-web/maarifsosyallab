@@ -9,10 +9,17 @@ app = Flask(__name__)
 
 def api_yapilandir(api_key):
     """Gemini API'yi yapılandırır"""
+    # Şifreyi dışarıdan gelen yerine direkt Render'dan (Environment) alıyoruz:
     guvenli_anahtar = os.getenv('GOOGLE_API_KEY')
+    
     if guvenli_anahtar:
         genai.configure(api_key=guvenli_anahtar)
-        return genai.GenerativeModel('models/gemini-pro')
+        # ESKİSİ: return genai.GenerativeModel('models/gemini-pro')
+        # YENİSİ (Hızlı ve Yüksek Kota):
+        print("✅ Model yapılandırıldı: gemini-1.5-flash")
+        return genai.GenerativeModel('gemini-1.5-flash')
+        
+    print("❌ API Anahtarı bulunamadı!")
     return None
 
 if not os.path.exists('static'):
@@ -239,4 +246,5 @@ def handle_generation():
     except Exception as e:
         print(f"İşlem sırasında hata (podcast_dinle.py): {e}")
         return jsonify({"success": False, "error": str(e)}), 500
+
 
