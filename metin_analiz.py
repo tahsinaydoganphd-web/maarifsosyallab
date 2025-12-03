@@ -52,7 +52,13 @@ def api_yapilandir(api_key):
     
     if guvenli_anahtar:
         genai.configure(api_key=guvenli_anahtar)
-        return genai.GenerativeModel('models/gemini-pro')
+        
+        # ESKİSİ: return genai.GenerativeModel('models/gemini-pro')
+        # YENİSİ (Hızlı ve Yüksek Kota):
+        print("✅ Metin Analiz Modeli yapılandırıldı: models/gemini-2.0-flash")
+        return genai.GenerativeModel('models/gemini-2.0-flash')
+        
+    print("❌ API Anahtarı bulunamadı!")
     return None
 
 # --- SÜREÇ BİLEŞENLERİ VE METİN TİPLERİ ---
