@@ -122,7 +122,7 @@ gemini_model = None
 try:
     if GEMINI_API_KEY and GEMINI_API_KEY != "":
         genai.configure(api_key=GEMINI_API_KEY)
-        gemini_model = genai.GenerativeModel('gemini-1.5-flash-001')
+        gemini_model = genai.GenerativeModel('models/gemini-pro-latest')
         print("Gemini API modeli başarıyla yüklendi.")
     else:
         print("UYARI: Gemini API Anahtarı girilmemiş.")
