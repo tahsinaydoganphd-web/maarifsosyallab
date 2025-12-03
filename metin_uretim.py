@@ -14,7 +14,13 @@ def api_yapilandir(api_key):
     
     if guvenli_anahtar:
         genai.configure(api_key=guvenli_anahtar)
-        return genai.GenerativeModel('models/gemini-pro')
+        
+        # ESKİSİ: return genai.GenerativeModel('models/gemini-pro')
+        # YENİSİ (Hızlı ve Yüksek Kota):
+        print("✅ Metin Üretim Modeli yapılandırıldı: models/gemini-2.0-flash")
+        return genai.GenerativeModel('models/gemini-2.0-flash')
+        
+    print("❌ API Anahtarı bulunamadı!")
     return None
 
 # --- YENİ VERİ YAPISI ---
@@ -326,3 +332,4 @@ if __name__ == "__main__":
     test_prompt = prompt_olustur("SB.5.5.2.", "Örnek Olay (Bütçe Planlaması)")
 
     print(test_prompt)
+
