@@ -7,26 +7,14 @@ from gtts import gTTS
 # --- FONKSİYONLAR ---
 
 def generate_podcast_content(user_text, gemini_model=None):
-    """
-    Kullanıcıdan gelen metni alır ve bunu bir sohbet diyaloğuna dönüştürür.
-    NOT: Kotası yüksek olan 'gemini-1.5-flash' modelini ZORLA kullanır.
-    """
-    
-    # 1. MODELİ BURADA ZORLA (Flash Modeli - Yüksek Kota)
-    # Dışarıdan gelen 'gemini_model' parametresini yok sayıp kendi modelimizi kuruyoruz.
     try:
-        # API Anahtarını al
         api_key = os.getenv('GOOGLE_API_KEY')
-        
         if api_key:
             genai.configure(api_key=api_key)
-            # KOTA DOSTU MODEL: gemini-1.5-flash
-            # Burası çok önemli: Dışarıdan ne gelirse gelsin Flash kullanacak.
-            active_model = genai.GenerativeModel('gemini-1.5-flash')
+            # BURAYI LİSTEDEKİ MODEL YAPTIK:
+            active_model = genai.GenerativeModel('models/gemini-2.0-flash')
         else:
-            # Eğer API key çevresel değişkenlerde yoksa mecburen geleni kullan
-            print("UYARI: Podcast creator içinde API Key bulunamadı, app.py'den gelen model kullanılıyor.")
-            active_model = gemini_model
+            active_model = gemini_model # Yedek
 
         prompt = f"""
         GÖREV: Aşağıda "METİN:" ile belirtilen metni al ve bu metni, bir 5. Sınıf Sosyal Bilgiler öğretmeni tarafından sunulan, 
